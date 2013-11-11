@@ -76,7 +76,8 @@ class MoveAction : PlayerAction{
 class JumpAction : PlayerAction{
 	// Override action method
 	public override void Action() {
-		moveDirection.y = jumpSpeed;
+		if (playerController.transform.position.y < 3)
+			moveDirection.y = jumpSpeed;
 	}
 	
 	public override void Passive() {

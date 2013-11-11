@@ -19,6 +19,7 @@ public class RiddleScript : MonoBehaviour {
 	public bool riddleCompleteP;
 	// The current scene index
 	public int sceneIndex;
+	public Riddle currentRiddle;
 	
 	// A list of riddles
 	public List<Riddle> riddles = new List<Riddle>();
@@ -43,7 +44,7 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		isLevelCompleted(); // Check if this level has been completed
+		//isLevelCompleted(); // Check if this level has been completed
 		FadeInText();       // Fade in riddle text if current scene is riddle
 		RiddleMaster();     // Handles scene loading logic
 		SetRiddleText();    // Sets the riddle text based on scene index
@@ -88,6 +89,10 @@ public class RiddleScript : MonoBehaviour {
 		}
 	}
 	
+	public void completeLevel() {
+		levelCompleteP = true;
+	}
+	
 	// Master fucntion, handles scene loading logic
 	void RiddleMaster(){
 		if (levelCompleteP){
@@ -119,21 +124,22 @@ public class RiddleScript : MonoBehaviour {
 		// Format: Riddle(string_RiddleText, KeyCode Inputs, int ExpectedSceneIndex)
 		
 		// Elephant
-		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, 0));
+		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0));
 		// Map
-		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, 2));
+		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2));
 		// Owl
-		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, 4));
+		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new ShootAction(), 4));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index
 	void SetRiddleText(){
 		// For each riddle in the list of riddles
-		foreach(Riddle riddle in riddles){
+		foreach(Riddle riddle in riddles) {
 			// If expected index of this riddle == to the scene's index
-			if (riddle.expectedSceneIndex == sceneIndex){
+			if (riddle.expectedSceneIndex == sceneIndex) {
 				// Set the GUIText (riddleText) to this riddle's text
 				riddleText.text = riddle.riddleText;
+				currentRiddle = riddle;
 			}
 		}
 	}

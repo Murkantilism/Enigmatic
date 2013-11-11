@@ -23,8 +23,23 @@ public abstract class PlayerAction{
 
 // Player move action (moving only left to right)
 class MoveAction : PlayerAction{
+	public void GetPlayerObject() {
+		if (playerObj == null) {
+			playerObj = GameObject.FindGameObjectWithTag("Player");
+		}
+	}
+	
+	public void GetPlayerController() {
+		if (playerController == null) {
+			playerController = playerObj.GetComponent<CharacterController>();
+		}
+	}
+	
 	// Override action method
 	public override void Action(){
+		GetPlayerObject();
+		GetPlayerController();
+		
 		// If player is grounded, recalcuate move direction
 		if (playerController.isGrounded){
 			moveDirection = new Vector3(1, 0, 0);

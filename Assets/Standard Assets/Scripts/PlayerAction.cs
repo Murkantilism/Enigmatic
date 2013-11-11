@@ -16,13 +16,7 @@ public abstract class PlayerAction{
 		playerObj = GameObject.FindGameObjectWithTag("Player");
 		playerController = playerObj.GetComponent<CharacterController>();
 	}
-
-	// Abstract action method
-	abstract public void Action();
-}
-
-// Player move action (moving only left to right)
-class MoveAction : PlayerAction{
+	
 	public void GetPlayerObject() {
 		if (playerObj == null) {
 			playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -35,13 +29,13 @@ class MoveAction : PlayerAction{
 		}
 	}
 	
-	// Override action method
-	public override void Action(){
+	public void MoveForward() {
 		GetPlayerObject();
 		GetPlayerController();
 		
 		// If player is grounded, recalcuate move direction
 		if (playerController.isGrounded){
+			Debug.Log(moveDirection.y);
 			moveDirection = new Vector3(1, 0, 0);
 			moveDirection = playerController.transform.TransformDirection(moveDirection);
 			moveDirection *= speed;
@@ -53,25 +47,47 @@ class MoveAction : PlayerAction{
 		// Move the controller
 		playerController.Move(moveDirection * Time.deltaTime);
 	}
+
+	// Abstract action method
+	abstract public void Action();
+	
+	// Abstract passive action method
+	abstract public void Passive();
+}
+
+// Player move action (moving only left to right)
+class MoveAction : PlayerAction{
+	// Override action method
+	public override void Action(){
+		MoveForward();
+	}
+	
+	public override void Passive(){}
 	
 	// Example instantiation of MoveAction
 	static void Main(){
 		MoveAction move = new MoveAction();
 		move.Action();
+		move.Passive();
 	}
 }
 
 // Player jump action
 class JumpAction : PlayerAction{
 	// Override action method
-	public override void Action(){
+	public override void Action() {
 		moveDirection.y = jumpSpeed;
+	}
+	
+	public override void Passive() {
+		MoveForward();
 	}
 	
 	// Example instantiation of JumpAction
 	static void Main(){
 		JumpAction jump = new JumpAction();
 		jump.Action();
+		jump.Passive();
 	}
 }
 
@@ -80,4 +96,5 @@ class ShootAction : PlayerAction{
 	public override void Action(){
 		// ToDo: Shoot code here
 	}
+	public override void Passive(){}
 }

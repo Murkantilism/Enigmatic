@@ -63,7 +63,7 @@ public class RiddleScript : MonoBehaviour {
 			
 			riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
 			
-			if (Time.timeSinceLevelLoad > 5){
+			if (Time.timeSinceLevelLoad > 10){
 				riddleCompleteP = true;
 			}
 			

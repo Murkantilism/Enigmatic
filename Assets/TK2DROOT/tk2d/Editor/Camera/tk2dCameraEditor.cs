@@ -315,7 +315,6 @@ public class tk2dCameraEditor : Editor
 		SerializedProperty m_Depth = cam.FindProperty("m_Depth");
 		SerializedProperty m_RenderingPath = cam.FindProperty("m_RenderingPath");
 		SerializedProperty m_HDR = cam.FindProperty("m_HDR");
-		TransparencySortMode transparencySortMode = target.camera.transparencySortMode;
 
 		if (complete) {
 			EditorGUILayout.PropertyField( m_ClearFlags );
@@ -326,6 +325,7 @@ public class tk2dCameraEditor : Editor
 
 		tk2dCameraSettings cameraSettings = target.CameraSettings;
 		tk2dCameraSettings inheritedSettings = target.SettingsRoot.CameraSettings;
+		TransparencySortMode transparencySortMode = inheritedSettings.transparencySortMode;
 
 		GUI.enabled &= allowProjectionParameters;
 		inheritedSettings.projection = (tk2dCameraSettings.ProjectionType)EditorGUILayout.EnumPopup("Projection", inheritedSettings.projection);
@@ -371,8 +371,10 @@ public class tk2dCameraEditor : Editor
 		cam.ApplyModifiedProperties();
 		so.ApplyModifiedProperties();
 
-		if (transparencySortMode != target.camera.transparencySortMode) {
-			target.camera.transparencySortMode = transparencySortMode;
+		if (transparencySortMode != inheritedSettings.transparencySortMode) {
+			inheritedSettings.transparencySortMode = transparencySortMode;
+			target.camera.transparencySortMode = transparencySortMode; // Change immediately in the editor
+			EditorUtility.SetDirty(target);
 			EditorUtility.SetDirty(target.camera);
 		}
 	}

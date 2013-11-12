@@ -47,7 +47,7 @@ namespace tk2dEditor.SpriteCollectionEditor
 			
 			// Header
 			GUILayout.BeginVertical(tk2dEditorSkin.SC_InspectorHeaderBG, GUILayout.ExpandWidth(true));
-			Object newBmFont = EditorGUILayout.ObjectField("BM Font", font.bmFont, typeof(Object), false);
+			TextAsset newBmFont = EditorGUILayout.ObjectField("BM Font", font.bmFont, typeof(TextAsset), false) as TextAsset;
 			if (newBmFont != font.bmFont)
 			{
 				font.texture = null;

@@ -23,9 +23,25 @@ class tk2dClippedSpriteEditor : tk2dSpriteEditor
 			return;
 		}
 
+		var spriteData = sprite.GetCurrentSpriteDef();
+		if (spriteData != null)
+			WarnSpriteRenderType(spriteData);
+
 		bool newCreateBoxCollider = EditorGUILayout.Toggle("Create Box Collider", sprite.CreateBoxCollider);
 		if (newCreateBoxCollider != sprite.CreateBoxCollider) {
 			Undo.RegisterUndo(targetClippedSprites, "Create Box Collider");
+			if (newCreateBoxCollider) {
+				sprite.boxCollider = sprite.GetComponent<BoxCollider>();
+				if (sprite.boxCollider == null) {
+					sprite.boxCollider = sprite.gameObject.AddComponent<BoxCollider>();
+				}
+			} else {
+				var boxCollider = sprite.GetComponent<BoxCollider>();
+				if (boxCollider != null) {
+					DestroyImmediate(boxCollider);
+				}
+				sprite.boxCollider = null;
+			}
 			sprite.CreateBoxCollider = newCreateBoxCollider;
 		}
 

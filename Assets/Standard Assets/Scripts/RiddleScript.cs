@@ -7,8 +7,9 @@ public class RiddleScript : MonoBehaviour {
 	public GUIText riddleText;
 	// The alpha value for the riddle text
 	float riddleAlphaValue;
-	// Background Texture for displaying riddle
-	public GUITexture riddleBackground;
+	// Big sphinx sprite
+	public tk2dSprite bigSphinxSprite;
+	
 	// Background music (refernced for DontDestoryOnLoad)
 	public GameObject backgroundMusic;
 	// Death counter (refernced for DontDestoryOnLoad)
@@ -32,8 +33,8 @@ public class RiddleScript : MonoBehaviour {
 		// Set text invisisble & white at beginning
 		riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
 		
-		// Set the riddle background visible at beginning
-		riddleBackground.color = new Color(255, 255, 255, 1);
+		// Set the big sphinx visible at beginning
+		bigSphinxSprite.color = new Color(255, 255, 255, 1);
 		
 		// Get the scene index last loaded
 		int sceneIndex = Application.loadedLevel;
@@ -63,8 +64,8 @@ public class RiddleScript : MonoBehaviour {
 				riddleCompleteP = true;
 			}
 			
-			// Set the riddle background visible
-			riddleBackground.color = new Color(255, 255, 255, 1);
+			// Set the big sphinx visible
+			bigSphinxSprite.color = new Color(255, 255, 255, 1);
 		}
 		// If the scene index is odd, it is a level
 		if (sceneIndex % 2 == 1){
@@ -72,8 +73,8 @@ public class RiddleScript : MonoBehaviour {
 			riddleAlphaValue = 0;
 			riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
 			
-			// Set the riddle background invisible
-			riddleBackground.color = new Color(255, 255, 255, 0);
+			// Set the big sphinx invisible
+			bigSphinxSprite.color = new Color(255, 255, 255, 0);
 		}
 	}
 	
@@ -112,7 +113,7 @@ public class RiddleScript : MonoBehaviour {
 	void LoadNext(){
 		// Keep the impotant game objects to allow cross-scene scripting
 		DontDestroyOnLoad(gameObject);
-		DontDestroyOnLoad(riddleBackground);
+		DontDestroyOnLoad(bigSphinxSprite);
 		DontDestroyOnLoad(backgroundMusic);
 		DontDestroyOnLoad(deathCounter);
 		// Load the next scene

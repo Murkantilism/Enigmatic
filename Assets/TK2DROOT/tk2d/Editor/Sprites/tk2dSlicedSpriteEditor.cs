@@ -28,6 +28,8 @@ class tk2dSlicedSpriteEditor : tk2dSpriteEditor
 		}
 		
 		EditorGUILayout.BeginVertical();
+
+		WarnSpriteRenderType(spriteData);
 		
 		// need raw extents (excluding scale)
 		Vector3 extents = spriteData.boundsData[1];
@@ -38,6 +40,18 @@ class tk2dSlicedSpriteEditor : tk2dSpriteEditor
 		bool newCreateBoxCollider = EditorGUILayout.Toggle("Create Box Collider", sprite.CreateBoxCollider);
 		if (newCreateBoxCollider != sprite.CreateBoxCollider) {
 			Undo.RegisterUndo(targetSlicedSprites, "Create Box Collider");
+			if (newCreateBoxCollider) {
+				sprite.boxCollider = sprite.GetComponent<BoxCollider>();
+				if (sprite.boxCollider == null) {
+					sprite.boxCollider = sprite.gameObject.AddComponent<BoxCollider>();
+				}
+			} else {
+				var boxCollider = sprite.GetComponent<BoxCollider>();
+				if (boxCollider != null) {
+					DestroyImmediate(boxCollider);
+				}
+				sprite.boxCollider = null;
+			}
 			sprite.CreateBoxCollider = newCreateBoxCollider;
 		}
 		

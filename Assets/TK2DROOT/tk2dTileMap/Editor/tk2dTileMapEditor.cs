@@ -8,6 +8,28 @@ public interface ITileMapEditorHost
 	void Build(bool force);
 }
 
+[InitializeOnLoad]
+public static class tk2dTileMapEditorUtility {
+	static tk2dTileMapEditorUtility() {
+		System.Reflection.FieldInfo undoCallback = typeof(EditorApplication).GetField("undoRedoPerformed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+		if (undoCallback != null) {
+			undoCallback.SetValue(null, (EditorApplication.CallbackFunction)OnUndoRedo);
+		}
+		else {
+			Debug.LogError("tk2d Undo/Redo callback failed. Undo/Redo not supported in this version of Unity.");
+		}
+	}
+
+	static void OnUndoRedo() {
+		foreach (GameObject go in Selection.gameObjects) {
+			tk2dTileMap tilemap = go.GetComponent<tk2dTileMap>();
+			if (tilemap != null) {
+				tilemap.ForceBuild();
+			}
+		}
+	}
+}
+
 [CustomEditor(typeof(tk2dTileMap))]
 public class tk2dTileMapEditor : Editor, ITileMapEditorHost
 {

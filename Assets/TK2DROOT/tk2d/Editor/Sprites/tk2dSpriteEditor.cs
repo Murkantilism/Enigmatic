@@ -293,6 +293,12 @@ class tk2dSpriteEditor : Editor
 		}
 	}
 
+	protected void WarnSpriteRenderType(tk2dSpriteDefinition sprite) {
+		if (sprite.positions.Length != 4 || sprite.complexGeometry) {
+			EditorGUILayout.HelpBox("Sprite type incompatible with Render Mesh setting.\nPlease use Default Render Mesh.", MessageType.Error);
+		}
+	}
+
 	void PerformActionOnSelection(string actionName, System.Action<GameObject> action) {
 		Undo.RegisterSceneUndo(actionName);
 		foreach (tk2dBaseSprite sprite in targetSprites) {

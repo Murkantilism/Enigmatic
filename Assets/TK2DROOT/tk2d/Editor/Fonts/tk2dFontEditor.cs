@@ -161,6 +161,9 @@ public class tk2dFontEditor : Editor
 	{
 		if (texture.format == TextureFormat.ARGB32 
 			|| texture.format == TextureFormat.ARGB4444 
+#if !UNITY_3_5
+			|| texture.format == TextureFormat.RGBA4444 
+#endif
 			|| texture.format == TextureFormat.Alpha8 
 			|| texture.format == TextureFormat.RGB24 
 			|| texture.format == TextureFormat.RGB565 

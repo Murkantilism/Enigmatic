@@ -273,7 +273,7 @@ public class tk2dSpriteCollectionBuilder
 		return true;
 	}
 
-	static Texture2D ProcessTexture(tk2dSpriteCollection settings, bool additive, tk2dSpriteCollectionDefinition.Pad padMode, bool disableTrimming, bool isInjectedTexture, Texture2D srcTex, int sx, int sy, int tw, int th, ref SpriteLut spriteLut, int padAmount)
+	static Texture2D ProcessTexture(tk2dSpriteCollection settings, bool additive, tk2dSpriteCollectionDefinition.Pad padMode, bool disableTrimming, bool isInjectedTexture, bool isDiced, Texture2D srcTex, int sx, int sy, int tw, int th, ref SpriteLut spriteLut, int padAmount)
 	{
 		// Can't have additive without premultiplied alpha
 		if (!settings.premultipliedAlpha) additive = false;
@@ -368,7 +368,26 @@ public class tk2dSpriteCollectionBuilder
 					dtex.SetPixel(x + padAmount, y + padAmount, col);
 				}
 			}
-			
+
+			// Diced textures get padded differently - but should behave identically to legacy behaviour outside
+			// the special padding regions
+			if (isDiced) {
+				for (int y = 0; y < dtex.height; ++y) {
+					for (int x = 0; x < dtex.width; ++x) {
+						if (y >= padAmount && y < (h1 + padAmount) && x >= padAmount && x < (w1 + padAmount)) {
+							continue; // this is inefficient
+						}
+						int ox = sx + x0 + x - padAmount;
+						int oy = sy + y0 + y - padAmount;
+						// bool oob = ox < 0 || ox >= srcTex.width || oy < 0 || oy >= srcTex.height;
+						ox = Mathf.Clamp(ox, 0, srcTex.width - 1);
+						oy = Mathf.Clamp(oy, 0, srcTex.height - 1);
+						Color col = srcTex.GetPixel(ox, oy);
+						dtex.SetPixel(x, y, col);
+					}
+				}
+			}
+
 			if (settings.premultipliedAlpha)
 			{
 				for (int x = 0; x < dtex.width; ++x)
@@ -383,7 +402,11 @@ public class tk2dSpriteCollectionBuilder
 				}
 			}
 			
-			PadTexture(dtex, padAmount, padMode);
+			if (!isDiced) {
+				PadTexture(dtex, padAmount, padMode);
+			}
+
+
 			switch (textureCompression)
 			{
 			case tk2dSpriteCollection.TextureCompression.Dithered16Bit_NoAlpha:
@@ -836,7 +859,7 @@ public class tk2dSpriteCollectionBuilder
 						diceLut.sourceTex = srcTex;
 						diceLut.isDuplicate = false; // duplicate diced textures can be chopped up differently, so don't detect dupes here
 
-						Texture2D dest = ProcessTexture(gen, gen.textureParams[i].additive, tk2dSpriteCollectionDefinition.Pad.Extend, gen.textureParams[i].disableTrimming, false, srcTex, sx, sy, tw, th, ref diceLut, GetPadAmount(gen, i));
+						Texture2D dest = ProcessTexture(gen, gen.textureParams[i].additive, tk2dSpriteCollectionDefinition.Pad.Extend, gen.textureParams[i].disableTrimming, false, true, srcTex, sx, sy, tw, th, ref diceLut, GetPadAmount(gen, i));
 						if (dest)
 						{
 							diceLut.atlasIndex = numTexturesToAtlas++;
@@ -871,7 +894,7 @@ public class tk2dSpriteCollectionBuilder
 				if (!lut.isDuplicate)
 				{
 					lut.atlasIndex = numTexturesToAtlas++;
-					Texture2D dest = ProcessTexture(gen, gen.textureParams[i].additive, gen.textureParams[i].pad, gen.textureParams[i].disableTrimming, false, currentTexture, 0, 0, currentTexture.width, currentTexture.height, ref lut, GetPadAmount(gen, i));
+					Texture2D dest = ProcessTexture(gen, gen.textureParams[i].additive, gen.textureParams[i].pad, gen.textureParams[i].disableTrimming, false, false, currentTexture, 0, 0, currentTexture.width, currentTexture.height, ref lut, GetPadAmount(gen, i));
 					if (dest == null)
 					{
 						// fall back to a tiny blank texture
@@ -919,7 +942,7 @@ public class tk2dSpriteCollectionBuilder
 					SpriteLut lut = new SpriteLut();
 
 					int cy = (int)( (font.flipTextureY ? c.y : (fontInfo.scaleH - c.y - c.height)) * texScale );
-					Texture2D dest = ProcessTexture(gen, false, tk2dSpriteCollectionDefinition.Pad.Default, false, true,
+					Texture2D dest = ProcessTexture(gen, false, tk2dSpriteCollectionDefinition.Pad.Default, false, true, false,
 						(rescaledTexture != null) ? rescaledTexture : font.texture, 
 						(int)(c.x * texScale), cy, 
 						(int)(c.width * texScale), (int)(c.height * texScale), 

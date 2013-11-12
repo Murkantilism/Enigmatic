@@ -12,6 +12,7 @@ public class DeathCounter : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		SetPosition();
+		DeathString();
 	}
 	
 	// Set the position of Score GUI to top center

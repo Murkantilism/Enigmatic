@@ -9,6 +9,8 @@ public class RiddleScript : MonoBehaviour {
 	float riddleAlphaValue;
 	// Big sphinx sprite
 	public tk2dSprite bigSphinxSprite;
+	// The main camera object
+	private Camera myCamera;
 	
 	// Background music (refernced for DontDestoryOnLoad)
 	public GameObject backgroundMusic;
@@ -49,6 +51,7 @@ public class RiddleScript : MonoBehaviour {
 		FadeInText();       // Fade in riddle text if current scene is riddle
 		RiddleMaster();     // Handles scene loading logic
 		SetRiddleText();    // Sets the riddle text based on scene index
+		BigSphinxPostion(); // Sets the position of the Big Sphinx to the lower right
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to true after 5 seconds
@@ -143,5 +146,11 @@ public class RiddleScript : MonoBehaviour {
 				currentRiddle = riddle;
 			}
 		}
+	}
+	
+	// Correctly positions Big Sphinx regardless of resolution changes
+	void BigSphinxPostion(){
+		myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+		bigSphinxSprite.transform.position = myCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height / -5f, 30));
 	}
 }

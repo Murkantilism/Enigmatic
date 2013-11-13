@@ -12,6 +12,9 @@ public class RiddleScript : MonoBehaviour {
 	// The main camera object
 	private Camera myCamera;
 	
+	// Black texture used for pausing and re-displaying riddle
+	public GUITexture blackPauseTexture;
+	
 	// Background music (refernced for DontDestoryOnLoad)
 	public GameObject backgroundMusic;
 	// Death counter (refernced for DontDestoryOnLoad)
@@ -23,6 +26,8 @@ public class RiddleScript : MonoBehaviour {
 	// The current scene index
 	public int sceneIndex;
 	public Riddle currentRiddle;
+	// Is this scene paused?
+	public bool paused = false;
 	
 	// A list of riddles
 	public List<Riddle> riddles = new List<Riddle>();
@@ -57,7 +62,7 @@ public class RiddleScript : MonoBehaviour {
 	// Fades in text over 5 seconds, sets riddleCompleteP to true after 5 seconds
 	void FadeInText(){
 		// If the scene index is even, it is a riddle
-		if (sceneIndex % 2 == 0){
+		if (sceneIndex % 2 == 0 && paused == false){
 			// Dividing by 5 makes fade lasts 5 secs
 			riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
 			
@@ -71,7 +76,7 @@ public class RiddleScript : MonoBehaviour {
 			bigSphinxSprite.color = new Color(255, 255, 255, 1);
 		}
 		// If the scene index is odd, it is a level
-		if (sceneIndex % 2 == 1){
+		if (sceneIndex % 2 == 1 && paused == false){
 			// Set riddle text invisible
 			riddleAlphaValue = 0;
 			riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
@@ -120,6 +125,7 @@ public class RiddleScript : MonoBehaviour {
 		DontDestroyOnLoad(bigSphinxSprite);
 		DontDestroyOnLoad(backgroundMusic);
 		DontDestroyOnLoad(deathCounter);
+		DontDestroyOnLoad(blackPauseTexture);
 		// Load the next scene
 		Application.LoadLevel(sceneIndex += 1);
 	}

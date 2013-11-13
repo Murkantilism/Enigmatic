@@ -47,7 +47,7 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//isLevelCompleted(); // Check if this level has been completed
+		isRiddleCompleted(); // Check if this level has been completed
 		FadeInText();       // Fade in riddle text if current scene is riddle
 		RiddleMaster();     // Handles scene loading logic
 		SetRiddleText();    // Sets the riddle text based on scene index
@@ -82,14 +82,15 @@ public class RiddleScript : MonoBehaviour {
 	}
 	
 	// Checks if level is completed (Spacebar input)
-	void isLevelCompleted(){
+	void isRiddleCompleted(){
 		// **PLACEHOLDER CODE** - Spacebar will complete level
 		// ToDo: Replace this with an actual level completion
 		// ToDo: check, likely OnCollisionEnter() method.
 		
 		// If the scene index is odd, it is a level
-		if (sceneIndex % 2 == 1 && Input.GetKeyDown(KeyCode.Space)){
-			levelCompleteP = true;
+		if (sceneIndex % 2 == 0 && Input.GetKeyDown(KeyCode.Escape)){
+			riddleCompleteP = true;
+			//levelCompleteP = true;
 		}
 	}
 	

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class RiddleScript : MonoBehaviour {
+	// Riddle timer (seconds)
+	public int riddleTimer = 3;
 	// The riddle GUIText
 	public GUIText riddleText;
 	// The alpha value for the riddle text
@@ -59,7 +61,8 @@ public class RiddleScript : MonoBehaviour {
 		BigSphinxPostion(); // Sets the position of the Big Sphinx to the lower right
 	}
 	
-	// Fades in text over 5 seconds, sets riddleCompleteP to true after 5 seconds
+	// Fades in text over 5 seconds, sets riddleCompleteP to 
+	// true after riddle timer expires
 	void FadeInText(){
 		// If the scene index is even, it is a riddle
 		if (sceneIndex % 2 == 0 && paused == false){
@@ -68,7 +71,7 @@ public class RiddleScript : MonoBehaviour {
 			
 			riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
 			
-			if (Time.timeSinceLevelLoad > 10){
+			if (Time.timeSinceLevelLoad > riddleTimer){
 				riddleCompleteP = true;
 			}
 			
@@ -134,11 +137,11 @@ public class RiddleScript : MonoBehaviour {
 	void RiddleList(){
 		// Format: Riddle(string_RiddleText, KeyCode Inputs, int ExpectedSceneIndex)
 		
-		// Elephant
+		// Elephant - Move
 		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0));
-		// Map
+		// Map - Jump
 		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2));
-		// Owl
+		// Owl - Shoot
 		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new ShootAction(), 4));
 	}
 	

@@ -35,7 +35,6 @@ public abstract class PlayerAction{
 		
 		// If player is grounded, recalcuate move direction
 		if (playerController.isGrounded){
-			Debug.Log(moveDirection.y);
 			moveDirection = new Vector3(1, 0, 0);
 			moveDirection = playerController.transform.TransformDirection(moveDirection);
 			moveDirection *= speed;
@@ -76,8 +75,21 @@ class MoveAction : PlayerAction{
 class JumpAction : PlayerAction{
 	// Override action method
 	public override void Action() {
-		if (playerController.transform.position.y < 3)
+		// If player is grounded, recalcuate move direction with
+		// Jump speed added to Y direction
+		Debug.Log(playerController.isGrounded);
+		if (playerController.isGrounded){
+			moveDirection = new Vector3(1, 0, 0);
+			moveDirection = playerController.transform.TransformDirection(moveDirection);
+			moveDirection *= speed;
 			moveDirection.y = jumpSpeed;
+		}
+		
+		// Apply gravity
+		moveDirection.y -= gravity * Time.deltaTime;
+		// Move the controller
+		playerController.Move(moveDirection * Time.deltaTime);
+			
 	}
 	
 	public override void Passive() {

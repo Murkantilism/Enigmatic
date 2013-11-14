@@ -13,6 +13,7 @@ public class Riddle {
 	// The SceneIndex that this Riddle is expected to be at
 	public int expectedSceneIndex;
 	
+	// The action the player character should take for this riddle
 	public PlayerAction action;
 	
 	// Constructor

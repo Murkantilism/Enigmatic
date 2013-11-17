@@ -10,6 +10,8 @@ public class Player : MonoBehaviour {
 	public GUITexture blackPauseTexture;
 	public GUIText riddleText;
 	public GUISkin guiSkin;
+	public AudioSource thudAudioSource;
+	public AudioClip thudAudioClip;
 	
 	// Use this for initialization
 	void Start () {
@@ -20,6 +22,9 @@ public class Player : MonoBehaviour {
 		riddleText = GameObject.Find("RiddleText").GetComponent<GUIText>();
 		// On start, set pause texture invisible
 		blackPauseTexture.color = new Color(0, 0, 0, 0);
+		
+		thudAudioSource = (AudioSource)gameObject.AddComponent("AudioSource");
+		thudAudioClip = (AudioClip)Resources.Load("thud", typeof(AudioClip));
 	}
 	
 	// Update is called once per frame
@@ -40,13 +45,26 @@ public class Player : MonoBehaviour {
 		// if proper input is pressed, execute player action
 		if (Input.GetKey(ridScript.currentRiddle.inputs)) {
 			ridScript.currentRiddle.action.Action();
+		// If any key is pressed and it is the wrong input, 
+		// kill player and play thud sound effect
+		} else if (Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs))){
+			thudAudioSource.PlayOneShot(thudAudioClip);
+			Respawn();
+		}
+		
+		// If the proper key is pressed once, play the audio
+		// clip for this riddle once.
+		if (Input.GetKeyDown(ridScript.currentRiddle.inputs)){
+			ridScript.audioSource.PlayOneShot(ridScript.currentRiddle.audioClip);
 		}
 	}
 	
 	// are we dead yet?
 	bool Dead() {
-		if (gameObject.transform.position.y < -8)
+		// If the player has fallen off the platforms
+		if (gameObject.transform.position.y < -8){
 			return true;
+		}
 		return false;
 	}
 	

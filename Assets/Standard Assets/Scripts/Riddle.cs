@@ -16,11 +16,15 @@ public class Riddle {
 	// The action the player character should take for this riddle
 	public PlayerAction action;
 	
+	// The music file associated with this riddle
+	public AudioClip audioClip;
+	
 	// Constructor
-	public Riddle(string _RiddleText, KeyCode _Inputs, PlayerAction _Action, int _ExpectedSceneIndex){
+	public Riddle(string _RiddleText, KeyCode _Inputs, PlayerAction _Action, int _ExpectedSceneIndex, AudioClip _audioClip){
 		riddleText = _RiddleText;
 		inputs = _Inputs;
 		action = _Action;
 		expectedSceneIndex = _ExpectedSceneIndex;
+		audioClip = _audioClip;
 	}
 }

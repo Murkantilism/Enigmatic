@@ -34,6 +34,10 @@ public class RiddleScript : MonoBehaviour {
 	// A list of riddles
 	public List<Riddle> riddles = new List<Riddle>();
 	
+	// The audio clip for this riddle
+	public AudioClip audioClip;
+	public AudioSource audioSource;
+	
 	// Use this for initialization
 	void Start () {
 		levelCompleteP = false;
@@ -50,6 +54,8 @@ public class RiddleScript : MonoBehaviour {
 		
 		// Build the list of riddles on start
 		RiddleList ();
+		
+		audioSource = (AudioSource)gameObject.AddComponent("AudioSource");
 	}
 	
 	// Update is called once per frame
@@ -138,11 +144,11 @@ public class RiddleScript : MonoBehaviour {
 		// Format: Riddle(string_RiddleText, KeyCode Inputs, int ExpectedSceneIndex)
 		
 		// Elephant - Move
-		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0));
+		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0, audioClip));
 		// Map - Jump
-		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2));
+		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2, audioClip));
 		// Owl - Shoot
-		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new ShootAction(), 4));
+		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new ShootAction(), 4, audioClip));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index
@@ -154,6 +160,9 @@ public class RiddleScript : MonoBehaviour {
 				// Set the GUIText (riddleText) to this riddle's text
 				riddleText.text = riddle.riddleText;
 				currentRiddle = riddle;
+				
+				// Set the audio clip to the expected audio clip
+				currentRiddle.audioClip = (AudioClip)Resources.Load(sceneIndex.ToString(), typeof(AudioClip));
 			}
 		}
 	}

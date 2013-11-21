@@ -19,12 +19,20 @@ public class Riddle {
 	// The music file associated with this riddle
 	public AudioClip audioClip;
 	
+	// The small hint associated with this riddle
+	public string smallHint;
+	
+	// The big hint associated with this riddle
+	public string bigHint;
+	
 	// Constructor
-	public Riddle(string _RiddleText, KeyCode _Inputs, PlayerAction _Action, int _ExpectedSceneIndex, AudioClip _audioClip){
+	public Riddle(string _RiddleText, KeyCode _Inputs, PlayerAction _Action, int _ExpectedSceneIndex, AudioClip _audioClip, string _smallHint, string _bigHint){
 		riddleText = _RiddleText;
 		inputs = _Inputs;
 		action = _Action;
 		expectedSceneIndex = _ExpectedSceneIndex;
 		audioClip = _audioClip;
+		smallHint = _smallHint;
+		bigHint = _bigHint;
 	}
 }

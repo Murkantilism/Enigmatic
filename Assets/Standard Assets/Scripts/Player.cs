@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
 	public AudioSource thudAudioSource;
 	public AudioClip thudAudioClip;
 	public GameObject projectile;
+	public AudioClip deathAudioClip;
 	
 	// Use this for initialization
 	void Start () {
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour {
 		
 		thudAudioSource = (AudioSource)gameObject.AddComponent("AudioSource");
 		thudAudioClip = (AudioClip)Resources.Load("thud", typeof(AudioClip));
+		deathAudioClip = (AudioClip)Resources.Load("death", typeof(AudioClip));
 	}
 	
 	// Update is called once per frame
@@ -46,9 +48,10 @@ public class Player : MonoBehaviour {
 		// if proper input is pressed, execute player action
 		if (Input.GetKey(ridScript.currentRiddle.inputs)) {
 			ridScript.currentRiddle.action.Action();
-		// If any key is pressed and it is the wrong input, 
+		// If any key is pressed and it is the wrong input (besides ESC and mouse clicks), 
 		// kill player and play thud sound effect
-		} else if (Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs))){
+		} else if (Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs)) && 
+				   !(Input.GetKeyDown(KeyCode.Escape)) && !(Input.GetMouseButton(0)) && !(Input.GetMouseButton(1))){
 			thudAudioSource.PlayOneShot(thudAudioClip);
 			Respawn();
 		}
@@ -71,6 +74,7 @@ public class Player : MonoBehaviour {
 	
 	// respawn the player
 	void Respawn() {
+		thudAudioSource.PlayOneShot(deathAudioClip);
 		deathScript.deathCount++;
 		gameObject.transform.position = spawn.transform.position;
 	}

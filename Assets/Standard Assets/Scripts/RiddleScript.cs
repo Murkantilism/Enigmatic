@@ -4,11 +4,19 @@ using System.Collections.Generic;
 
 public class RiddleScript : MonoBehaviour {
 	// Riddle timer (seconds)
-	public int riddleTimer = 3;
+	public int riddleTimer = 10;
+	// Small hint timer (seconds)
+	public int smallHintTimer = 15;
+	// Big hint timer (seconds)
+	public int bigHintTimer = 25;
 	// The riddle GUIText
 	public GUIText riddleText;
 	// The alpha value for the riddle text
 	float riddleAlphaValue;
+	// The alpha values for the hints
+	float smallHintAlpha;
+	float bigHintAlpha;
+	
 	// Big sphinx sprite
 	public tk2dSprite bigSphinxSprite;
 	// The main camera object
@@ -21,6 +29,10 @@ public class RiddleScript : MonoBehaviour {
 	public GameObject backgroundMusic;
 	// Death counter (refernced for DontDestoryOnLoad)
 	public GameObject deathCounter;
+	
+	// The GUIText objects for the hints
+	public GUIText smallHintText;
+	public GUIText bigHintText;
 	
 	// Has a level or riddle scene been completed?
 	public bool levelCompleteP;
@@ -49,6 +61,13 @@ public class RiddleScript : MonoBehaviour {
 		// Set the big sphinx visible at beginning
 		bigSphinxSprite.color = new Color(255, 255, 255, 1);
 		
+		// Set the pause texture invisible at beginning
+		blackPauseTexture.color = new Color(0, 0, 0, 0);
+		
+		// Set the hints invisisble at beginning
+		smallHintText.color = new Color(255, 255, 255, 0);
+		bigHintText.color = new Color(255, 255, 255, 0);
+		
 		// Get the scene index last loaded
 		int sceneIndex = Application.loadedLevel;
 		
@@ -65,6 +84,7 @@ public class RiddleScript : MonoBehaviour {
 		RiddleMaster();     // Handles scene loading logic
 		SetRiddleText();    // Sets the riddle text based on scene index
 		BigSphinxPostion(); // Sets the position of the Big Sphinx to the lower right
+		HintSystem();
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to 
@@ -95,16 +115,11 @@ public class RiddleScript : MonoBehaviour {
 		}
 	}
 	
-	// Checks if level is completed (Spacebar input)
+	// Checks if riddle is skipped (ESC input)
 	void isRiddleCompleted(){
-		// **PLACEHOLDER CODE** - Spacebar will complete level
-		// ToDo: Replace this with an actual level completion
-		// ToDo: check, likely OnCollisionEnter() method.
-		
-		// If the scene index is odd, it is a level
+		// If the scene index is even, it is a riddle - ESC skips riddle
 		if (sceneIndex % 2 == 0 && Input.GetKeyDown(KeyCode.Escape)){
 			riddleCompleteP = true;
-			//levelCompleteP = true;
 		}
 	}
 	
@@ -137,6 +152,8 @@ public class RiddleScript : MonoBehaviour {
 		DontDestroyOnLoad(backgroundMusic);
 		DontDestroyOnLoad(deathCounter);
 		DontDestroyOnLoad(blackPauseTexture);
+		DontDestroyOnLoad(smallHintText);
+		DontDestroyOnLoad(bigHintText);
 		// Load the next scene
 		Application.LoadLevel(sceneIndex += 1);
 	}
@@ -144,15 +161,15 @@ public class RiddleScript : MonoBehaviour {
 	// Create the list of riddles
 	void RiddleList(){
 		// Format: Riddle(string_RiddleText, KeyCode Inputs, int ExpectedSceneIndex)
-		
+
 		// Elephant - Move actively
-		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0, audioClip));
+			riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0, audioClip, "It has big ears", "It's the largest living land mammal too"));
 
 		// Map - Jump actively, Move passively
-		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2, audioClip));
+		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2, audioClip, "It's partner is a compass", "Explorers use these"));
 
 		// Owl - Jump actively, Move passively
-		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new JumpAction(), 4, audioClip));
+		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new JumpAction(), 4, audioClip, "Who? Who?", "They're a real hoot!"));
 
 		// Shoe - Jump actively, Move passively
 		riddles.Add(new Riddle("What has a tongue, cannot walk, \nbut gets worn around a lot?", KeyCode.S, new JumpAction(), 6, audioClip));
@@ -180,8 +197,45 @@ public class RiddleScript : MonoBehaviour {
 				riddleText.text = riddle.riddleText;
 				currentRiddle = riddle;
 				
+				// Set the hints to this riddle's hints
+				bigHintText.text = riddle.bigHint;
+				smallHintText.text = riddle.smallHint;
+				
 				// Set the audio clip to the expected audio clip
 				currentRiddle.audioClip = (AudioClip)Resources.Load(sceneIndex.ToString(), typeof(AudioClip));
+			}
+		}
+	}
+	
+	void HintSystem(){
+		// If the scene index if even, it is a riddle
+		if (sceneIndex % 2 == 0 && paused == false){
+			// Set hints to invisible
+			smallHintText.color = new Color(255, 255, 255, 0);
+			bigHintText.color = new Color(255, 255, 255, 0);
+		}
+		
+		// If the scene index is odd, it is a level
+		if (sceneIndex % 2 == 1 && paused == false){
+			// If the level is played for longer than the small hint timer, and not
+			// longer than the big hint timer, reveal the hint for this riddle.
+			if (Time.timeSinceLevelLoad > smallHintTimer && !(Time.timeSinceLevelLoad > bigHintTimer)){
+				// Dividing by 7 makes fade lasts 7 secs
+				smallHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
+				smallHintText.color = new Color(255, 255, 255, smallHintAlpha);
+			// Otherwise set hint invisible
+			}else{
+				smallHintText.color = new Color(255, 255, 255, 0);
+			}
+			
+			// If the level is played for longer than the big hint timer,
+			// reveal the big hint for this riddle
+			if (Time.timeSinceLevelLoad > bigHintTimer){
+				// Dividing by 7 makes fade lasts 7 secs
+				bigHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
+				bigHintText.color = new Color(255, 255, 255, bigHintAlpha);
+			}else{
+				bigHintText.color = new Color(255, 255, 255, 0);
 			}
 		}
 	}

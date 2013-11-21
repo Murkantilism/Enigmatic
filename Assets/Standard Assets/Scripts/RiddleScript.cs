@@ -172,19 +172,19 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new JumpAction(), 4, audioClip, "Who? Who?", "They're a real hoot!"));
 
 		// Shoe - Jump actively, Move passively
-		riddles.Add(new Riddle("What has a tongue, cannot walk, \nbut gets worn around a lot?", KeyCode.S, new JumpAction(), 6, audioClip));
+		riddles.Add(new Riddle("What has a tongue, cannot walk, \nbut gets worn around a lot?", KeyCode.S, new JumpAction(), 6, audioClip,"",""));
 
 		// Candle - Shoot actively, Move passively
-		riddles.Add(new Riddle("What gets shorter as it gets older?", KeyCode.C, new ShootAction(), 8, audioClip));
+		riddles.Add(new Riddle("What gets shorter as it gets older?", KeyCode.C, new ShootAction(), 8, audioClip,"",""));
 
 		// Towel - Shoot actively, Move passively
-		riddles.Add(new Riddle("What gets wetter the more you dry?", KeyCode.T, new ShootAction(), 10, audioClip));
+		riddles.Add(new Riddle("What gets wetter the more you dry?", KeyCode.T, new ShootAction(), 10, audioClip,"",""));
 
 		// River - Shoot actively, Move passively
-		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new ShootAction(), 12, audioClip));
+		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new ShootAction(), 12, audioClip,"",""));
 
 		// Halfway - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("How far can you run into the woods?", KeyCode.H, new JumpShootAction(), 14, audioClip));
+		riddles.Add(new Riddle("How far can you run into the woods?", KeyCode.H, new JumpShootAction(), 14, audioClip,"",""));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index

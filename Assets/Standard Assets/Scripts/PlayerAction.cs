@@ -47,6 +47,37 @@ public abstract class PlayerAction{
 		playerController.Move(moveDirection * Time.deltaTime);
 	}
 
+	public void Jump() {
+		GetPlayerObject();
+		GetPlayerController();
+
+		// If player is grounded, recalcuate move direction with
+		// Jump speed added to Y direction
+		//Debug.Log(playerController.isGrounded);
+		if (playerController.isGrounded){
+			moveDirection = new Vector3(1, 0, 0);
+			moveDirection = playerController.transform.TransformDirection(moveDirection);
+			moveDirection *= speed;
+			moveDirection.y = jumpSpeed;
+		}
+		
+		// Apply gravity
+		moveDirection.y -= gravity * Time.deltaTime;
+		// Move the controller
+		playerController.Move(moveDirection * Time.deltaTime);
+	}
+
+	public void Shoot() {
+		GetPlayerObject();
+		GetPlayerController();
+
+		if (GameObject.FindGameObjectWithTag("Projectile") == null) {
+			// instantiate a projectile
+			GameObject proj = (GameObject)GameObject.Instantiate(playerObj.GetComponent<Player>().projectile);
+			proj.transform.position = playerObj.transform.position;
+		}
+	}
+
 	// Abstract action method
 	abstract public void Action();
 	
@@ -54,7 +85,7 @@ public abstract class PlayerAction{
 	abstract public void Passive();
 }
 
-// Player move action (moving only left to right)
+// Move actively (moving only left to right)
 class MoveAction : PlayerAction{
 	// Override action method
 	public override void Action(){
@@ -71,25 +102,11 @@ class MoveAction : PlayerAction{
 	}
 }
 
-// Player jump action
+// Jump actively, Move passively
 class JumpAction : PlayerAction{
 	// Override action method
 	public override void Action() {
-		// If player is grounded, recalcuate move direction with
-		// Jump speed added to Y direction
-		Debug.Log(playerController.isGrounded);
-		if (playerController.isGrounded){
-			moveDirection = new Vector3(1, 0, 0);
-			moveDirection = playerController.transform.TransformDirection(moveDirection);
-			moveDirection *= speed;
-			moveDirection.y = jumpSpeed;
-		}
-		
-		// Apply gravity
-		moveDirection.y -= gravity * Time.deltaTime;
-		// Move the controller
-		playerController.Move(moveDirection * Time.deltaTime);
-			
+		Jump();
 	}
 	
 	public override void Passive() {
@@ -104,10 +121,32 @@ class JumpAction : PlayerAction{
 	}
 }
 
+// Shoot actively, Move passively
 class ShootAction : PlayerAction{
 	// Override action method
 	public override void Action(){
-		// ToDo: Shoot code here
+		Shoot();
 	}
+	public override void Passive(){
+		MoveForward();
+	}
+}
+
+// Jump actively, Move and Shoot passively
+class JumpShootAction : PlayerAction{
+	// Override action method
+	public override void Action(){
+		Jump();
+	}
+	public override void Passive(){
+		MoveForward();
+		Shoot();
+	}
+}
+
+// No Action
+class NoAction : PlayerAction{
+	public override void Action(){}
 	public override void Passive(){}
 }
+

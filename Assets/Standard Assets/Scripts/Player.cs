@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
 	public GUISkin guiSkin;
 	public AudioSource thudAudioSource;
 	public AudioClip thudAudioClip;
+	public GameObject projectile;
 	
 	// Use this for initialization
 	void Start () {
@@ -95,7 +96,14 @@ public class Player : MonoBehaviour {
 				Time.timeScale = 1;
 			}
 		}
-        
     }
+
+	// handle collisions with enemies
+	void OnControllerColliderHit(ControllerColliderHit hit) {
+		Debug.Log("player collided with "+hit.collider.gameObject.name);
+		if (hit.collider.tag == "Enemy") {
+			Respawn();
+		}
+	}
 }
 

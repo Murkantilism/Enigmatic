@@ -104,10 +104,9 @@ public class Player : MonoBehaviour {
 
 	// handle collisions with enemies
 	void OnControllerColliderHit(ControllerColliderHit hit) {
-		Debug.Log("player collided with "+hit.collider.gameObject.name);
+		//Debug.Log("player collided with "+hit.collider.gameObject.name);
 		if (hit.collider.tag == "Enemy") {
 			Respawn();
 		}
 	}
 }
-

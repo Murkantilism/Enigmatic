@@ -155,7 +155,7 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Master fucntion, handles scene loading logic
 	void RiddleMaster(){
-		if (sceneIndex == 16)
+		if (sceneIndex == 22)
 			Destroy(this.gameObject); //FixMe: Dafuq is this?
 		if (levelCompleteP){
 			//Load next riddle
@@ -189,7 +189,7 @@ public class RiddleScript : MonoBehaviour {
 		// Format: Riddle(string_RiddleText, KeyCode Inputs, int ExpectedSceneIndex)
 
 		// Elephant - Move actively
-			riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0, audioClip, "It has big ears", "It's the largest living land mammal too"));
+		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0, audioClip, "It has big ears", "It's the largest living land mammal too"));
 
 		// Map - Jump actively, Move passively
 		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2, audioClip, "It's partner is a compass", "Explorers use these"));
@@ -209,8 +209,14 @@ public class RiddleScript : MonoBehaviour {
 		// River - Shoot actively, Move passively
 		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new ShootAction(), 12, audioClip,"",""));
 
-		// Halfway - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("How far can you run into the woods?", KeyCode.H, new JumpShootAction(), 14, audioClip,"",""));
+		// Man - Jump actively, Move and Shoot passively
+		riddles.Add(new Riddle("What goes on 4 legs in the morning, \n3 legs in the afternoon, \nand 2 legs at night?", KeyCode.M, new JumpShootAction(), 14, audioClip,"",""));
+
+		// Eggs - Jump actively, Move and Shoot passively
+		riddles.Add(new Riddle("A casket with no hinges nor lid, \nand yet inside golden treasure is hid.", KeyCode.E, new JumpShootAction(), 16, audioClip,"",""));
+
+		// Fart - Jump actively, Move and Shoot passively
+		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpShootAction(), 18, audioClip,"",""));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index

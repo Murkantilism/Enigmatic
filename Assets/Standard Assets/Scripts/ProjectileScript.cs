@@ -29,9 +29,14 @@ public class ProjectileScript : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col) {
 		Debug.Log ("projectile collided");
+		// destroy enemies
 		if (col.collider.tag == "Enemy") {
 			Destroy(col.gameObject);
 			Destroy(this.gameObject);
+		}
+		// ignore collisions with the Player
+		else if (col.collider.tag == "Player") {
+			Physics.IgnoreCollision(col.collider, collider);
 		}
 	}
 }

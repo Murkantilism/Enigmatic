@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class RiddleScript : MonoBehaviour {
 	// Riddle timer (seconds)
 	public int riddleTimer = 10;
+	// Riddle timer for first scene (longer b/c instructions)
+	public int firstRiddleTimer = 20;	
 	// Small hint timer (seconds)
 	public int smallHintTimer = 15;
 	// Big hint timer (seconds)
@@ -92,17 +94,28 @@ public class RiddleScript : MonoBehaviour {
 	void FadeInText(){
 		// If the scene index is even, it is a riddle
 		if (sceneIndex % 2 == 0 && paused == false){
-			// Dividing by 5 makes fade lasts 5 secs
-			riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
 			
-			riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
-			
-			if (Time.timeSinceLevelLoad > riddleTimer){
-				riddleCompleteP = true;
+			// If this is the first scene, wait 10 seconds while player reads
+			// instructions, then invoke fade text.
+			if (sceneIndex == 0 && paused == false){
+				// Set the big sphinx visible
+				bigSphinxSprite.color = new Color(255, 255, 255, 1);
+				Invoke("FirstSceneFadeInText", 10);
+				
+			// Otherwise, fade in riddle text normally
+			}else{
+				// Dividing by 5 makes fade lasts 5 secs
+				riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
+				
+				riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
+				
+				if (Time.timeSinceLevelLoad > riddleTimer){
+					riddleCompleteP = true;
+				}
+				
+				// Set the big sphinx visible
+				bigSphinxSprite.color = new Color(255, 255, 255, 1);
 			}
-			
-			// Set the big sphinx visible
-			bigSphinxSprite.color = new Color(255, 255, 255, 1);
 		}
 		// If the scene index is odd, it is a level
 		if (sceneIndex % 2 == 1 && paused == false){
@@ -112,6 +125,19 @@ public class RiddleScript : MonoBehaviour {
 			
 			// Set the big sphinx invisible
 			bigSphinxSprite.color = new Color(255, 255, 255, 0);
+		}
+	}
+	
+	// Fade in text for the first scene (works exactly like fade in for any
+	// other scene, but is a seperate function invoked after 10 seconds).
+	void FirstSceneFadeInText(){
+		// Dividing by 5 makes fade lasts 5 secs
+		riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
+		
+		riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
+		
+		if (Time.timeSinceLevelLoad > firstRiddleTimer){
+			riddleCompleteP = true;
 		}
 	}
 	
@@ -130,7 +156,7 @@ public class RiddleScript : MonoBehaviour {
 	// Master fucntion, handles scene loading logic
 	void RiddleMaster(){
 		if (sceneIndex == 16)
-			Destroy(this.gameObject);
+			Destroy(this.gameObject); //FixMe: Dafuq is this?
 		if (levelCompleteP){
 			//Load next riddle
 			LoadNext();

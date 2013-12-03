@@ -212,11 +212,11 @@ public class RiddleScript : MonoBehaviour {
 		// Man - Jump actively, Move and Shoot passively
 		riddles.Add(new Riddle("What goes on 4 legs in the morning, \n3 legs in the afternoon, \nand 2 legs at night?", KeyCode.M, new JumpShootAction(), 14, audioClip,"",""));
 
-		// Eggs - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("A casket with no hinges nor lid, \nand yet inside golden treasure is hid.", KeyCode.E, new JumpShootAction(), 16, audioClip,"",""));
+		// Eggs - Jump actively, Move passively
+		riddles.Add(new Riddle("A casket with no hinges nor lid, \nand yet inside golden treasure is hid.", KeyCode.E, new JumpAction(), 16, audioClip,"",""));
 
-		// Fart - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpShootAction(), 18, audioClip,"",""));
+		// Fart - Jump actively, Move passively
+		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpAction(), 18, audioClip,"",""));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index

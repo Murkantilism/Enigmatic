@@ -32,7 +32,7 @@ public abstract class PlayerAction{
 			playerController = playerObj.GetComponent<CharacterController>();
 		}
 	}
-	
+
 	public void MoveForward() {
 		GetPlayerObject();
 		GetPlayerController();

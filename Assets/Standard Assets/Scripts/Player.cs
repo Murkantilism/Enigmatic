@@ -77,6 +77,15 @@ public class Player : MonoBehaviour {
 		thudAudioSource.PlayOneShot(deathAudioClip);
 		deathScript.deathCount++;
 		gameObject.transform.position = spawn.transform.position;
+
+		GameObject[] platforms = GameObject.FindGameObjectsWithTag("DropPlatform");
+		foreach (GameObject platform in platforms) {
+			DropPlatform dp = platform.GetComponent<DropPlatform>();
+			if (dp)
+				dp.Reset();
+			/*else
+				Debug.Log("no drop platform --what?");*/
+		}
 	}
 	
 	// show menu when paused
@@ -107,6 +116,10 @@ public class Player : MonoBehaviour {
 		//Debug.Log("player collided with "+hit.collider.gameObject.name);
 		if (hit.collider.tag == "Enemy") {
 			Respawn();
+		}
+		// drop platform if necessary
+		else if (hit.collider.tag == "DropPlatform" && !hit.gameObject.GetComponent<DropPlatform>()) {
+			hit.gameObject.AddComponent<DropPlatform>();
 		}
 	}
 }

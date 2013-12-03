@@ -22,6 +22,6 @@ public class DeathCounter : MonoBehaviour {
 	
 	// Recieves a message from the Player script with new death count
 	void DeathString(){
-		guiText.text = deathCount.ToString();
+		guiText.text = "Death Count: " + deathCount.ToString();
 	}
 }

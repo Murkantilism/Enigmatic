@@ -15,7 +15,7 @@ public class PositionIntro : MonoBehaviour {
 
 	// Set the position of Score GUI to top center
 	void SetPosition(){
-		introText.text = "Instructions: Solve the riddles to \nunlock the secrects to gameplay!";
+		introText.text = "Instructions: Solve the riddles or trivia \n to unlock the secrects to gameplay!";
 		introText.pixelOffset = new Vector2(Screen.width / 500, Screen.height / 6);
 	}
 	

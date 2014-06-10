@@ -1,6 +1,6 @@
 #pragma strict
 // mainMenu.js - Last Updated 01/04/2014
-// Chromacore - Incendiary Industries - Deniz Ozkaynak
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
 // Contact:   incendiaryindustries@gmail.com   with any questions
 
 var quitButtonp = false;

@@ -14,6 +14,9 @@ public class Player : MonoBehaviour {
 	public AudioClip thudAudioClip;
 	public GameObject projectile;
 	public AudioClip deathAudioClip;
+	float gravity = 5.0f;
+	CharacterController controller;
+	Vector3 moveDirection  = Vector3.zero;
 	
 	// Use this for initialization
 	void Start () {
@@ -28,6 +31,8 @@ public class Player : MonoBehaviour {
 		thudAudioSource = (AudioSource)gameObject.AddComponent("AudioSource");
 		thudAudioClip = (AudioClip)Resources.Load("thud", typeof(AudioClip));
 		deathAudioClip = (AudioClip)Resources.Load("death", typeof(AudioClip));
+
+		controller = GetComponent<CharacterController>();
 	}
 	
 	// Update is called once per frame
@@ -40,6 +45,11 @@ public class Player : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			paused = true;
 			Time.timeScale = 0;
+		}
+
+		if(!controller.isGrounded && !Input.GetKey(ridScript.currentRiddle.inputs)){
+			moveDirection.y -= gravity * Time.deltaTime;
+			controller.Move(moveDirection * Time.deltaTime);
 		}
 		
 		// execute passive player action
@@ -120,6 +130,8 @@ public class Player : MonoBehaviour {
 		// drop platform if necessary
 		else if (hit.collider.tag == "DropPlatform" && !hit.gameObject.GetComponent<DropPlatform>()) {
 			hit.gameObject.AddComponent<DropPlatform>();
+		}else if (hit.collider.tag == "DissolvingPlatform" && !hit.gameObject.GetComponent<DissolvePlatform>()){
+			hit.gameObject.AddComponent<DissolvePlatform>();
 		}
 	}
 }

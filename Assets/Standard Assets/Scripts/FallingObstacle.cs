@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// NOTE: This script is programmatically assigned at runtime by function OnControllerColliderHit
-// in the Player.cs script when the player collides with certain platforms.
-public class DropPlatform : MonoBehaviour {
+// NOTE: This script is essentially identical to DropPlatform.cs but is instead
+// assigned in the editor rather than at runtime by Player.cs.
+public class FallingObstacle : MonoBehaviour {
 	Vector3 origin;
 	bool destroy = false;
 
@@ -14,11 +14,12 @@ public class DropPlatform : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!destroy)
+		if(!destroy){
 			transform.position -= new Vector3(0, 0.04f, 0);
+		}
 	}
 
-	public void Reset() {
+	public void Reset(){
 		transform.position = origin;
 		destroy = true;
 		GameObject.DestroyImmediate(this);

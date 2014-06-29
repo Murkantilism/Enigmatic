@@ -39,8 +39,12 @@ public class RiddleScript : MonoBehaviour {
 	// Has a level or riddle scene been completed?
 	public bool levelCompleteP;
 	public bool riddleCompleteP;
+
+	// The sceneIdentifier go
+	GameObject sceneIdentifier;
 	// The current scene index
 	public int sceneIndex;
+
 	public Riddle currentRiddle;
 	// Is this scene paused?
 	public bool paused = false;
@@ -69,9 +73,13 @@ public class RiddleScript : MonoBehaviour {
 		// Set the hints invisisble at beginning
 		smallHintText.color = new Color(255, 255, 255, 0);
 		bigHintText.color = new Color(255, 255, 255, 0);
-		
-		// Get the scene index last loaded
-		int sceneIndex = Application.loadedLevel;
+
+		// Find the sceneIdentifier GameObject
+		sceneIdentifier = GameObject.Find("sceneIdentifier");
+
+		// Get the scene index
+		sceneIndex = sceneIdentifier.GetComponent<SceneIdentifier>().sceneIndex;
+		//int sceneIndex = Application.loadedLevel;
 		
 		// Build the list of riddles on start
 		RiddleList ();
@@ -87,6 +95,12 @@ public class RiddleScript : MonoBehaviour {
 		SetRiddleText();    // Sets the riddle text based on scene index
 		BigSphinxPostion(); // Sets the position of the Big Sphinx to the lower right
 		HintSystem();
+
+		sceneIdentifier = GameObject.Find("sceneIdentifier");
+		// If the scene identifier object doesn't exist, find it!
+		if(sceneIdentifier == null){
+			sceneIdentifier = GameObject.Find("sceneIdentifier");
+		}
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to 
@@ -94,37 +108,55 @@ public class RiddleScript : MonoBehaviour {
 	void FadeInText(){
 		// If the scene index is even, it is a riddle
 		if (sceneIndex % 2 == 0 && paused == false){
-			
-			// If this is the first scene, wait 10 seconds while player reads
-			// instructions, then invoke fade text.
-			if (sceneIndex == 0 && paused == false){
-				// Set the big sphinx visible
-				bigSphinxSprite.color = new Color(255, 255, 255, 1);
-				Invoke("FirstSceneFadeInText", 10);
-				
-			// Otherwise, fade in riddle text normally
-			}else{
-				// Dividing by 5 makes fade lasts 5 secs
-				riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
-				
-				riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
-				
-				if (Time.timeSinceLevelLoad > riddleTimer){
-					riddleCompleteP = true;
+
+			if(sceneIdentifier == null){
+				sceneIdentifier = GameObject.Find("sceneIdentifier");
+			}
+
+			// Confirm this scene is in fact a riddle by checking scene ID
+			if(sceneIdentifier.GetComponent<SceneIdentifier>().sceneID == "Riddle"){
+
+				// If this is the first riddle, wait 10 seconds while player reads
+				// instructions, then invoke fade text.
+				if (sceneIndex == 2 && paused == false){
+					// Set the big sphinx visible
+					bigSphinxSprite.color = new Color(255, 255, 255, 1);
+					Invoke("FirstSceneFadeInText", 10);
+					
+				// Otherwise, fade in riddle text normally
+				}else{
+					// Dividing by 5 makes fade lasts 5 secs
+					riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
+					
+					riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
+					
+					if (Time.timeSinceLevelLoad > riddleTimer){
+						riddleCompleteP = true;
+					}
+					
+					// Set the big sphinx visible
+					bigSphinxSprite.color = new Color(255, 255, 255, 1);
 				}
-				
-				// Set the big sphinx visible
-				bigSphinxSprite.color = new Color(255, 255, 255, 1);
 			}
 		}
+
 		// If the scene index is odd, it is a level
 		if (sceneIndex % 2 == 1 && paused == false){
-			// Set riddle text invisible
-			riddleAlphaValue = 0;
-			riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
-			
-			// Set the big sphinx invisible
-			bigSphinxSprite.color = new Color(255, 255, 255, 0);
+
+			if(sceneIdentifier == null){
+				sceneIdentifier = GameObject.Find("sceneIdentifier");
+			}
+
+			// Confirm this scene is in fact a level by checking scene ID
+			if(sceneIdentifier.GetComponent<SceneIdentifier>().sceneID == "Level"){
+
+				// Set riddle text invisible
+				riddleAlphaValue = 0;
+				riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
+				
+				// Set the big sphinx invisible
+				bigSphinxSprite.color = new Color(255, 255, 255, 0);
+			}
 		}
 	}
 	
@@ -155,8 +187,10 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Master fucntion, handles scene loading logic
 	void RiddleMaster(){
-		if (sceneIndex == 24)
-			Destroy(this.gameObject); //FixMe: Dafuq is this?
+		// When the last level is reached, destory all the things!
+		if (sceneIndex == 25)
+			Destroy(this.gameObject);
+
 		if (levelCompleteP){
 			//Load next riddle
 			LoadNext();
@@ -180,49 +214,59 @@ public class RiddleScript : MonoBehaviour {
 		DontDestroyOnLoad(blackPauseTexture);
 		DontDestroyOnLoad(smallHintText);
 		DontDestroyOnLoad(bigHintText);
-		// Load the next scene
-		Application.LoadLevel(sceneIndex += 1);
+		//DontDestroyOnLoad(sceneIdentifier);
+		Debug.Log("Scene Index: " + sceneIndex);
+		Debug.Log(Application.loadedLevelName);
+
+		// Load the next scene - If it is the first riddle scene, increment the
+		// sceneIndex by 3 instead, to  compensate for the MainMenu and 
+		// LevelSelect throwing of the indexing.
+		if(sceneIndex == 0){
+			Application.LoadLevel(sceneIndex += 3);
+		}else{
+			Application.LoadLevel(sceneIndex += 1);
+		}
 	}
 	
 	// Create the list of riddles
 	void RiddleList(){
-		// Format: Riddle(string_RiddleText, KeyCode Inputs, int ExpectedSceneIndex)
+		// Format: riddles.Add(new Riddle(string RiddleText, KeyCode Inputs, new ActionFunction(), int ExpectedSceneIndex, audioClip, string smallHintText, string bigHintText)
 
 		// Riddle 0: Elephant - Move actively
 		riddles.Add(new Riddle("What is the only mammal that cannot jump?", KeyCode.E, new MoveAction(), 0, audioClip, "It has big ears", "It's the largest living land mammal too"));
 
 		// Riddle 1: Map - Jump actively, Move passively
-		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 2, audioClip, "It's partner is a compass", "Explorers use these"));
+		riddles.Add(new Riddle("What has rivers with no water, \nforests but no trees and \ncities with no buildings?", KeyCode.M, new JumpAction(), 4, audioClip, "It's partner is a compass", "Explorers use these"));
 
 		// Riddle 2: Owl - Jump actively, Move passively
-		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new JumpAction(), 4, audioClip, "Who? Who?", "They're a real hoot!"));
+		riddles.Add(new Riddle("What asks but never answers?", KeyCode.O, new JumpAction(), 6, audioClip, "Who? Who?", "They're a real hoot!"));
 
 		// Riddle 3: Shoe - Jump actively, Move passively
-		riddles.Add(new Riddle("What has a tongue, cannot walk, \nbut gets worn around a lot?", KeyCode.S, new JumpAction(), 6, audioClip,"You wear two every day", "You wear them on your feet"));
+		riddles.Add(new Riddle("What has a tongue, cannot walk, \nbut gets worn around a lot?", KeyCode.S, new JumpAction(), 8, audioClip,"You wear two every day", "You wear them on your feet"));
 
 		// Riddle 4: Candle - Shoot actively, Move passively
-		riddles.Add(new Riddle("What gets shorter as it gets older?", KeyCode.C, new ShootAction(), 8, audioClip,"It lights the darkness","Made of wax"));
+		riddles.Add(new Riddle("What gets shorter as it gets older?", KeyCode.C, new ShootAction(), 10, audioClip,"It lights the darkness","Made of wax"));
 
 		// Riddle 5: Towel - Shoot actively, Move passively
-		riddles.Add(new Riddle("What gets wetter the more you dry?", KeyCode.T, new ShootAction(), 10, audioClip,"Don't forget to bring one!","You dry off with it"));
+		riddles.Add(new Riddle("What gets wetter the more you dry?", KeyCode.T, new ShootAction(), 12, audioClip,"Don't forget to bring one!","You dry off with it"));
 
 		// Riddle 6: River - Shoot actively, Move passively
-		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new ShootAction(), 12, audioClip,"Water runs through it","The Nile is a famous example"));
+		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new ShootAction(), 14, audioClip,"Water runs through it","The Nile is a famous example"));
 		
 		// Riddle 7: Man - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("What goes on 4 legs in the morning, \n3 legs in the afternoon, \nand 2 legs at night?", KeyCode.M, new JumpShootAction(), 14, audioClip,"The worlds dominant species","A boys grows up into a..."));
+		riddles.Add(new Riddle("What goes on 4 legs in the morning, \n3 legs in the afternoon, \nand 2 legs at night?", KeyCode.M, new JumpShootAction(), 16, audioClip,"The worlds dominant species","A boys grows up into a..."));
 
 		// Riddle 8: Eggs - Jump actively, Move passively
-		riddles.Add(new Riddle("A casket with no hinges nor lid, \nand yet inside golden treasure is hid.", KeyCode.E, new JumpAction(), 16, audioClip,"You crack them","Eat them for breakfast"));
+		riddles.Add(new Riddle("A casket with no hinges nor lid, \nand yet inside golden treasure is hid.", KeyCode.E, new JumpAction(), 18, audioClip,"You crack them","Eat them for breakfast"));
 
 		// Riddle 9: Fart - Jump actively, Move passively
-		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpAction(), 18, audioClip,"Toot!","Comes out your butt"));
+		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpAction(), 20, audioClip,"Toot!","Comes out your butt"));
 		
 		// Riddle 10: Parachute - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("2 men both have packs on, 1 is dead. \nThe man who is alive has his pack open, \nthe man who is dead has his pack closed. \nWhat is in the pack?", KeyCode.P, new JumpShootAction(), 20, audioClip, "Delpoyed in an emergency", "For falling from the sky"));
+		riddles.Add(new Riddle("2 men both have packs on, 1 is dead. \nThe man who is alive has his pack open, \nthe man who is dead has his pack closed. \nWhat is in the pack?", KeyCode.P, new JumpShootAction(), 22, audioClip, "Delpoyed in an emergency", "For falling from the sky"));
 		
 		// Riddle 11: Red paint - Jump actively, Move passively
-		riddles.Add(new Riddle("What's red and smells like blue paint?", KeyCode.R, new JumpAction(), 22, audioClip, "It's just like blue paint, only...", "It's Red Paint you dunce, \nhow'd you get this far?"));
+		riddles.Add(new Riddle("What's red and smells like blue paint?", KeyCode.R, new JumpAction(), 24, audioClip, "It's just like blue paint, only...", "It's Red Paint you dunce, \nhow'd you get this far?"));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index

@@ -121,17 +121,24 @@ public class Player : MonoBehaviour {
 		}
     }
 
-	// handle collisions with enemies
+	// Handle all player collisions
 	void OnControllerColliderHit(ControllerColliderHit hit) {
-		//Debug.Log("player collided with "+hit.collider.gameObject.name);
-		if (hit.collider.tag == "Enemy") {
+		// If the player collides with an enemy, respawn
+		if (hit.collider.tag == "Enemy"){
 			Respawn();
 		}
-		// drop platform if necessary
+		// If the player touches a DropPlatform, attach the corresponding script
 		else if (hit.collider.tag == "DropPlatform" && !hit.gameObject.GetComponent<DropPlatform>()) {
 			hit.gameObject.AddComponent<DropPlatform>();
+		// If the player touches a DissolvingPlatform, attach the corresponding script
 		}else if (hit.collider.tag == "DissolvingPlatform" && !hit.gameObject.GetComponent<DissolvePlatform>()){
 			hit.gameObject.AddComponent<DissolvePlatform>();
+		/*}else if (hit.collider.tag == "XOnRailsPlatformX" && !hit.gameObject.GetComponent<XOnRailsPlatformX>()){
+			hit.gameObject.AddComponent<XOnRailsPlatformX>();*/
+		// If the player touches a YOnRailsPlatformY,
+		}else if (hit.collider.tag == "YOnRailsPlatformY" && !hit.gameObject.GetComponent<XOnRailsPlatformX>()){
+			// And set the player character to be the platform's child temporarily
+			//transform.parent = hit.transform;
 		}
 	}
 }

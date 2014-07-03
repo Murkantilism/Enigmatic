@@ -6,10 +6,11 @@ using System.IO;
 [InitializeOnLoad]
 public static class tk2dEditorUtility
 {
-	public static double version = 2.2;
-	public static int releaseId = 3; // < -10001 = alpha 1, other negative = beta release, 0 = final, positive = final hotfix
+	public static double version = 2.4;
+	public static int releaseId = 0; // < -10001 = alpha 1, other negative = beta release, 0 = final, positive = final hotfix
 
 	static tk2dEditorUtility() {
+#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 		System.Reflection.FieldInfo undoCallback = typeof(EditorApplication).GetField("undoRedoPerformed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 		if (undoCallback != null) {
 			undoCallback.SetValue(null, (EditorApplication.CallbackFunction)OnUndoRedo);
@@ -17,6 +18,9 @@ public static class tk2dEditorUtility
 		else {
 			Debug.LogError("tk2d Undo/Redo callback failed. Undo/Redo not supported in this version of Unity.");
 		}
+#else
+		Undo.undoRedoPerformed += OnUndoRedo;
+#endif
 	}
 
 	static void OnUndoRedo() {
@@ -387,16 +391,17 @@ public static class tk2dEditorUtility
 
 	public static bool IsPrefab(Object obj)
 	{
-#if (UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4)
-		return AssetDatabase.GetAssetPath(obj).Length != 0;
-#else
 		return (PrefabUtility.GetPrefabType(obj) == PrefabType.Prefab);
-#endif
+	}
+
+	public static bool IsEditable(UnityEngine.Object obj) {
+    	MonoBehaviour mb = obj as MonoBehaviour;
+    	return (mb && (mb.gameObject.hideFlags & HideFlags.NotEditable) == 0);
 	}
 
 	public static void SetGameObjectActive(GameObject go, bool active)
 	{
-#if UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_3_6 || UNITY_3_7 || UNITY_3_8 || UNITY_3_9
+#if UNITY_3_5
 		go.SetActiveRecursively(active);
 #else
 		go.SetActive(active);
@@ -405,12 +410,61 @@ public static class tk2dEditorUtility
 
 	public static bool IsGameObjectActive(GameObject go)
 	{
-#if UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_3_6 || UNITY_3_7 || UNITY_3_8 || UNITY_3_9
+#if UNITY_3_5
 		return go.active;
 #else
 		return go.activeSelf;
 #endif		
 	}
+
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+	private static System.Reflection.PropertyInfo sortingLayerNamesPropInfo = null;
+	private static bool sortingLayerNamesChecked = false;
+
+	private static string[] GetSortingLayerNames() {
+		if (sortingLayerNamesPropInfo == null && !sortingLayerNamesChecked) {
+			sortingLayerNamesChecked = true;
+			try {
+				System.Type IEU = System.Type.GetType("UnityEditorInternal.InternalEditorUtility,UnityEditor");
+				if (IEU != null) {
+					sortingLayerNamesPropInfo = IEU.GetProperty("sortingLayerNames", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+				}
+			}
+			catch { }
+			if (sortingLayerNamesPropInfo == null) {
+				Debug.Log("tk2dEditorUtility - Unable to get sorting layer names.");
+			}
+		}
+
+		if (sortingLayerNamesPropInfo != null) { 
+			return sortingLayerNamesPropInfo.GetValue(null, null) as string[];
+		}
+		else {
+			return new string[0];
+		}
+	}
+
+	public static string SortingLayerNamePopup( string label, string value ) {
+		if (value == "") {
+			value = "Default";
+		}
+		string[] names = GetSortingLayerNames();
+		if (names.Length == 0) {
+			return EditorGUILayout.TextField(label, value);			
+		}
+		else {
+			int sel = 0;
+			for (int i = 0; i < names.Length; ++i) {
+				if (names[i] == value) {
+					sel = i;
+					break;
+				}
+			}
+			sel = EditorGUILayout.Popup(label, sel, names);
+			return names[sel];
+		}
+	}
+#endif
 
     [MenuItem("GameObject/Create Other/tk2d/Empty GameObject", false, 55000)]
     static void DoCreateEmptyGameObject()

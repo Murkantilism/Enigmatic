@@ -163,8 +163,18 @@ namespace tk2dEditor.Font
 				{
 					int id = int.Parse(FindKeyValue(tokens, "id"));
 					string file = FindKeyValue(tokens, "file");
-					if (file[0] == '"' && file[file.Length - 1] == '"')
+					if (file[0] == '"' && file[file.Length - 1] == '"') {
 						file = file.Substring(1, file.Length - 2);
+					}
+					else if (file[0] == '"' && file[file.Length - 1] != '"') {
+						System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(line, "file[\\s]*=[\\s]*\"([^\"]*)\"");
+						try {
+							file = match.Groups[1].Value;
+						}
+						catch {
+							file = "";
+						}
+					}
 					fontInfo.texturePaths[id] = file;
 				}
 				else if (tokens[0] == "char")
@@ -415,6 +425,7 @@ namespace tk2dEditor.Font
 				}
 	
 				target.chars = null;
+				target.charDict = null;
 				target.SetDictionary(charDict);
 				target.useDictionary = true;
 			}

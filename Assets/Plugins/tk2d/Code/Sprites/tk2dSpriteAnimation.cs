@@ -77,7 +77,7 @@ public class tk2dSpriteAnimationClip
 	/// <summary>
 	/// Array of frames
 	/// </summary>
-	public tk2dSpriteAnimationFrame[] frames = null;
+	public tk2dSpriteAnimationFrame[] frames = new tk2dSpriteAnimationFrame[0];
 	
 	/// <summary>
 	/// FPS of clip

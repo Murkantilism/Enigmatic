@@ -8,6 +8,12 @@ class tk2dStaticSpriteBatcherEditor : Editor
 {
 	tk2dStaticSpriteBatcher batcher { get { return (tk2dStaticSpriteBatcher)target; } }
 	
+	// Like GetComponentsInChildren, but doesn't include self
+	T[] GetComponentsInChildrenExcludeSelf<T>(Transform root) where T : Component {
+		List<T> allTransforms = new List<T>( root.GetComponentsInChildren<T>() );
+		return (from t in allTransforms where t.transform != root select t).ToArray();
+	}
+
 	void DrawEditorGUI()
 	{
 		if (GUILayout.Button("Commit"))
@@ -16,6 +22,23 @@ class tk2dStaticSpriteBatcherEditor : Editor
 			Transform[] allTransforms = batcher.transform.GetComponentsInChildren<Transform>();
 			allTransforms = (from t in allTransforms where t != batcher.transform select t).ToArray();
 			
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+			Renderer[] allRenderers = batcher.transform.GetComponentsInChildren<Renderer>();
+			allRenderers = (from r in allRenderers where r != batcher.renderer select r).ToArray();
+			if (allRenderers.Length > 0) {
+				string sortingLayerName = allRenderers[0].sortingLayerName;
+				int sortingOrder = allRenderers[0].sortingOrder;
+				foreach (Renderer r in allRenderers) {
+					if (sortingLayerName != r.sortingLayerName ||
+						sortingOrder != r.sortingOrder) {
+
+						EditorUtility.DisplayDialog("StaticSpriteBatcher", "Error: Child objects use different sorting layer names and/or sorting orders.\n\nOnly one sorting layer and order is permitted in a static sprite batcher.", "Ok");
+						return;
+					}
+				}
+			}
+#endif
+
 			// sort sprites, smaller to larger z
 			if (batcher.CheckFlag(tk2dStaticSpriteBatcher.Flags.SortToCamera)) {
 				tk2dCamera tk2dCam = tk2dCamera.CameraForLayer( batcher.gameObject.layer );
@@ -23,7 +46,7 @@ class tk2dStaticSpriteBatcherEditor : Editor
 				allTransforms = (from t in allTransforms orderby cam.WorldToScreenPoint((t.renderer != null) ? t.renderer.bounds.center : t.position).z descending select t).ToArray();
 			}
 			else {
-				allTransforms = (from t in allTransforms orderby t.renderer.bounds.center.z descending select t).ToArray();
+				allTransforms = (from t in allTransforms orderby ((t.renderer != null) ? t.renderer.bounds.center : t.position).z descending select t).ToArray();
 			}
 			
 			// and within the z sort by material
@@ -32,7 +55,21 @@ class tk2dStaticSpriteBatcherEditor : Editor
 				EditorUtility.DisplayDialog("StaticSpriteBatcher", "Error: No child objects found", "Ok");
 				return;
 			}
-		
+
+
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+			MeshCollider[] childMeshColliders = GetComponentsInChildrenExcludeSelf<MeshCollider>(batcher.transform);
+			BoxCollider[] childBoxColliders = GetComponentsInChildrenExcludeSelf<BoxCollider>(batcher.transform);
+			BoxCollider2D[] childBoxCollider2Ds = GetComponentsInChildrenExcludeSelf<BoxCollider2D>(batcher.transform);
+			EdgeCollider2D[] childEdgeCollider2Ds = GetComponentsInChildrenExcludeSelf<EdgeCollider2D>(batcher.transform);
+			PolygonCollider2D[] childPolygonCollider2Ds = GetComponentsInChildrenExcludeSelf<PolygonCollider2D>(batcher.transform);
+
+			if ((childMeshColliders.Length > 0 || childBoxColliders.Length > 0) && (childBoxCollider2Ds.Length > 0 || childEdgeCollider2Ds.Length > 0 || childPolygonCollider2Ds.Length > 0)) {
+				EditorUtility.DisplayDialog("StaticSpriteBatcher", "Error: Can't mix 2D and 3D colliders", "Ok");
+				return;
+			}
+#endif
+
 			Dictionary<Transform, int> batchedSpriteLookup = new Dictionary<Transform, int>();
 			batchedSpriteLookup[batcher.transform] = -1;
 
@@ -269,6 +306,7 @@ class tk2dStaticSpriteBatcherEditor : Editor
 			foreach (var bs in batcher.batchedSprites)
 			{
 				GameObject go = new GameObject(bs.name);
+				go.layer = batcher.gameObject.layer;
 
 				parents[id++] = go.transform;
 				children.Add(go.transform);
@@ -286,6 +324,16 @@ class tk2dStaticSpriteBatcherEditor : Editor
 			}
 			
 			id = 0;
+			bool overrideSortingOrder = false;
+			int overridenSortingOrder = 0;
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+			string overridenSortingLayerName = "";
+			if (batcher.renderer) {
+				overrideSortingOrder = true;
+				overridenSortingOrder = batcher.renderer.sortingOrder;
+				overridenSortingLayerName = batcher.renderer.sortingLayerName;
+			}
+#endif
 			foreach (var bs in batcher.batchedSprites)
 			{
 				GameObject go = gos[id];
@@ -297,6 +345,10 @@ class tk2dStaticSpriteBatcherEditor : Editor
 					float sy = bs.localScale.y / ((Mathf.Abs (bs.baseScale.y) > Mathf.Epsilon) ? bs.baseScale.y : 1.0f);
 					float sz = bs.localScale.z / ((Mathf.Abs (bs.baseScale.z) > Mathf.Epsilon) ? bs.baseScale.z : 1.0f);
 					go.transform.localScale = new Vector3(sx, sy, sz);
+				}
+
+				if (overrideSortingOrder) {
+					bs.renderLayer = overridenSortingOrder;
 				}
 
 				if (bs.type == tk2dBatchedSprite.Type.TextMesh) {
@@ -329,7 +381,13 @@ class tk2dStaticSpriteBatcherEditor : Editor
 				else {
 					RestoreBatchedSprite(go, bs);
 				}
-				
+
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+				if (go.renderer != null && overrideSortingOrder) {
+					go.renderer.sortingLayerName = overridenSortingLayerName;
+				}
+#endif
+
 				++id;
 			}
 			
@@ -349,6 +407,23 @@ class tk2dStaticSpriteBatcherEditor : Editor
 
 		MeshFilter meshFilter = batcher.GetComponent<MeshFilter>();
 		MeshRenderer meshRenderer = batcher.GetComponent<MeshRenderer>();
+
+		if (meshRenderer != null) {
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+            string sortingLayerName = tk2dEditorUtility.SortingLayerNamePopup("Sorting Layer", meshRenderer.sortingLayerName);
+            if (sortingLayerName != meshRenderer.sortingLayerName) {
+            	tk2dUndo.RecordObject(meshRenderer, "Sorting Layer");
+            	meshRenderer.sortingLayerName = sortingLayerName;
+            }
+
+			int sortingOrder = EditorGUILayout.IntField("Order In Layer", meshRenderer.sortingOrder);
+			if (sortingOrder != meshRenderer.sortingOrder) {
+            	tk2dUndo.RecordObject(meshRenderer, "Order In Layer");
+            	meshRenderer.sortingOrder = sortingOrder;
+			}
+#endif
+
+		}
 
 		if (meshFilter != null && meshFilter.sharedMesh != null && meshRenderer != null) {
 			GUILayout.Label("Stats", EditorStyles.boldLabel);

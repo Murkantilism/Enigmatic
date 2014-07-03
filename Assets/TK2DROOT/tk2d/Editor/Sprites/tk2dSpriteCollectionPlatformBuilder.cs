@@ -111,6 +111,10 @@ namespace tk2dEditor.SpriteCollectionBuilder
 			proxy.forcedTextureWidth = (int)(proxy.forcedTextureWidth * scale);
 			proxy.forcedTextureHeight = (int)(proxy.forcedTextureHeight * scale);
 
+			if (proxy.padAmount > 0) {
+				proxy.padAmount = Mathf.Max((int)(proxy.padAmount * scale), 1); // min 1 pixel padding
+			}
+
 			proxy.globalScale = 1.0f / scale;
 
 			// Don't bother changing stuff on the root object

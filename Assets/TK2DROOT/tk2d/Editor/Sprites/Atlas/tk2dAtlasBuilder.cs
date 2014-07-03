@@ -33,6 +33,7 @@ namespace tk2dEditor.Atlas
 		bool forceSquare = false;
 		bool allowOptimizeSize = true;
 		int alignShift = 0;
+		bool allowRotation = true;
 		
 		List<RectSize> sourceRects = new List<RectSize>();
 
@@ -41,13 +42,14 @@ namespace tk2dEditor.Atlas
 		
 		bool oversizeTextures = false;
 
-		public Builder(int atlasWidth, int atlasHeight, int maxAllowedAtlasCount, bool allowOptimizeSize, bool forceSquare)
+		public Builder(int atlasWidth, int atlasHeight, int maxAllowedAtlasCount, bool allowOptimizeSize, bool forceSquare, bool allowRotation)
 		{
 			this.atlasWidth = atlasWidth;
 			this.atlasHeight = atlasHeight;
 			this.maxAllowedAtlasCount = maxAllowedAtlasCount;
 			this.forceSquare = forceSquare;
 			this.allowOptimizeSize = allowOptimizeSize;
+			this.allowRotation = allowRotation;
 		}
 		
 		// Adds rect into sequence, indexed incrementally
@@ -79,7 +81,7 @@ namespace tk2dEditor.Atlas
 
 			foreach (var heuristic in heuristics)
 			{
-				MaxRectsBinPack binPacker = new MaxRectsBinPack(width, height);
+				MaxRectsBinPack binPacker = new MaxRectsBinPack(width, height, allowRotation);
 				List<RectSize> activeRects = new List<RectSize>(currRects);
 				bool activeAllUsed = binPacker.Insert(activeRects, heuristic);
 

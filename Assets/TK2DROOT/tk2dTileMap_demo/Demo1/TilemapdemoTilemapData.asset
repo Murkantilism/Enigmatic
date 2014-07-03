@@ -15,6 +15,7 @@ MonoBehaviour:
   tileType: 0
   sortMethod: 0
   layersFixedZ: 0
+  useSortingLayers: 0
   tilePrefabs:
   - {fileID: 0}
   - {fileID: 0}
@@ -289,6 +290,8 @@ MonoBehaviour:
     generateCollider: 1
     z: .200000003
     unityLayer: 0
+    sortingLayerName: 
+    sortingOrder: 0
     skipMeshGeneration: 0
     physicMaterial: {fileID: 13400000, guid: 394966d31f338644faf30547ac8ec38f, type: 2}
   - name: Obj Layer
@@ -297,6 +300,8 @@ MonoBehaviour:
     generateCollider: 1
     z: .400000006
     unityLayer: 0
+    sortingLayerName: 
+    sortingOrder: 0
     skipMeshGeneration: 0
     physicMaterial: {fileID: 0}
   - name: Blocker
@@ -305,5 +310,7 @@ MonoBehaviour:
     generateCollider: 1
     z: .100000001
     unityLayer: 0
+    sortingLayerName: 
+    sortingOrder: 0
     skipMeshGeneration: 1
     physicMaterial: {fileID: 0}

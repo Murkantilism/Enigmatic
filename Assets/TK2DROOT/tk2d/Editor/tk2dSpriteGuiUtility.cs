@@ -116,6 +116,7 @@ public static class tk2dSpriteGuiUtility
 				if ( gen != null ) {
 					tk2dSpriteCollectionEditorPopup v = EditorWindow.GetWindow( typeof(tk2dSpriteCollectionEditorPopup), false, "Sprite Collection Editor" ) as tk2dSpriteCollectionEditorPopup;
 					v.SetGeneratorAndSelectedSprite(gen, newSpriteId);
+					v.Show();
 				}
 			}  
 
@@ -307,13 +308,15 @@ public static class tk2dSpriteGuiUtility
 		allSpriteCollections = allSpriteCollections.OrderBy( e => e.name, new tk2dEditor.Shared.NaturalComparer() ).ToList();
 		allSpriteCollectionLookup = new Dictionary<string, int>();
 		
+		string spriteCollectionFolderSeparator = "__";
 		spriteCollectionNames = new string[allSpriteCollections.Count];
 		spriteCollectionNamesInclTransient = new string[allSpriteCollections.Count + 1];
 		for (int i = 0; i < allSpriteCollections.Count; ++i)
 		{
 			allSpriteCollectionLookup[allSpriteCollections[i].spriteCollectionDataGUID] = i;
-			spriteCollectionNames[i] = allSpriteCollections[i].name;
-			spriteCollectionNamesInclTransient[i] = allSpriteCollections[i].name;
+			string name = allSpriteCollections[i].name.Replace(spriteCollectionFolderSeparator, "/");
+			spriteCollectionNames[i] = name;
+			spriteCollectionNamesInclTransient[i] = name;
 		}
 		spriteCollectionNamesInclTransient[allSpriteCollections.Count] = "-"; // transient sprite collection
 	}

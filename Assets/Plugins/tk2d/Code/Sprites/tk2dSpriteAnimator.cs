@@ -124,7 +124,7 @@ public class tk2dSpriteAnimator : MonoBehaviour
 			Play(DefaultClip);
 		}
 	}
-	
+
 	protected tk2dBaseSprite _sprite = null;
 	/// <summary>
 	/// Gets the sprite the animator is currently animating
@@ -544,11 +544,15 @@ public class tk2dSpriteAnimator : MonoBehaviour
 				}
 				
 				case tk2dSpriteAnimationClip.WrapMode.PingPong: {
-					int currFrame = (int)clipTime % (currentClip.frames.Length + currentClip.frames.Length - 2);
+					int currFrame = (currentClip.frames.Length > 1) ? ((int)clipTime % (currentClip.frames.Length + currentClip.frames.Length - 2)) : 0;
 					if (currFrame >= currentClip.frames.Length) {
 						currFrame = 2 * currentClip.frames.Length - 2 - currFrame;
 					}
 					return currFrame;
+				}
+
+				case tk2dSpriteAnimationClip.WrapMode.Single: {
+					return 0;
 				}
 
 				default: {
@@ -630,7 +634,7 @@ public class tk2dSpriteAnimator : MonoBehaviour
 
 			case tk2dSpriteAnimationClip.WrapMode.PingPong:
 			{
-				int currFrame = (int)clipTime % (currentClip.frames.Length + currentClip.frames.Length - 2);
+				int currFrame = (currentClip.frames.Length > 1) ? ((int)clipTime % (currentClip.frames.Length + currentClip.frames.Length - 2)) : 0;
 				int dir = 1;
 				if (currFrame >= currentClip.frames.Length)
 				{
@@ -703,8 +707,11 @@ public class tk2dSpriteAnimator : MonoBehaviour
 	
 	void ProcessEvents(int start, int last, int direction)
 	{
-		if (AnimationEventTriggered == null || start == last) 
+		if (AnimationEventTriggered == null || start == last 
+			|| Mathf.Sign(last - start) != Mathf.Sign(direction)) {
 			return;
+		}
+
 		int end = last + direction;
 		var frames = currentClip.frames;
 		for (int frame = start + direction; frame != end; frame += direction)
@@ -754,9 +761,14 @@ public class tk2dSpriteAnimator : MonoBehaviour
 				case tk2dSpriteAnimationClip.WrapMode.PingPong:
 				{
 					int t = currentClip.frames.Length * 2 - 2;
-					float f = ((clipTime - 0.5f) % t);
-					f = (f > t * 0.5f) ? (t - f) : f;
-					return f + 0.5f;
+					if (t == 0) {
+						return 0;
+					}
+					else {
+						float f = ((clipTime - 0.5f) % t);
+						f = (f > t * 0.5f) ? (t - f) : f;
+						return f + 0.5f;
+					}
 				}
 			}
 			return clipTime % currentClip.frames.Length;

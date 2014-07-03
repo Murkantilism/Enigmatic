@@ -22,6 +22,6 @@ public class YOnRailsPlatformY : MonoBehaviour {
 		movement = Vector3.up * direction * speed * Time.deltaTime;
 		// Move the platform based on the calculated movement vector
 		transform.Translate(movement);
-		Debug.Log(movement);
+		//Debug.Log(movement);
 	}
 }

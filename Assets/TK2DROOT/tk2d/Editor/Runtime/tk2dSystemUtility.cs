@@ -285,7 +285,7 @@ public class tk2dSystemUtility
 			Debug.LogError(string.Format("Unable to load sprite collection '{0}' at path '{1}'", indexEntry.name, path));
 			return;
 		}
-		MakeLoadableAsset(data, data.assetName);
+		MakeLoadableAsset(data, indexEntry.managedSpriteCollection ? " " : data.assetName);
 		data = null;
 	}
 

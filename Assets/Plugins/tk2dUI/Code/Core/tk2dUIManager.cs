@@ -653,10 +653,23 @@ public class tk2dUIManager : MonoBehaviour
         int cameraCount = sortedCameras.Count;
         for (int i = 0; i < cameraCount; ++i) {
             tk2dUICamera currCamera = sortedCameras[i];
-            ray = currCamera.HostCamera.ScreenPointToRay( screenPos );
-            if (Physics.Raycast( ray, out hit, currCamera.HostCamera.farClipPlane, currCamera.FilteredMask )) {
-                return hit.collider.GetComponent<tk2dUIItem>();
+            if (currCamera.RaycastType == tk2dUICamera.tk2dRaycastType.Physics3D) {
+                ray = currCamera.HostCamera.ScreenPointToRay( screenPos );
+                if (Physics.Raycast( ray, out hit, currCamera.HostCamera.farClipPlane - currCamera.HostCamera.nearClipPlane, currCamera.FilteredMask )) {
+                    return hit.collider.GetComponent<tk2dUIItem>();
+                }
             }
+            else if (currCamera.RaycastType == tk2dUICamera.tk2dRaycastType.Physics2D) {
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+                Collider2D collider = Physics2D.OverlapPoint(currCamera.HostCamera.ScreenToWorldPoint(screenPos), currCamera.FilteredMask);
+                if (collider != null) {
+                    return collider.GetComponent<tk2dUIItem>();
+                }
+#else
+                Debug.LogError("Physics2D only supported in Unity 4.3 and above");
+#endif
+            }
+
         }
         return null;
     }

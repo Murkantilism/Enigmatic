@@ -9,6 +9,25 @@ public class tk2dUIMaskEditor : Editor {
 		tk2dUIMask mask = (tk2dUIMask)target;
 
 		DrawDefaultInspector();
+
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+	Renderer renderer = mask.renderer;
+        GUILayout.Space(8);
+		if (renderer != null) {
+            string sortingLayerName = tk2dEditorUtility.SortingLayerNamePopup("Sorting Layer", renderer.sortingLayerName);
+            if (sortingLayerName != renderer.sortingLayerName) {
+            	tk2dUndo.RecordObject(renderer, "Sorting Layer");
+           		renderer.sortingLayerName = sortingLayerName;
+            }
+
+			int sortingOrder = EditorGUILayout.IntField("Order In Layer", renderer.sortingOrder);
+			if (sortingOrder != renderer.sortingOrder) {
+            	tk2dUndo.RecordObject(renderer, "Order In Layer");
+            	renderer.sortingOrder = sortingOrder;
+			}
+		}
+#endif
+
 		if (GUI.changed) {
 			mask.Build();
 		}
@@ -36,7 +55,7 @@ public class tk2dUIMaskEditor : Editor {
 				Vector2 newDim = new Vector2(resizeRect.width, resizeRect.height);
 				newDim.x = Mathf.Abs(newDim.x);
 				newDim.y = Mathf.Abs(newDim.y);
-				Undo.RegisterUndo (new Object[] {t, mask}, "Resize");
+				tk2dUndo.RecordObjects (new Object[] {t, mask}, "Resize");
 				if (newDim != mask.size) {
 					mask.size = newDim;
 					mask.Build();
@@ -56,8 +75,8 @@ public class tk2dUIMaskEditor : Editor {
 			EditorGUI.BeginChangeCheck();
 			float theta = tk2dSceneHelper.RectRotateControl (888999, localRect, t, new List<int>());
 			if (EditorGUI.EndChangeCheck()) {
-				Undo.RegisterUndo (t, "Rotate");
 				if (Mathf.Abs(theta) > Mathf.Epsilon) {
+					tk2dUndo.RecordObject (t, "Rotate");
 					t.Rotate(t.forward, theta, Space.World);
 				}
 			}

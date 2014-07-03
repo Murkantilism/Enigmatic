@@ -12,8 +12,15 @@ namespace tk2dRuntime.TileMap
 		public bool generateCollider;
 		public float z = 0.1f;
 		public int unityLayer = 0;
+		
+		public string sortingLayerName = "";
+		public int sortingOrder = 0;
+
 		public bool skipMeshGeneration = false;
 		public PhysicMaterial physicMaterial = null;
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+		public PhysicsMaterial2D physicsMaterial2D = null;
+#endif
 		
 		public LayerInfo()
 		{
@@ -60,8 +67,9 @@ public class tk2dTileMapData : ScriptableObject
 	public SortMethod sortMethod = SortMethod.BottomLeft;
 
 	public bool layersFixedZ = false;
+	public bool useSortingLayers = false;
 	
-	public Object[] tilePrefabs = new Object[0];
+	public GameObject[] tilePrefabs = new GameObject[0];
 	[SerializeField]
 	tk2dRuntime.TileMap.TileInfo[] tileInfo = new tk2dRuntime.TileMap.TileInfo[0];
 

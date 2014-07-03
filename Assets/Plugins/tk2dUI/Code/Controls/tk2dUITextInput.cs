@@ -220,9 +220,22 @@ public class tk2dUITextInput : MonoBehaviour
 
     public void SetFocus()
     {
-        if (!IsFocus)
-        {
+        SetFocus(true);
+    }
+
+    /// <summary>
+    /// Sets or removes focus from the text input
+    /// Currently you will need to manually need to remove focus and set focus on the new
+    /// textinput if you wish to do this from a textInput callback, eg. auto advance when
+    /// enter is pressed.
+    /// </summary>
+    public void SetFocus(bool focus)
+    {
+        if (!IsFocus && focus) {
             InputSelected();
+        }
+        else if (IsFocus && !focus) {
+            InputDeselected();
         }
     }
 

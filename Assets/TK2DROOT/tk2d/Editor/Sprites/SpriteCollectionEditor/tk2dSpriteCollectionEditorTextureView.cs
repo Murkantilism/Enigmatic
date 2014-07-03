@@ -366,6 +366,255 @@ namespace tk2dEditor.SpriteCollectionEditor
 			tk2dGuiUtility.SetPositionHandleValue(id + 2, new Vector2(param.boxColliderMin.x, 0));
 			tk2dGuiUtility.SetPositionHandleValue(id + 3, new Vector2(param.boxColliderMax.x, 0));
 		}
+
+		static int advancedColliderEditorControlBase = "AdvancedColliderEditor".GetHashCode();
+		tk2dSpriteCollectionDefinition.ColliderData currentInspectedColliderData = null;
+		tk2dSpriteCollectionDefinition.ColliderData editingColliderDataName = null;
+
+		tk2dSpriteCollectionDefinition.ColliderData SelectedColliderData(tk2dSpriteCollectionDefinition param, bool allowActive) {
+			int selectedColliderData = tk2dGuiUtility.ActiveTweakable - advancedColliderEditorControlBase;
+			if (allowActive && (selectedColliderData < 0 || selectedColliderData >= param.colliderData.Count)) {
+				selectedColliderData = GUIUtility.hotControl - advancedColliderEditorControlBase;
+			}
+			return (selectedColliderData < 0 || selectedColliderData >= param.colliderData.Count) ? null : param.colliderData[selectedColliderData];
+		}
+
+		void DrawAdvancedColliderInspector(tk2dSpriteCollectionDefinition param, Texture2D tex) {
+		 	GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
+		 	GUILayout.Label("Advanced collider editor", EditorStyles.miniLabel);
+		 	GUILayout.FlexibleSpace();
+		 	bool doAddCollider = false;
+		 	if (GUILayout.Button("Add", EditorStyles.toolbarButton)) {
+		 		doAddCollider = true;
+		 	}
+			GUILayout.EndHorizontal();
+
+			// catalog all names
+			HashSet<string> apHashSet = new HashSet<string>();
+			foreach (tk2dSpriteCollectionDefinition def in SpriteCollection.textureParams) {
+				if (def.colliderType != tk2dSpriteCollectionDefinition.ColliderType.Advanced) {
+					continue;
+				}
+				foreach ( tk2dSpriteCollectionDefinition.ColliderData cd in def.colliderData) {
+					if (cd.name.Length > 0) {
+						apHashSet.Add( cd.name );
+					}
+				}
+			}
+			Dictionary<string, int> apNameLookup = new Dictionary<string, int>();
+			List<string> apNames = new List<string>( apHashSet );
+			for (int i = 0; i < apNames.Count; ++i) {
+				apNameLookup.Add( apNames[i], i );
+			}
+			apNames.Add( "Create..." );
+
+			if (param.colliderData.Count == 0) {
+				EditorGUILayout.HelpBox("No colliders on this sprite.\nClick on the add button above to add a new collider to the sprite.", MessageType.Info);
+			}
+
+			int toDelete = -1;
+			for (int i = 0; i < param.colliderData.Count; ++i) {
+				GUILayout.BeginHorizontal();
+				tk2dSpriteCollectionDefinition.ColliderData def = param.colliderData[i];
+
+				bool oldSel = currentInspectedColliderData == def;
+				bool newSel = GUILayout.Toggle(oldSel, "", GUILayout.ExpandWidth(false));
+				if (newSel == true && newSel != oldSel) {
+					int rr = i;
+					deferredAction = delegate(int e) {
+						currentInspectedColliderData = param.colliderData[rr];
+						tk2dGuiUtility.ActiveTweakable = advancedColliderEditorControlBase.GetHashCode() + rr;
+					};
+				}
+
+				if (apNameLookup.Count == 0) {
+					editingColliderDataName = def;
+				}
+				if (editingColliderDataName == def) {
+					if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return) {
+						editingColliderDataName = null;
+						HandleUtility.Repaint();
+						GUIUtility.keyboardControl = 0;
+					}
+					def.name = GUILayout.TextField(def.name);
+				}
+				else {
+					int currSel = apNameLookup.ContainsKey(def.name) ? apNameLookup[def.name] : -1;
+					int sel = EditorGUILayout.Popup(currSel, apNames.ToArray());
+					if (currSel != sel) {
+						if (sel == apNames.Count - 1) {
+							editingColliderDataName = def;
+							HandleUtility.Repaint();
+						}
+						else {
+							def.name = apNames[sel];
+						}
+					}
+				}
+
+				if (GUILayout.Button("x", EditorStyles.miniButton, GUILayout.Width(22))) {
+					toDelete = i;
+				}
+				GUILayout.EndHorizontal();
+
+				if (currentInspectedColliderData == def) {
+					EditorGUI.indentLevel+=2;
+					currentInspectedColliderData.type = (tk2dSpriteCollectionDefinition.ColliderData.Type)EditorGUILayout.EnumPopup("Type", currentInspectedColliderData.type);
+					currentInspectedColliderData.origin = EditorGUILayout.Vector2Field("Origin", currentInspectedColliderData.origin);
+					if (currentInspectedColliderData.type == tk2dSpriteCollectionDefinition.ColliderData.Type.Circle) {
+						float x = EditorGUILayout.FloatField("Radius", currentInspectedColliderData.size.x);
+						currentInspectedColliderData.size.Set(x, x);
+					}
+					else {
+						currentInspectedColliderData.size = EditorGUILayout.Vector2Field("Size", currentInspectedColliderData.size);
+						currentInspectedColliderData.angle = EditorGUILayout.FloatField("Angle", currentInspectedColliderData.angle);
+					}
+					EditorGUI.indentLevel-=2;
+				}
+			}
+
+			GUILayout.Space(8);
+			if (doAddCollider) {
+				string unused = "";
+				foreach (string n in apHashSet) {
+					bool used = false;
+					for (int i = 0; i < param.colliderData.Count; ++i) {
+						if (n == param.colliderData[i].name) {
+							used = true;
+							break;
+						}
+					}
+					if (!used) {
+						unused = n;
+						break;
+					}
+				}
+
+				tk2dSpriteCollectionDefinition.ColliderData d = new tk2dSpriteCollectionDefinition.ColliderData();
+				d.type = tk2dSpriteCollectionDefinition.ColliderData.Type.Box;
+				d.origin = new Vector3(tex.width / 2, tex.height / 2);
+				float m = Mathf.Min(tex.width, tex.height) / 4;
+				d.size = new Vector2(m, m);
+				d.angle = 0;
+				d.name = unused;
+				param.colliderData.Add(d);
+				HandleUtility.Repaint();
+				currentInspectedColliderData = d;
+				if (unused == "") {
+					editingColliderDataName = d;
+				}
+				tk2dGuiUtility.ActiveTweakable = advancedColliderEditorControlBase.GetHashCode() + param.colliderData.Count - 1;
+			}
+
+			if (toDelete != -1) {
+				param.colliderData.RemoveAt(toDelete);
+				HandleUtility.Repaint();
+			}
+		}
+
+		void DrawAdvancedColliderEditor(Rect r, tk2dSpriteCollectionDefinition param, Texture2D tex) {
+			int controlId = advancedColliderEditorControlBase.GetHashCode();
+			
+			Vector2 origin = new Vector2(r.x, r.y);
+			for (int pass = 0; pass < 2; ++pass) {
+				for (int i = 0; i < param.colliderData.Count; ++i) {
+					int thisControlId = controlId + i;
+					
+					// process selected control first, this could be written better
+					if (pass == 0 && thisControlId != GUIUtility.hotControl && thisControlId != tk2dGuiUtility.ActiveTweakable) { continue; }
+					else if (pass == 1 && (thisControlId == GUIUtility.hotControl || thisControlId == tk2dGuiUtility.ActiveTweakable)) { continue; }
+
+					tk2dSpriteCollectionDefinition.ColliderData data = param.colliderData[i];
+					if (data.type == tk2dSpriteCollectionDefinition.ColliderData.Type.Circle) {
+						tk2dGuiUtility.TweakableCircle( thisControlId, origin + data.origin * editorDisplayScale, data.size.x * editorDisplayScale, 
+							delegate(Vector2 pos, float radius) {
+								data.origin = ( pos - origin ) / editorDisplayScale;
+								radius /= editorDisplayScale;
+								data.size.Set( radius, radius );
+							} );
+					}
+					else if (data.type == tk2dSpriteCollectionDefinition.ColliderData.Type.Box) {
+						tk2dGuiUtility.TweakableBox( thisControlId, origin + data.origin * editorDisplayScale, data.size * editorDisplayScale, data.angle,
+							delegate(Vector2 pos, Vector2 size, float angle) {
+								data.origin = ( pos - origin ) / editorDisplayScale;
+								data.size = size / editorDisplayScale;
+								data.angle = angle;
+							} );
+					}
+
+					if (tk2dGuiUtility.ActiveTweakable == thisControlId && currentInspectedColliderData != param.colliderData[i]) {
+						int rr = i;
+						deferredAction = delegate(int q) {
+							currentInspectedColliderData = param.colliderData[rr];
+						};
+					}
+				}
+			}
+
+			Event ev = Event.current;
+			tk2dSpriteCollectionDefinition.ColliderData selection = SelectedColliderData(param, false);
+			if (selection != null) {
+				if (ev.type == EventType.ValidateCommand && ev.commandName == "Duplicate") {
+					ev.Use();
+				}
+				else if (ev.type == EventType.ExecuteCommand && ev.commandName == "Duplicate") {
+					tk2dSpriteCollectionDefinition.ColliderData dup = new tk2dSpriteCollectionDefinition.ColliderData();
+					dup.CopyFrom(selection);
+					dup.origin += new Vector2(10, 10);
+					param.colliderData.Add(dup);
+					tk2dGuiUtility.ActiveTweakable = controlId + param.colliderData.Count - 1;
+					HandleUtility.Repaint();
+					ev.Use();
+				}
+
+				if (ev.type == EventType.ValidateCommand && ev.commandName == "Delete") {
+					ev.Use();
+				}
+				else if (ev.type == EventType.ExecuteCommand && ev.commandName == "Delete") {
+					param.colliderData.Remove(selection);
+					tk2dGuiUtility.ActiveTweakable = 0;
+					GUIUtility.hotControl = 0;
+					ev.Use();
+				}
+
+				if (ev.type == EventType.MouseDown) {
+					tk2dGuiUtility.ActiveTweakable = 0;
+					GUIUtility.hotControl = 0;
+					currentInspectedColliderData = null;
+				}
+
+				if (ev.type == EventType.KeyDown) {
+					switch (ev.keyCode) {
+						case KeyCode.Escape:
+							tk2dGuiUtility.ActiveTweakable = 0;
+							GUIUtility.hotControl = 0;
+							currentInspectedColliderData = null;
+							ev.Use();
+							break;
+						case KeyCode.RightBracket:
+						case KeyCode.Tab:
+							int selectionIdx = 0;
+							for (int i = 0; i < param.colliderData.Count; ++i) {
+								if (param.colliderData[i] == selection) {
+									currentInspectedColliderData = param.colliderData[i];
+									selectionIdx = i;
+									break;
+								}
+							}
+							tk2dGuiUtility.ActiveTweakable = advancedColliderEditorControlBase + ((selectionIdx + 1) % param.colliderData.Count);
+							HandleUtility.Repaint();
+							ev.Use();
+							break;
+						case KeyCode.UpArrow: selection.origin += new Vector2(0, -1); ev.Use(); break;
+						case KeyCode.DownArrow: selection.origin += new Vector2(0, 1); ev.Use(); break;
+						case KeyCode.LeftArrow: selection.origin += new Vector2(-1, 0); ev.Use(); break;
+						case KeyCode.RightArrow: selection.origin += new Vector2(1, 0); ev.Use(); break;
+					}
+				}
+			}
+		}
+
+		System.Action<int> deferredAction = null;
 		
 		void HandleKeys()
 		{
@@ -422,7 +671,8 @@ namespace tk2dEditor.SpriteCollectionEditor
 			{
 				bool allowAnchor = param.anchor == tk2dSpriteCollectionDefinition.Anchor.Custom;
 				bool allowCollider = (param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Polygon ||
-					param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.BoxCustom);
+					param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.BoxCustom ||
+					param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Advanced);
 				if (mode == Mode.Anchor && !allowAnchor) mode = Mode.Texture;
 				if (mode == Mode.Collider && !allowCollider) mode = Mode.Texture;
 
@@ -459,6 +709,8 @@ namespace tk2dEditor.SpriteCollectionEditor
 						DrawCustomBoxColliderEditor(textureRect, param, texture);
 					if (param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Polygon)
 						DrawPolygonColliderEditor(textureRect, ref param.polyColliderIslands, texture, false);
+					if (param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Advanced)
+						DrawAdvancedColliderEditor(textureRect, param, texture);
 				}
 				
 				if (mode == Mode.Texture && param.customSpriteGeometry)
@@ -606,7 +858,8 @@ namespace tk2dEditor.SpriteCollectionEditor
 		{
 			bool allowAnchor = param.anchor == tk2dSpriteCollectionDefinition.Anchor.Custom;
 			bool allowCollider = (param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Polygon ||
-				param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.BoxCustom);
+				param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.BoxCustom ||
+				param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Advanced);
 			bool allowAttachPoint = true;
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
@@ -780,6 +1033,9 @@ namespace tk2dEditor.SpriteCollectionEditor
 							              "\nClick hold point + T - toggle connected" +
 							              "\nClick hold point + F - flip island", tk2dGuiUtility.WarningLevel.Info);
 			}
+			else if (mode == Mode.Collider && param.colliderType == tk2dSpriteCollectionDefinition.ColliderType.Advanced) {
+				DrawAdvancedColliderInspector(param, texture);
+			}
 			if (mode == Mode.Texture && param.customSpriteGeometry)
 			{
 				param.colliderColor = (tk2dSpriteCollectionDefinition.ColliderColor)EditorGUILayout.EnumPopup("Display Color", param.colliderColor);
@@ -796,6 +1052,16 @@ namespace tk2dEditor.SpriteCollectionEditor
 			}
 			if (mode == Mode.AttachPoint) {
 				DrawAttachPointInspector( param, texture );
+			}
+
+			if (deferredAction != null) {
+				if (Event.current.type == EventType.Repaint) {
+					deferredAction(0);
+					deferredAction = null;
+				}
+				else {
+					HandleUtility.Repaint();
+				}
 			}
 		}
 	}

@@ -47,21 +47,18 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 		} 
 		set
 		{
-			_spriteCollectionInst = null;
 			spriteCollection = value;
-			if (spriteCollection != null)
-				_spriteCollectionInst = spriteCollection.inst;
 		}
 	}
 	
-	tk2dSpriteCollectionData _spriteCollectionInst = null;
 	public tk2dSpriteCollectionData SpriteCollectionInst
 	{
 		get 
 		{
-			if (_spriteCollectionInst == null && spriteCollection != null)
-				_spriteCollectionInst = spriteCollection.inst;
-			return _spriteCollectionInst;
+			if (spriteCollection != null)
+				return spriteCollection.inst;
+			else
+				return null;
 		}
 	}
 	
@@ -106,11 +103,10 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 	
 	void Awake()
 	{
-		if (spriteCollection != null)
-			_spriteCollectionInst = spriteCollection.inst;
-		
 		bool spriteCollectionKeyMatch = true;
-		if (SpriteCollectionInst && SpriteCollectionInst.buildKey != spriteCollectionKey) spriteCollectionKeyMatch = false;
+		if (SpriteCollectionInst && (SpriteCollectionInst.buildKey != spriteCollectionKey || SpriteCollectionInst.needMaterialInstance)) {
+			spriteCollectionKeyMatch = false;
+		}
 
 		if (Application.platform == RuntimePlatform.WindowsEditor ||
 			Application.platform == RuntimePlatform.OSXEditor)
@@ -121,7 +117,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 				EndEditMode();
 			}
 			else {
-				if (_spriteCollectionInst != null && data != null && renderData == null) {
+				if (spriteCollection != null && data != null && renderData == null) {
 					Build(BuildFlags.ForceBuild);
 				}
 			}
@@ -138,11 +134,39 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 			{
 				Build(BuildFlags.ForceBuild);
 			}
-			else if (_spriteCollectionInst != null && data != null && renderData == null) {
+			else if (spriteCollection != null && data != null && renderData == null) {
 				Build(BuildFlags.ForceBuild);
 			}
 		}
 	}
+
+#if UNITY_EDITOR
+	void OnEnable() {
+		if (spriteCollection != null && data != null && renderData != null 
+			&& SpriteCollectionInst != null && SpriteCollectionInst.needMaterialInstance) {
+
+			bool needBuild = false;
+			if (layers != null) {
+				foreach (tk2dRuntime.TileMap.Layer layer in layers) {
+					if (layer.spriteChannel != null && layer.spriteChannel.chunks != null) {
+						foreach (tk2dRuntime.TileMap.SpriteChunk chunk in layer.spriteChannel.chunks) {
+							if (chunk.gameObject != null && chunk.gameObject.renderer != null) {
+								if (chunk.gameObject.renderer.sharedMaterial == null) {
+									needBuild = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (needBuild) {
+				Build(BuildFlags.ForceBuild);
+			}
+		}
+	}
+#endif
 
 	void OnDestroy() {
 		if (layers != null) {
@@ -151,7 +175,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 			}
 		}
 		if (renderData != null) {
-			GameObject.DestroyImmediate(renderData);
+			tk2dUtil.DestroyImmediate(renderData);
 		}
 	}
 
@@ -215,32 +239,28 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 				for (int i = 0; i < transform.childCount; ++i)
 					children.Add(transform.GetChild(i));
 				for (int i = 0; i < children.Count; ++i)
-					DestroyImmediate(children[i].gameObject);
+					tk2dUtil.DestroyImmediate(children[i].gameObject);
 			}
 		}
 	}
 
 	void SetPrefabsRootActive(bool active) {
 		if (prefabsRoot != null)
-#if UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_3_6 || UNITY_3_7 || UNITY_3_8 || UNITY_3_9
+#if UNITY_3_5
 			prefabsRoot.SetActiveRecursively(active);
 #else
-			prefabsRoot.SetActive(active);
+			tk2dUtil.SetActive(prefabsRoot, active);
 #endif
 	}
 
 	public void Build(BuildFlags buildFlags)
 	{
-		if (spriteCollection != null)
-			_spriteCollectionInst = spriteCollection.inst;
-		
-		
 #if UNITY_EDITOR || !UNITY_FLASH
 		// Sanitize tilePrefabs input, to avoid branches later
 		if (data != null && spriteCollection != null)
 		{
 			if (data.tilePrefabs == null)
-				data.tilePrefabs = new Object[SpriteCollectionInst.Count];
+				data.tilePrefabs = new GameObject[SpriteCollectionInst.Count];
 			else if (data.tilePrefabs.Length != SpriteCollectionInst.Count)
 				System.Array.Resize(ref data.tilePrefabs, SpriteCollectionInst.Count);
 			
@@ -271,7 +291,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 				Layer layer = layers[layerIdx];
 				if (layer != null && layer.gameObject != null)
 				{
-#if UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_3_6 || UNITY_3_7 || UNITY_3_8 || UNITY_3_9
+#if UNITY_3_5
 					layersActive[layer] = layer.gameObject.active;
 #else
 					layersActive[layer] = layer.gameObject.activeSelf;
@@ -290,7 +310,16 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 		
 		if (!_inEditMode)
 		{
-			ColliderBuilder.Build(this, forceBuild);
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+			tk2dSpriteDefinition def = SpriteCollectionInst.FirstValidDefinition;
+			if (def != null && def.physicsEngine == tk2dSpriteDefinition.PhysicsEngine.Physics2D) {
+				ColliderBuilder2D.Build(this, forceBuild);
+			}
+			else 
+#endif
+			{
+				ColliderBuilder3D.Build(this, forceBuild);
+			}
 			BuilderUtil.SpawnPrefabs(this, forceBuild);
 		}
 		
@@ -333,7 +362,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 			Vector3 localPosition = transform.worldToLocalMatrix.MultiplyPoint(position);
 			x = (localPosition.x - data.tileOrigin.x) / data.tileSize.x;
 			y = (localPosition.y - data.tileOrigin.y) / data.tileSize.y;
-			return (x >= 0 && x <= width && y >= 0 && y <= height);
+			return (x >= 0 && x < width && y >= 0 && y < height);
 		}
 		case tk2dTileMapData.TileType.Isometric:
 		{
@@ -377,7 +406,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 				}
 			}
 			
-			return (x >= 0 && x <= width && y >= 0 && y <= height);
+			return (x >= 0 && x < width && y >= 0 && y < height);
 		}
 		}
 		
@@ -486,7 +515,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 	// ISpriteCollectionBuilder
 	public bool UsesSpriteCollection(tk2dSpriteCollectionData spriteCollection)
 	{
-		return spriteCollection == this.spriteCollection || _spriteCollectionInst == spriteCollection;
+		return (this.spriteCollection != null) && (spriteCollection == this.spriteCollection || spriteCollection == this.spriteCollection.inst);
 	}
 
 	// We might need to end edit mode when running in game
@@ -497,7 +526,7 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 		Build(BuildFlags.ForceBuild);
 
 		if (prefabsRoot != null) {
-			GameObject.DestroyImmediate(prefabsRoot);
+			tk2dUtil.DestroyImmediate(prefabsRoot);
 			prefabsRoot = null;
 		}
 	}
@@ -581,10 +610,10 @@ public class tk2dTileMap : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBuil
 		}
 		else
 		{
-			DestroyImmediate(mesh);
+			tk2dUtil.DestroyImmediate(mesh);
 		}
 #else
-		DestroyImmediate(mesh);
+		tk2dUtil.DestroyImmediate(mesh);
 #endif
 	}
 

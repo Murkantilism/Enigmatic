@@ -250,9 +250,19 @@ public class tk2dClippedSprite : tk2dBaseSprite
 	protected override void UpdateCollider()
 	{
 		if (CreateBoxCollider) {
-			if (boxCollider != null) {
-				boxCollider.size = 2 * boundsExtents;
-				boxCollider.center = boundsCenter;
+			if (CurrentSprite.physicsEngine == tk2dSpriteDefinition.PhysicsEngine.Physics3D) {
+				if (boxCollider != null) {
+					boxCollider.size = 2 * boundsExtents;
+					boxCollider.center = boundsCenter;
+				}
+			}
+			else if (CurrentSprite.physicsEngine == tk2dSpriteDefinition.PhysicsEngine.Physics2D) {
+	#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+				if (boxCollider2D != null) {
+					boxCollider2D.size = 2 * boundsExtents;
+					boxCollider2D.center = boundsCenter;
+				}
+	#endif
 			}
 		}
 	}
@@ -276,6 +286,9 @@ public class tk2dClippedSprite : tk2dBaseSprite
 
 #if UNITY_EDITOR
 	public override void EditMode__CreateCollider() {
+		if (CreateBoxCollider) {
+			base.CreateSimpleBoxCollider();
+		}
 		UpdateCollider();
 	}
 #endif
@@ -296,18 +309,32 @@ public class tk2dClippedSprite : tk2dBaseSprite
 		return 4;
 	}
 
-	public override void ReshapeBounds(Vector3 dMin, Vector3 dMax) {
+	public override void ReshapeBounds(Vector3 dMin, Vector3 dMax) { // Identical to tk2dSprite.ReshapeBounds
+		float minSizeClampTexelScale = 0.1f; // Can't shrink sprite smaller than this many texels
+		// Irrespective of transform
 		var sprite = CurrentSprite;
-		Vector3 oldMin = Vector3.Scale(sprite.untrimmedBoundsData[0] - 0.5f * sprite.untrimmedBoundsData[1], _scale);
-		Vector3 oldSize = Vector3.Scale(sprite.untrimmedBoundsData[1], _scale);
-		Vector3 newScale = oldSize + dMax - dMin;
-		newScale.x /= sprite.untrimmedBoundsData[1].x;
-		newScale.y /= sprite.untrimmedBoundsData[1].y;
-		Vector3 scaledMin = new Vector3(Mathf.Approximately(_scale.x, 0) ? 0 : (oldMin.x * newScale.x / _scale.x),
-			Mathf.Approximately(_scale.y, 0) ? 0 : (oldMin.y * newScale.y / _scale.y));
-		Vector3 offset = oldMin + dMin - scaledMin;
+		Vector3 oldAbsScale = new Vector3(Mathf.Abs(_scale.x), Mathf.Abs(_scale.y), Mathf.Abs(_scale.z));
+		Vector3 oldMin = Vector3.Scale(sprite.untrimmedBoundsData[0], _scale) - 0.5f * Vector3.Scale(sprite.untrimmedBoundsData[1], oldAbsScale);
+		Vector3 oldSize = Vector3.Scale(sprite.untrimmedBoundsData[1], oldAbsScale);
+		Vector3 newAbsScale = oldSize + dMax - dMin;
+		newAbsScale.x /= sprite.untrimmedBoundsData[1].x;
+		newAbsScale.y /= sprite.untrimmedBoundsData[1].y;
+		// Clamp the minimum size to avoid having the pivot move when we scale from near-zero
+		if (sprite.untrimmedBoundsData[1].x * newAbsScale.x < sprite.texelSize.x * minSizeClampTexelScale && newAbsScale.x < oldAbsScale.x) {
+			dMin.x = 0;
+			newAbsScale.x = oldAbsScale.x;
+		}
+		if (sprite.untrimmedBoundsData[1].y * newAbsScale.y < sprite.texelSize.y * minSizeClampTexelScale && newAbsScale.y < oldAbsScale.y) {
+			dMin.y = 0;
+			newAbsScale.y = oldAbsScale.y;
+		}
+		// Add our wanted local dMin offset, while negating the positional offset caused by scaling
+		Vector2 scaleFactor = new Vector3(Mathf.Approximately(oldAbsScale.x, 0) ? 0 : (newAbsScale.x / oldAbsScale.x),
+			Mathf.Approximately(oldAbsScale.y, 0) ? 0 : (newAbsScale.y / oldAbsScale.y));
+		Vector3 scaledMin = new Vector3(oldMin.x * scaleFactor.x, oldMin.y * scaleFactor.y);
+		Vector3 offset = dMin + oldMin - scaledMin;
 		offset.z = 0;
 		transform.position = transform.TransformPoint(offset);
-		scale = new Vector3(newScale.x, newScale.y, _scale.z);
+		scale = new Vector3(_scale.x * scaleFactor.x, _scale.y * scaleFactor.y, _scale.z);
 	}
 }

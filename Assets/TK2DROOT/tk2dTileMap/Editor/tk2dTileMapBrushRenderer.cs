@@ -95,12 +95,12 @@ namespace tk2dEditor
 							uvs.Add(sprite.uvs[j]);
 						}
 						
-						if (!triangles.ContainsKey(sprite.material))
-							triangles.Add(sprite.material, new List<int>());
+						if (!triangles.ContainsKey(sprite.materialInst))
+							triangles.Add(sprite.materialInst, new List<int>());
 
 						for (int j = 0; j < sprite.indices.Length; ++j)
 						{
-							triangles[sprite.material].Add(indexRoot + sprite.indices[j]);
+							triangles[sprite.materialInst].Add(indexRoot + sprite.indices[j]);
 						}
 					}
 					
@@ -160,12 +160,12 @@ namespace tk2dEditor
 						uvs.Add(sprite.uvs[j]);
 					}
 					
-					if (!triangles.ContainsKey(sprite.material))
-						triangles.Add(sprite.material, new List<int>());
+					if (!triangles.ContainsKey(sprite.materialInst))
+						triangles.Add(sprite.materialInst, new List<int>());
 
 					for (int j = 0; j < sprite.indices.Length; ++j)
 					{
-						triangles[sprite.material].Add(indexRoot + sprite.indices[j]);
+						triangles[sprite.materialInst].Add(indexRoot + sprite.indices[j]);
 					}
 				}
 			}

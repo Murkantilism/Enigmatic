@@ -17,6 +17,17 @@ public class Player : MonoBehaviour {
 	float gravity = 5.0f;
 	CharacterController controller;
 	Vector3 moveDirection  = Vector3.zero;
+
+
+	// Moving platform support vars
+	private Transform activePlatform;
+	private Vector3 activeLocalPlatformPoint;
+	private Vector3 activeGlobalPlatformPoint;
+	private Vector3 lastPlatformVelocity;
+
+	// Rotating platform support vars
+	private Quaternion activeLocalPlatformRotation;
+	private Quaternion activeGlobalPlatformRotation;
 	
 	// Use this for initialization
 	void Start () {
@@ -37,6 +48,31 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// Moving platform support
+		if (activePlatform != null){
+			Vector3 newGlobalPlatformPoint = activePlatform.TransformPoint(activeLocalPlatformPoint);
+			Vector3 moveDistance = (newGlobalPlatformPoint - activeLocalPlatformPoint);
+			
+			if(moveDistance != Vector3.zero){
+				controller.Move(moveDistance);
+			}
+			lastPlatformVelocity = (newGlobalPlatformPoint - activeGlobalPlatformPoint) / Time.deltaTime;
+			
+			// Moving platform rotation support
+			Quaternion newGlobalPlatformRotation = activePlatform.rotation * activeLocalPlatformRotation;
+			Quaternion rotationDiff = newGlobalPlatformRotation * Quaternion.Inverse(activeGlobalPlatformRotation);
+			// Prevent rotation of the local up vector
+			rotationDiff = Quaternion.FromToRotation(rotationDiff * transform.up, transform.up) * rotationDiff;
+			
+			transform.rotation = rotationDiff * transform.rotation;
+		}else{
+			lastPlatformVelocity = Vector3.zero;
+		}
+		
+		activePlatform = null;
+
+
+
 		// respawn if dead
 		if (Dead())
 			Respawn();
@@ -70,6 +106,16 @@ public class Player : MonoBehaviour {
 		// clip for this riddle once.
 		if (Input.GetKeyDown(ridScript.currentRiddle.inputs)){
 			ridScript.audioSource.PlayOneShot(ridScript.currentRiddle.audioClip);
+		}
+
+		// Moving platform support
+		if (activePlatform != null){
+			activeGlobalPlatformPoint = transform.position;
+			activeLocalPlatformPoint = activePlatform.InverseTransformPoint(transform.position);
+
+			// Moving platform rotation support
+			activeGlobalPlatformRotation = transform.rotation;
+			activeLocalPlatformRotation = Quaternion.Inverse(activePlatform.rotation) * transform.rotation;
 		}
 	}
 	
@@ -133,12 +179,18 @@ public class Player : MonoBehaviour {
 		// If the player touches a DissolvingPlatform, attach the corresponding script
 		}else if (hit.collider.tag == "DissolvingPlatform" && !hit.gameObject.GetComponent<DissolvePlatform>()){
 			hit.gameObject.AddComponent<DissolvePlatform>();
+		}else if(hit.collider.tag == "YOnRailsPlatformY" && hit.moveDirection.y < -0.9f && hit.normal.y > 0.5f){
+			activePlatform = hit.collider.transform;
+			Debug.Log(hit.moveDirection.y);
+			Debug.Log(hit.normal.y);
+			Debug.Log(transform.position);
+		}
 		/*}else if (hit.collider.tag == "XOnRailsPlatformX" && !hit.gameObject.GetComponent<XOnRailsPlatformX>()){
-			hit.gameObject.AddComponent<XOnRailsPlatformX>();*/
+			hit.gameObject.AddComponent<XOnRailsPlatformX>();
 		// If the player touches a YOnRailsPlatformY,
 		}else if (hit.collider.tag == "YOnRailsPlatformY" && !hit.gameObject.GetComponent<XOnRailsPlatformX>()){
 			// And set the player character to be the platform's child temporarily
 			//transform.parent = hit.transform;
-		}
+		}*/
 	}
 }

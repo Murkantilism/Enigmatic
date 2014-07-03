@@ -600,7 +600,7 @@ public class tk2dUIScrollableArea : MonoBehaviour
         bool scrollBarVisible = (contentLength > visibleAreaLength);
         if (scrollBar != null)
         {
-#if UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_3_6 || UNITY_3_7 || UNITY_3_8 || UNITY_3_9
+#if UNITY_3_5
             if (scrollBar.gameObject.active != scrollBarVisible)
 #else
             if (scrollBar.gameObject.activeSelf != scrollBarVisible)
@@ -661,7 +661,7 @@ public class tk2dUIScrollableArea : MonoBehaviour
         int childCount = t.childCount;
         for (int i = 0; i < childCount; ++i) {
             Transform child = t.GetChild(i);
-#if UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_3_6 || UNITY_3_7 || UNITY_3_8 || UNITY_3_9
+#if UNITY_3_5
             if (t.gameObject.active) {
 #else
             if (t.gameObject.activeSelf) {

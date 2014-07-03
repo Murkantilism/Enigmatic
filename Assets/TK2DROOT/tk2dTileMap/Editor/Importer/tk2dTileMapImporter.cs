@@ -183,9 +183,22 @@ namespace tk2dEditor.TileMap
 
 				for (int y = 0; y < height; ++y) {
 					for (int x = 0; x < width; ++x) {
-						int tile = (int)(layer.tiles[y * width + x] & ~(0xE0000000)); // ignore flipping
-						int offset = (staggered && ((y % 2) == 0)) ? 0 : 1;
-						target.SetTile(x + offset, height - 1 - y, tile - 1);
+						uint rawTmxTile = layer.tiles[y * width + x]; 
+
+						// Set tile
+						int tile = (int)(rawTmxTile & ~(0xE0000000)) - 1; // ignore flipping and rotating
+						int offset = (!staggered || (staggered && ((y % 2) == 0))) ? 0 : 1;
+						target.SetTile(x + offset, height - 1 - y, tile);
+
+						// Set tile flags
+						bool flipHorizontal = (rawTmxTile & 0x80000000) != 0;
+						bool flipVertical = (rawTmxTile & 0x40000000) != 0;
+						bool flipDiagonal = (rawTmxTile & 0x20000000) != 0;
+						tk2dTileFlags tileFlags = 0;
+						if (flipDiagonal) tileFlags |= (tk2dTileFlags.Rot90 | tk2dTileFlags.FlipX);
+						if (flipHorizontal) tileFlags ^= tk2dTileFlags.FlipX;
+						if (flipVertical) tileFlags ^= tk2dTileFlags.FlipY;
+						target.SetTileFlags(x + offset, height - 1 - y, tileFlags);
 					}
 				}
 				target.Optimize();

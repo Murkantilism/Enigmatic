@@ -6,9 +6,10 @@ using System.Collections.Generic;
 [CustomEditor(typeof(tk2dFont))]
 public class tk2dFontEditor : Editor 
 {
-	public Shader GetShader(bool gradient)
+	public Shader GetShader(bool gradient, bool packed)
 	{
-		if (gradient) return Shader.Find("tk2d/Blend2TexVertexColor");
+		if (packed) return Shader.Find("tk2d/Goodies/PackedTextMesh");
+		else if (gradient) return Shader.Find("tk2d/Blend2TexVertexColor");
 		else return Shader.Find("tk2d/BlendVertexColor");
 	}
 	
@@ -79,7 +80,7 @@ public class tk2dFontEditor : Editor
 			
 			if (gen.material == null)
 			{
-				gen.material = new Material(GetShader(gen.gradientTexture != null));
+				gen.material = new Material(GetShader(gen.gradientTexture != null, gen.data != null && gen.data.isPacked));
 				string materialPath = AssetDatabase.GetAssetPath(gen).Replace(".prefab", "material.mat");
 				AssetDatabase.CreateAsset(gen.material, materialPath);
 			}
@@ -92,13 +93,9 @@ public class tk2dFontEditor : Editor
 				go.AddComponent<tk2dFontData>();
 				tk2dEditorUtility.SetGameObjectActive(go, false);
 				
-#if (UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4)
-				Object p = EditorUtility.CreateEmptyPrefab(bmFontPath);
-				EditorUtility.ReplacePrefab(go, p);
-#else
 				Object p = PrefabUtility.CreateEmptyPrefab(bmFontPath);
 				PrefabUtility.ReplacePrefab(go, p);
-#endif
+
 				GameObject.DestroyImmediate(go);
 				AssetDatabase.SaveAssets();
 				
@@ -109,7 +106,7 @@ public class tk2dFontEditor : Editor
 
 			if (gen.manageMaterial)
 			{
-				Shader s = GetShader(gen.gradientTexture != null);
+				Shader s = GetShader(gen.gradientTexture != null, gen.data != null && gen.data.isPacked);
 				if (gen.material.shader != s)
 				{
 					gen.material.shader = s;
@@ -161,7 +158,7 @@ public class tk2dFontEditor : Editor
 	{
 		if (texture.format == TextureFormat.ARGB32 
 			|| texture.format == TextureFormat.ARGB4444 
-#if !UNITY_3_5
+#if !UNITY_3_5 && !UNITY_4_0
 			|| texture.format == TextureFormat.RGBA4444 
 #endif
 			|| texture.format == TextureFormat.Alpha8 
@@ -220,13 +217,8 @@ public class tk2dFontEditor : Editor
 			}
 			tk2dEditorUtility.SetGameObjectActive(go, false);
 
-#if (UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4)
-			Object p = EditorUtility.CreateEmptyPrefab(path);
-			EditorUtility.ReplacePrefab(go, p, ReplacePrefabOptions.ConnectToPrefab);
-#else
 			Object p = PrefabUtility.CreateEmptyPrefab(path);
 			PrefabUtility.ReplacePrefab(go, p, ReplacePrefabOptions.ConnectToPrefab);
-#endif
 			GameObject.DestroyImmediate(go);
 			
 			// Select object

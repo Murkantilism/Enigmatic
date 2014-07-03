@@ -25,12 +25,25 @@ class tk2dTextMeshEditor : Editor
 	}
 
 	tk2dTextMesh[] targetTextMeshes = new tk2dTextMesh[0];
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+	Renderer[] renderers = new Renderer[0];
+#endif
 
 	void OnEnable() {
 		targetTextMeshes = new tk2dTextMesh[targets.Length];
 		for (int i = 0; i < targets.Length; ++i) {
 			targetTextMeshes[i] = targets[i] as tk2dTextMesh;
 		}
+
+#if !(UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+    	List<Renderer> rs = new List<Renderer>();
+    	foreach (var v in targetTextMeshes) {
+    		if (v != null && v.renderer != null) {
+    			rs.Add(v.renderer);
+    		}
+    	}
+    	renderers = rs.ToArray();
+#endif
 	}
 
 	void OnDestroy() {
@@ -40,7 +53,7 @@ class tk2dTextMeshEditor : Editor
 	// Draws the word wrap GUI
 	void DrawWordWrapSceneGUI(tk2dTextMesh textMesh)
 	{
-		tk2dFontData font = textMesh.font;
+		tk2dFontData font = textMesh.font.inst;
 		Transform transform = textMesh.transform;
 
 		int px = textMesh.wordWrapWidth;
@@ -80,7 +93,7 @@ class tk2dTextMeshEditor : Editor
 			Vector3 newp1 = Handles.Slider(p1, transform.right, HandleUtility.GetHandleSize(p1), Handles.ArrowCap, 0.0f);
 			if (newp1 != p1)
 			{
-				Undo.RegisterUndo(textMesh, "TextMesh Wrap Length");
+				tk2dUndo.RecordObject(textMesh, "TextMesh Wrap Length");
 				int newPx = (int)Mathf.Round((newp1 - p0).magnitude / (font.texelSize.x * transform.localScale.x));
 				newPx = Mathf.Max(newPx, 0);
 				textMesh.wordWrapWidth = newPx;
@@ -93,7 +106,7 @@ class tk2dTextMeshEditor : Editor
 			Vector3 newp0 = Handles.Slider(p0, -transform.right, HandleUtility.GetHandleSize(p0), Handles.ArrowCap, 0.0f);
 			if (newp0 != p0)
 			{
-				Undo.RegisterUndo(textMesh, "TextMesh Wrap Length");
+				tk2dUndo.RecordObject(textMesh, "TextMesh Wrap Length");
 				int newPx = (int)Mathf.Round((p1 - newp0).magnitude / (font.texelSize.x * transform.localScale.x));
 				newPx = Mathf.Max(newPx, 0);
 				textMesh.wordWrapWidth = newPx;
@@ -104,6 +117,10 @@ class tk2dTextMeshEditor : Editor
 
 	public void OnSceneGUI()
 	{
+		if (!tk2dEditorUtility.IsEditable(target)) {
+			return;
+		}
+
 		tk2dTextMesh textMesh = (tk2dTextMesh)target;
 		if (textMesh.formatting && textMesh.wordWrapWidth > 0)
 		{
@@ -138,7 +155,7 @@ class tk2dTextMeshEditor : Editor
 					if (textMesh.scale.y > 0.0f && newScale.y < scaleMin) newScale.y = scaleMin;
 					if (textMesh.scale.y < 0.0f && newScale.y > -scaleMin) newScale.y = -scaleMin;
 					if (newScale != textMesh.scale) {
-						Undo.RegisterUndo (new Object[] {t, textMesh}, "Resize");
+						tk2dUndo.RecordObjects (new Object[] {t, textMesh}, "Resize");
 						float factorX = (Mathf.Abs (textMesh.scale.x) > Mathf.Epsilon) ? (newScale.x / textMesh.scale.x) : 0.0f;
 						float factorY = (Mathf.Abs (textMesh.scale.y) > Mathf.Epsilon) ? (newScale.y / textMesh.scale.y) : 0.0f;
 						Vector3 offset = new Vector3(resizeRect.xMin - localRect.xMin * factorX,
@@ -158,8 +175,8 @@ class tk2dTextMeshEditor : Editor
 				EditorGUI.BeginChangeCheck();
 				float theta = tk2dSceneHelper.RectRotateControl (645231, localRect, t, new List<int>());
 				if (EditorGUI.EndChangeCheck()) {
-					Undo.RegisterUndo (t, "Rotate");
 					if (Mathf.Abs(theta) > Mathf.Epsilon) {
+						tk2dUndo.RecordObject (t, "Rotate");
 						t.Rotate(t.forward, theta, Space.World);
 					}
 				}
@@ -179,7 +196,7 @@ class tk2dTextMeshEditor : Editor
 	}
 
 	void UndoableAction( System.Action<tk2dTextMesh> action ) {
-		Undo.RegisterUndo(targetTextMeshes, "Inspector");
+		tk2dUndo.RecordObjects (targetTextMeshes, "Inspector");
 		foreach (tk2dTextMesh tm in targetTextMeshes) {
 			action(tm);
 		}
@@ -190,7 +207,7 @@ class tk2dTextMeshEditor : Editor
     public override void OnInspectorGUI()
     {
         tk2dTextMesh textMesh = (tk2dTextMesh)target;
-        EditorGUIUtility.LookLikeControls(80, 50);
+        tk2dGuiUtility.LookLikeControls(80, 50);
 		
 		// maybe cache this if its too slow later
 		if (allFonts == null || allFontNames == null) 
@@ -206,7 +223,7 @@ class tk2dTextMeshEditor : Editor
 				allFontNames[i] = allFonts[i].AssetName;
 		}
 		
-		if (allFonts != null)
+		if (allFonts != null && allFonts.Length > 0)
         {
 			if (textMesh.font == null)
 			{
@@ -298,7 +315,7 @@ class tk2dTextMeshEditor : Editor
 				                 "^CRRGGBBAA - set color\n" +
 				                 "^GRRGGBBAARRGGBBAA - set top and bottom colors\n" +
 				                 "      RRGGBBAA = 2 digit hex values (00 - ff)\n\n" +
-				                 ((textMesh.font.textureGradients && textMesh.font.gradientCount > 0) ?
+				                 ((textMesh.font.inst.textureGradients && textMesh.font.inst.gradientCount > 0) ?
 				 				 "^0-9 - select gradient\n" : "") +
 				                 "^^ - print ^";
 				tk2dGuiUtility.InfoBox( message, tk2dGuiUtility.WarningLevel.Info );
@@ -331,13 +348,40 @@ class tk2dTextMeshEditor : Editor
 			float newLineSpacing = EditorGUILayout.FloatField("Line Spacing", textMesh.LineSpacing);
 			if (newLineSpacing != textMesh.LineSpacing) UndoableAction( tm => tm.LineSpacing = newLineSpacing );
 
-			int sortingOrder = EditorGUILayout.IntField("Sorting Order In Layer", textMesh.SortingOrder);
-			if (sortingOrder != textMesh.SortingOrder) { UndoableAction( tm => tm.SortingOrder = sortingOrder ); }
+#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+			int sortingOrder = EditorGUILayout.IntField("Sorting Order In Layer", targetTextMeshes[0].SortingOrder);
+			if (sortingOrder != targetTextMeshes[0].SortingOrder) {
+            	tk2dUndo.RecordObjects(targetTextMeshes, "Sorting Order In Layer");
+            	foreach (tk2dTextMesh s in targetTextMeshes) {
+            		s.SortingOrder = sortingOrder;
+            	}
+			}
+#else
+			if (renderers.Length > 0) {
+	            string sortingLayerName = tk2dEditorUtility.SortingLayerNamePopup("Sorting Layer", renderers[0].sortingLayerName);
+	            if (sortingLayerName != renderers[0].sortingLayerName) {
+	            	tk2dUndo.RecordObjects(renderers, "Sorting Layer");
+	            	foreach (Renderer r in renderers) {
+	            		r.sortingLayerName = sortingLayerName;
+	            		EditorUtility.SetDirty(r);
+	            	}
+	            }
+
+				int sortingOrder = EditorGUILayout.IntField("Order In Layer", targetTextMeshes[0].SortingOrder);
+				if (sortingOrder != targetTextMeshes[0].SortingOrder) {
+	            	tk2dUndo.RecordObjects(targetTextMeshes, "Order In Layer");
+	            	tk2dUndo.RecordObjects(renderers, "Order In Layer");
+	            	foreach (tk2dTextMesh s in targetTextMeshes) {
+	            		s.SortingOrder = sortingOrder;
+	            	}
+				}
+			}
+#endif
 
 			Vector3 newScale = EditorGUILayout.Vector3Field("Scale", textMesh.scale);
 			if (newScale != textMesh.scale) UndoableAction( tm => tm.scale = newScale );
 			
-			if (textMesh.font.textureGradients && textMesh.font.gradientCount > 0)
+			if (textMesh.font.textureGradients && textMesh.font.inst.gradientCount > 0)
 			{
 				GUILayout.BeginHorizontal();
 				EditorGUILayout.PrefixLabel("TextureGradient");
@@ -346,14 +390,14 @@ class tk2dTextMeshEditor : Editor
 				bool drawGradientScroller = true;
 				if (drawGradientScroller)
 				{
-					textMesh.textureGradient = textMesh.textureGradient % textMesh.font.gradientCount;
+					textMesh.textureGradient = textMesh.textureGradient % textMesh.font.inst.gradientCount;
 					
 					gradientScroll = EditorGUILayout.BeginScrollView(gradientScroll, GUILayout.ExpandHeight(false));
-					Rect r = GUILayoutUtility.GetRect(textMesh.font.gradientTexture.width, textMesh.font.gradientTexture.height, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-					GUI.DrawTexture(r, textMesh.font.gradientTexture);
+					Rect r = GUILayoutUtility.GetRect(textMesh.font.inst.gradientTexture.width, textMesh.font.inst.gradientTexture.height, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+					GUI.DrawTexture(r, textMesh.font.inst.gradientTexture);
 					
 					Rect hr = r;
-					hr.width /= textMesh.font.gradientCount;
+					hr.width /= textMesh.font.inst.gradientCount;
 					hr.x += hr.width * textMesh.textureGradient;
 					float ox = hr.width / 8;
 					float oy = hr.height / 8;
@@ -362,10 +406,10 @@ class tk2dTextMeshEditor : Editor
 					
 					if (GUIUtility.hotControl == 0 && Event.current.type == EventType.MouseDown && r.Contains(Event.current.mousePosition))
 					{
-						int newTextureGradient = (int)(Event.current.mousePosition.x / (textMesh.font.gradientTexture.width / textMesh.font.gradientCount));
+						int newTextureGradient = (int)(Event.current.mousePosition.x / (textMesh.font.inst.gradientTexture.width / textMesh.font.inst.gradientCount));
 						if (newTextureGradient != textMesh.textureGradient) {
 							UndoableAction( delegate(tk2dTextMesh tm) {
-									if (tm.useGUILayout && tm.font != null && newTextureGradient < tm.font.gradientCount) {
+									if (tm.useGUILayout && tm.font != null && newTextureGradient < tm.font.inst.gradientCount) {
 										tm.textureGradient = newTextureGradient;
 									}
 								} );
@@ -407,7 +451,6 @@ class tk2dTextMeshEditor : Editor
 			
 			if (GUILayout.Button("Bake Scale"))
 			{
-				Undo.RegisterSceneUndo("Bake Scale");
 				tk2dScaleUtility.Bake(textMesh.transform);
 				GUI.changed = true;
 			}

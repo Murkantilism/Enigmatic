@@ -5,7 +5,6 @@ using System.Collections;
 // assigned in the editor rather than at runtime by Player.cs.
 public class FallingObstacle : MonoBehaviour {
 	Vector3 origin;
-	bool destroy = false;
 	// How long should we wait for the obstacle to fall?
 	public int waitTime = 3;
 	
@@ -13,34 +12,34 @@ public class FallingObstacle : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		ObstacleFall();
+		StartCoroutine(ObstacleFall());
 		origin = transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(!destroy && obstacleFalling == true){
+		if(obstacleFalling == true){
 			transform.position -= new Vector3(0, 0.04f, 0);
+		}
+
+		if(obstacleFalling == false){
+			Reset();
+			StartCoroutine(ObstacleFall());
 		}
 	}
 	
 	public IEnumerator ObstacleFall(){
-		Debug.Log("black");
 		// Wait to trigger the obstacle fall
 		yield return new WaitForSeconds(waitTime);
 		obstacleFalling = true;
-		// Call Reset
-		Reset();
+
+		// Wait double the waitTime to reset
+		yield return new WaitForSeconds(waitTime * 2);
+		obstacleFalling = false;
 	}
 	
-	public IEnumerator Reset(){
-		Debug.Log("white");
-		// Wait double the wait time to reset
-		yield return new WaitForSeconds(waitTime * 2);
-		// Reset
-		transform.position = origin;
-		destroy = true;
-		GameObject.DestroyImmediate(this);
-		Debug.Log("negro");
+	public void Reset(){
+		// Reset above the level area
+		transform.position = new Vector3(origin.x, origin.y + 2, origin.z);
 	}
 }

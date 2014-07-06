@@ -117,6 +117,11 @@ public class Player : MonoBehaviour {
 			activeGlobalPlatformRotation = transform.rotation;
 			activeLocalPlatformRotation = Quaternion.Inverse(activePlatform.rotation) * transform.rotation;
 		}
+
+		// Move the character controller by zero. This is a "cheat" used to trigger
+		// collision detections with OnControllerColliderHit, which normally doesn't
+		// detect collisions when the player isn't moving.
+		controller.SimpleMove(Vector3.zero);
 	}
 	
 	// are we dead yet?
@@ -171,6 +176,9 @@ public class Player : MonoBehaviour {
 	void OnControllerColliderHit(ControllerColliderHit hit) {
 		// If the player collides with an enemy, respawn
 		if (hit.collider.tag == "Enemy"){
+			Respawn();
+		}else if(hit.collider.tag == "FallingObstacle"){
+			Debug.Log("Falling Obs Hit");
 			Respawn();
 		}
 		// If the player touches a DropPlatform, attach the corresponding script

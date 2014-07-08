@@ -34,12 +34,6 @@ public class levelSelect extends MonoBehaviour{
 	
 		// Load the level selected
 		Application.LoadLevel("Riddle" + levelSelectedText);
-	
-		/* Load the level selected
-		if(levelOne){
-			Destroy(mainCamera);
-			Application.LoadLevel("Level1");
-		}*/
 	}
 
 	function OnGUI() {

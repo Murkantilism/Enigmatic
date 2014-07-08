@@ -21,11 +21,13 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Big sphinx sprite
 	public tk2dSprite bigSphinxSprite;
+	public GameObject bigSphinxSprite_go;
 	// The main camera object
 	private Camera myCamera;
 	
 	// Black texture used for pausing and re-displaying riddle
 	public GUITexture blackPauseTexture;
+	public GameObject blackPauseTexture_go;
 	
 	// Background music (refernced for DontDestoryOnLoad)
 	public GameObject backgroundMusic;
@@ -34,8 +36,10 @@ public class RiddleScript : MonoBehaviour {
 	
 	// The GUIText objects for the hints
 	public GUIText smallHintText;
+	public GameObject smallHintText_go;
 	public GUIText bigHintText;
-	
+	public GameObject bigHintText_go;
+
 	// Has a level or riddle scene been completed?
 	public bool levelCompleteP;
 	public bool riddleCompleteP;
@@ -60,6 +64,23 @@ public class RiddleScript : MonoBehaviour {
 	void Start () {
 		levelCompleteP = false;
 		riddleCompleteP = false;
+
+		// Find and assign all the neccessary gameObjects
+		smallHintText_go = GameObject.Find ("Hint_small");
+		smallHintText = smallHintText_go.GetComponent<GUIText>();
+		
+		bigHintText_go = GameObject.Find ("Hint_BIG");
+		bigHintText = bigHintText_go.GetComponent<GUIText>();
+
+		bigSphinxSprite_go = GameObject.Find("BigSphinxSprite");
+		bigSphinxSprite = bigSphinxSprite_go.GetComponent<tk2dSprite>();
+		bigSphinxSprite.SetSprite("BigSphinx_pixel_01");
+
+		blackPauseTexture_go = GameObject.Find("blackPauseTexture");
+		blackPauseTexture = blackPauseTexture_go.GetComponent<GUITexture>();
+
+		backgroundMusic = GameObject.Find("BackgroundMusic");
+		deathCounter = GameObject.Find ("DeathCounter");
 		
 		// Set text invisisble & white at beginning
 		riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
@@ -76,6 +97,7 @@ public class RiddleScript : MonoBehaviour {
 
 		// Find the sceneIdentifier GameObject
 		sceneIdentifier = GameObject.Find("sceneIdentifier");
+
 
 		// Get the scene index
 		sceneIndex = sceneIdentifier.GetComponent<SceneIdentifier>().sceneIndex;

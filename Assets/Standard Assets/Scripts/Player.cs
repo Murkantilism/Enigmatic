@@ -152,6 +152,10 @@ public class Player : MonoBehaviour {
 	// show menu when paused
 	void OnGUI() {
 		GUI.skin = guiSkin;
+		//GUI.backgroundColor = Color.magenta; 
+
+		GUIStyle quitStyle = new GUIStyle("button");
+		quitStyle.fontSize = 40;
 		
 		if (paused) {
 			// If paused, set black pause GUI texture & riddle GUI text
@@ -159,10 +163,22 @@ public class Player : MonoBehaviour {
 			blackPauseTexture.color = new Color(0, 0, 0, 1);
 			riddleText.color = new Color(255, 255, 255, 1);
 			ridScript.paused = true;
-			
+
+
+			// Resume Button
 			if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Resume")){
 				// If unpaused, set black pause GUI texture & riddle GUI text
 				// invisisble, set Riddle Script's paused boolean false.
+				blackPauseTexture.color = new Color(0, 0, 0, 0);
+				riddleText.color = new Color(255, 255, 255, 0);
+				ridScript.paused = false;
+				paused = false;
+				Time.timeScale = 1;
+			}
+
+			// Quit button
+			if (GUI.Button(new Rect(Screen.width/2 - Screen.height/4, Screen.height/2 + Screen.height/4, 200, 100), "Quit", quitStyle)){
+				Application.LoadLevel("MainMenu");
 				blackPauseTexture.color = new Color(0, 0, 0, 0);
 				riddleText.color = new Color(255, 255, 255, 0);
 				ridScript.paused = false;

@@ -9,13 +9,16 @@ public class FinalRiddle1 : MonoBehaviour {
 
 	// A list of correct keys
 	List<KeyCode> CorrectKeys = new List<KeyCode>();
-
+	// The GUIText objects for each correct key
 	public GUIText correctKey_S;
 	public GUIText correctKey_O;
 	public GUIText correctKey_C1;
 	public GUIText correctKey_C2;
 	public GUIText correctKey_E;
 	public GUIText correctKey_R;
+
+	// Grab the death script to increment counter
+	public DeathCounter deathCntScript;
 
 
 	// Use this for initialization
@@ -35,16 +38,40 @@ public class FinalRiddle1 : MonoBehaviour {
 		correctKey_C2.color = new Color(255, 255, 255, 0);
 		correctKey_E.color = new Color(255, 255, 255, 0);
 		correctKey_R.color = new Color(255, 255, 255, 0);
+
+		// Find & assign the DeathCounter script
+		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update (){
 		// If the first correct key is pressed
 		if(Input.GetKeyUp (CorrectKeys[0])){
 			// Pop the key from the list
 			CorrectKeys.RemoveAt(0);
 			// Increment the correct key counter
 			correctKeyCnt++;
+
+			// FIXME: Decrement the death counter - this is to mitigate the increment of the death counter
+			// that occurs for an unknown reason when the correct key is pressed. This decrement simply keeps
+			// the death count at the same number it was previously when the correct key is pressed.
+			deathCntScript.deathCount--;
+		}
+
+		// If any key is pressed, if it's the correct key, do nothing. Else, increment death counter.
+		if(Input.anyKeyDown){
+			if(Input.GetKeyUp (CorrectKeys[0])){
+				return; // FIXME: Apparently this doesn't prevent correct keys from incrememnting death count for some reason
+			}else{
+				deathCntScript.deathCount++;
+			}
+
+			// FIXME: Apparently the below method doesn't work either???
+			/*
+			// If any key is pressed, and it isn't the current correct key, increment death count
+			if(Input.anyKeyDown && (!Input.GetKeyUp(CorrectKeys[0]))){
+				deathCntScript.deathCount++;
+			}*/
 		}
 
 		// Once enough correct keys have been pressed, load the next riddle
@@ -53,7 +80,7 @@ public class FinalRiddle1 : MonoBehaviour {
 		}
 
 		RevealCorrectKey();
-		Debug.Log(correctKeyCnt);
+		//Debug.Log(correctKeyCnt);
 	}
 
 	// Once a correct key is pressed, show it

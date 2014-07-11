@@ -4,7 +4,7 @@ using System.Collections;
 public class Player : MonoBehaviour {
 	
 	public RiddleScript ridScript;
-	public DeathCounter deathScript;
+	public DeathCounter deathCntScript;
 	public GameObject spawn;
 	public bool paused = false;
 	public GUITexture blackPauseTexture;
@@ -32,7 +32,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		ridScript = GameObject.Find("RiddleText").GetComponent<RiddleScript>();
-		deathScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
+		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
 		spawn = GameObject.Find("Spawn");
 		blackPauseTexture = GameObject.Find("blackPauseTexture").GetComponent<GUITexture>();
 		riddleText = GameObject.Find("RiddleText").GetComponent<GUIText>();
@@ -136,7 +136,7 @@ public class Player : MonoBehaviour {
 	// respawn the player
 	void Respawn() {
 		thudAudioSource.PlayOneShot(deathAudioClip);
-		deathScript.deathCount++;
+		deathCntScript.deathCount++;
 		gameObject.transform.position = spawn.transform.position;
 
 		GameObject[] platforms = GameObject.FindGameObjectsWithTag("DropPlatform");

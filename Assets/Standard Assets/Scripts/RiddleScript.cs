@@ -21,6 +21,7 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Big sphinx sprite
 	public tk2dSprite bigSphinxSprite;
+	public tk2dSpriteAnimator bigSphinxSpriteAnim;
 	public GameObject bigSphinxSprite_go;
 	// The main camera object
 	private Camera myCamera;
@@ -76,6 +77,8 @@ public class RiddleScript : MonoBehaviour {
 		bigSphinxSprite = bigSphinxSprite_go.GetComponent<tk2dSprite>();
 		bigSphinxSprite.SetSprite("BigSphinx_pixel_01");
 
+
+
 		blackPauseTexture_go = GameObject.Find("blackPauseTexture");
 		blackPauseTexture = blackPauseTexture_go.GetComponent<GUITexture>();
 
@@ -87,7 +90,7 @@ public class RiddleScript : MonoBehaviour {
 		
 		// Set the big sphinx visible at beginning
 		bigSphinxSprite.color = new Color(255, 255, 255, 1);
-		
+
 		// Set the pause texture invisible at beginning
 		blackPauseTexture.color = new Color(0, 0, 0, 0);
 		
@@ -231,6 +234,7 @@ public class RiddleScript : MonoBehaviour {
 		// Keep the impotant game objects to allow cross-scene scripting
 		DontDestroyOnLoad(gameObject);
 		DontDestroyOnLoad(bigSphinxSprite);
+		DontDestroyOnLoad(bigSphinxSpriteAnim);
 		DontDestroyOnLoad(backgroundMusic);
 		DontDestroyOnLoad(deathCounter);
 		DontDestroyOnLoad(blackPauseTexture);

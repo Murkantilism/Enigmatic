@@ -79,7 +79,7 @@ public class FinalRiddle2 : MonoBehaviour {
 		
 		// Once enough correct keys have been pressed, load the next riddle
 		if(correctKeyCnt >= correctKeyThresh){
-			Application.LoadLevel("FinalRiddle3");
+			Application.LoadLevel("FinalRiddle3_Intro");
 		}
 		
 		RevealCorrectKey();

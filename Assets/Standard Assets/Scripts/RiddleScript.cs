@@ -354,10 +354,24 @@ public class RiddleScript : MonoBehaviour {
 			if (Time.timeSinceLevelLoad > smallHintTimer && !(Time.timeSinceLevelLoad > bigHintTimer)){
 				// Dividing by 7 makes fade lasts 7 secs
 				smallHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
-				smallHintText.color = new Color(255, 255, 255, smallHintAlpha);
+				try{
+					smallHintText.color = new Color(255, 255, 255, smallHintAlpha);
+				}catch(MissingReferenceException e){
+					Debug.Log(e.ToString());
+					smallHintText_go = GameObject.Find ("Hint_small");
+					smallHintText = smallHintText_go.GetComponent<GUIText>();
+					Debug.Log("Missing Reference resolved, " + smallHintText_go + " successfully assigned");
+				}
 			// Otherwise set hint invisible
 			}else{
-				smallHintText.color = new Color(255, 255, 255, 0);
+				try{
+					smallHintText.color = new Color(255, 255, 255, 0);
+				}catch(MissingReferenceException e){
+					Debug.Log(e.ToString());
+					smallHintText_go = GameObject.Find ("Hint_small");
+					smallHintText = smallHintText_go.GetComponent<GUIText>();
+					Debug.Log("Missing Reference resolved, " + smallHintText_go + " successfully assigned");
+				}
 			}
 			
 			// If the level is played for longer than the big hint timer,
@@ -367,7 +381,14 @@ public class RiddleScript : MonoBehaviour {
 				bigHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
 				bigHintText.color = new Color(255, 255, 255, bigHintAlpha);
 			}else{
-				bigHintText.color = new Color(255, 255, 255, 0);
+				try{
+					bigHintText.color = new Color(255, 255, 255, 0);
+				}catch(MissingReferenceException e){
+					Debug.Log(e.ToString());
+					bigHintText_go = GameObject.Find ("Hint_BIG");
+					bigHintText = bigHintText_go.GetComponent<GUIText>();
+					Debug.Log("Missing Reference resolved, " + bigHintText_go + " successfully assigned");
+				}
 			}
 		}
 	}

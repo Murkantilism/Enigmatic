@@ -31,6 +31,7 @@ public class Player : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		// Find and assign all relevant variables
 		ridScript = GameObject.Find("RiddleText").GetComponent<RiddleScript>();
 		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
 		spawn = GameObject.Find("Spawn");
@@ -181,7 +182,16 @@ public class Player : MonoBehaviour {
 				Application.LoadLevel("MainMenu");
 				blackPauseTexture.color = new Color(0, 0, 0, 0);
 				riddleText.color = new Color(255, 255, 255, 0);
-				ridScript.paused = false;
+
+				ridScript.paused = false; // Set paused to false
+				ridScript.sceneIndex = 0; // Reset the scene index on quit
+				// Destory the hint gameObjects on quit (to avoid duplicate gameObjects)
+				Destroy(ridScript.smallHintText);
+				Destroy(ridScript.bigHintText);
+
+				deathCntScript.deathCount = 0; // Reset death counter on quit
+
+				// Unpause on quit
 				paused = false;
 				Time.timeScale = 1;
 			}

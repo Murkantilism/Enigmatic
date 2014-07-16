@@ -9,16 +9,12 @@ public class MovingEnemies : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		InvokeRepeating("SwitchDirection", 1, 1);
+		InvokeRepeating("SwitchDirection", 1, Random.Range(1, 3));
 	}
 	
 	// Negate the direction every 2 seconds
 	void SwitchDirection(){
 		direction = direction * -1;
-		// Also switch the direction of the transform by compounding 180 degrees
-		Yrotation += 180;
-		Yrotation = Yrotation * -1;
-		transform.rotation = Quaternion.Euler(0, Yrotation, 0);
 	}
 	
 	// Update is called once per frame

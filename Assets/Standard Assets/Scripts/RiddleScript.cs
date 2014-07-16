@@ -213,7 +213,7 @@ public class RiddleScript : MonoBehaviour {
 	// Master fucntion, handles scene loading logic
 	void RiddleMaster(){
 		// When the last level is reached, destory all the things!
-		if (sceneIndex == 40)
+		if (sceneIndex == 42)
 			Destroy(this.gameObject);
 
 		if (levelCompleteP){
@@ -289,34 +289,34 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpAction(), 20, audioClip,"Toot!","Comes out your butt"));
 		
 		// Riddle 10: Umbrella - Jump actively, Move and Shoot passively
-		riddles.Add(new Riddle("What goes up when the rain comes down?", KeyCode.U, new JumpShootAction(), 22, audioClip, "A hit song by Rhianna", "Strong winds turn them inside out"));
+		riddles.Add(new Riddle("What goes up when the rain comes down?", KeyCode.U, new ShootAction(), 22, audioClip, "A hit song by Rhianna", "Strong winds turn them inside out"));
 		
 		// Riddle 11: Dice - Jump actively, Move passively
 		riddles.Add(new Riddle("What has block spots and a white face, \nis not fat nor thin, can help you win,\nbut tumbles all over the place?", KeyCode.D, new JumpAction(), 24, audioClip, "Gambler's tool", "Craps, Backgammon, Boggle, Risk"));
 
 		// Riddle 12: Candle - Move actively
-		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new MoveAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
+		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new JumpAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
 
 		// Riddle 13: Windows - Move actively
-		riddles.Add(new Riddle("An ancient invention still used today, that allows people to see through walls, and can be bowed or bayed.", KeyCode.W, new MoveAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
+		riddles.Add(new Riddle("An ancient invention still used today, that allows people\nto see through walls, and can be bowed or bayed.", KeyCode.W, new JumpAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
 
 		// Riddle 14: Tree - Move actively
-		riddles.Add(new Riddle("In spring I am gay in handsome array;\n in summer more clothing I wear.\n When colder it grows I fling off my clothes,\n and in winter quite naked I appear.", KeyCode.T, new MoveAction(), 30, audioClip, "The subject of a Shel Silverstein classic", "A mighty oak, a weeping willow, and a handsome spruce"));
+		riddles.Add(new Riddle("In spring I am gay in handsome array;\nin summer more clothing I wear.\nWhen colder it grows I fling off my clothes,\nand in winter quite naked I appear.", KeyCode.T, new JumpAction(), 30, audioClip, "The subject of a Shel Silverstein classic", "A mighty oak, a weeping willow, and a handsome spruce"));
 
 		// Riddle 15: Rug - Move actively
-		riddles.Add(new Riddle("I am colored red, blue, and yellow and every other hue of the rainbow.\n I am thick and thin, short and tall, I can eat over \na hundred sheep in a row. What am I?", KeyCode.R, new MoveAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
+		riddles.Add(new Riddle("I am colored red, blue, and yellow and every other hue of the rainbow.\nI am thick and thin, short and tall, I can eat over \na hundred sheep in a row. What am I?", KeyCode.R, new JumpAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
 
 		// Riddle 16: Ice - Move actively
-		riddles.Add(new Riddle("I am powerful enough to smash ships and crush roofs,\n yet I still fear the Sun. What am I?", KeyCode.I, new MoveAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
+		riddles.Add(new Riddle("I am powerful enough to smash ships and crush roofs,\nyet I still fear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
 
 		// Riddle 17: Waterfall - Move actively
-		riddles.Add (new Riddle("I can run like a river without moving at all.\nI have no lungs nor a throat, but I can still\n shout a mighty roaring call. What am I?", KeyCode.W, new MoveAction(), 36, audioClip, "Kayaking through these is rough", "Falling water"));
+		riddles.Add (new Riddle("I can run like a river without moving at all.\nI have no lungs nor a throat, but I can still\nshout a mighty roaring call. What am I?", KeyCode.W, new JumpAction(), 36, audioClip, "Kayaking through these is rough", "Falling water"));
 
 		// Riddle 18: Neptune - Move actively
-		riddles.Add(new Riddle("I had a black spot that was a huge storm.\nNow it's all gone, but I'll still never be warm.", KeyCode.N, new MoveAction(), 38, audioClip, "Look past Saturn and Uranus for me", "Named for the Roman god of the Sea"));
+		riddles.Add(new Riddle("I had a black spot that was a huge storm.\nNow it's all gone, but I'll still never be warm.", KeyCode.N, new JumpAction(), 38, audioClip, "Look past Saturn and Uranus for me", "Named for the Roman god of the Sea"));
 
 		// Riddle 19: Fish - Move actively
-		riddles.Add(new Riddle("Alive without breath, as cold as death; never thirsty but ever drinking, all in mail but never clinking.", KeyCode.F, new MoveAction(), 40, audioClip, "Often lured by man", "Give a man, teach a man"));
+		riddles.Add(new Riddle("Alive without breath, as cold as death; \nnever thirsty but ever drinking, \nall in mail but never clinking.", KeyCode.F, new JumpAction(), 40, audioClip, "Often lured by man", "Give a man, teach a man"));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index

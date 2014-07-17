@@ -49,6 +49,8 @@ public class RiddleScript : MonoBehaviour {
 	GameObject sceneIdentifier;
 	// The current scene index
 	public int sceneIndex;
+	// The current scene ID
+	public string sceneID;
 
 	public Riddle currentRiddle;
 	// Is this scene paused?
@@ -104,8 +106,10 @@ public class RiddleScript : MonoBehaviour {
 
 		// Get the scene index
 		sceneIndex = sceneIdentifier.GetComponent<SceneIdentifier>().sceneIndex;
-		//int sceneIndex = Application.loadedLevel;
-		
+
+		// Assign the scene ID
+		sceneID = sceneIdentifier.GetComponent<SceneIdentifier>().sceneID;
+
 		// Build the list of riddles on start
 		RiddleList ();
 		
@@ -122,10 +126,13 @@ public class RiddleScript : MonoBehaviour {
 		HintSystem();
 
 		sceneIdentifier = GameObject.Find("sceneIdentifier");
+
 		// If the scene identifier object doesn't exist, find it!
 		if(sceneIdentifier == null){
 			sceneIdentifier = GameObject.Find("sceneIdentifier");
 		}
+		// Refresh the sceneID
+		sceneID = sceneIdentifier.GetComponent<SceneIdentifier>().sceneID;
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to 
@@ -333,7 +340,7 @@ public class RiddleScript : MonoBehaviour {
 				bigHintText.text = riddle.bigHint;
 				smallHintText.text = riddle.smallHint;
 				
-				// Set the audio clip to the expected audio clip
+				// Set the riddle's correct answer audio clip to the expected audio clip
 				currentRiddle.audioClip = (AudioClip)Resources.Load(sceneIndex.ToString(), typeof(AudioClip));
 			}
 		}

@@ -188,6 +188,7 @@ public class Player : MonoBehaviour {
 				// Destory the hint gameObjects on quit (to avoid duplicate gameObjects)
 				Destroy(ridScript.smallHintText);
 				Destroy(ridScript.bigHintText);
+				Destroy(ridScript.backgroundMusic);
 
 				deathCntScript.deathCount = 0; // Reset death counter on quit
 

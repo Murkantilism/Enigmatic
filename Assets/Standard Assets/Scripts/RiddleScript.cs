@@ -133,6 +133,9 @@ public class RiddleScript : MonoBehaviour {
 		}
 		// Refresh the sceneID
 		sceneID = sceneIdentifier.GetComponent<SceneIdentifier>().sceneID;
+
+		// Refresh the background music object
+		backgroundMusic = GameObject.Find("BackgroundMusic");
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to 

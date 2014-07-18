@@ -1,18 +1,20 @@
 ﻿#pragma strict
 
+// Programming
 var deniz = false;
-var jeff = false;
-var korbin = false;
-var jen = false;
-var ronny = false;
-var andre = false;
-var bj = false;
-var cheyenne = false;
+var adam = false;
+// Special thanks
 var casper = false;
-var joshua = false;
-var fmod = false;
 var kenny = false;
-var soomla = false;
+// Art
+var cheyenne = false;
+var chris = false;
+var jen = false;
+// Music & Sound
+var alex = false;
+var ronny = false;
+var efe = false;
+
 var mainCamera : GameObject;
 
 var defaultURL = "https://www.facebook.com/incendiaryindustries";
@@ -34,30 +36,24 @@ function OnMouseExit(){
 function OnMouseUp(){
 	if (deniz){
 		Application.OpenURL("http://www.ccs.neu.edu/home/ozkaynak/");
-	}else if(jeff){
-		Application.OpenURL(defaultURL);
-	}else if(korbin){
-		Application.OpenURL(defaultURL);
-	}else if(jen){
-		Application.OpenURL(defaultURL);
-	}else if(ronny){
-		Application.OpenURL(defaultURL);
-	}else if(andre){
-		Application.OpenURL(defaultURL);
-	}else if(bj){
-		Application.OpenURL(defaultURL);
-	}else if(cheyenne){
-		Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
+	}else if(adam){
+		Application.OpenURL("http://adamgressen.com/");
 	}else if(casper){
 		Application.OpenURL("http://www.northeastern.edu/camd/artdesign/people/casper-harteveld/");
-	}else if(joshua){
-		Application.OpenURL("http://www.linkedin.com/pub/joshua-gross/1/a42/443");
-	}else if(fmod){
-		Application.OpenURL("http://www.fmod.org/");
 	}else if(kenny){
 		Application.OpenURL("http://kenney.itch.io/kenney-donation");
-	}else if(soomla){
-		Application.OpenURL("http://project.soom.la/");
+	}else if(cheyenne){
+		Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
+	}else if(chris){
+		Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
+	}else if(jen){
+		Application.OpenURL("http://jentella.com/wp/?page_id=211");
+	}else if(alex){
+		Application.OpenURL(defaultURL);
+	}else if(ronny){
+		Application.OpenURL("https://soundcloud.com/ronnnymrazmusic");
+	}else if(efe){
+		Application.OpenURL("https://soundcloud.com/falanca");
 	}
 }
 

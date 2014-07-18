@@ -54,7 +54,7 @@ public class BackgroundMusic : MonoBehaviour {
 			if(trackLoaded == false){
 				trackLoaded = true;
 				// Set the audio clip to the new music track
-				audio.clip = (AudioClip)Resources.Load("MusicTracks/" + sceneIndex.ToString(), typeof(AudioClip));
+				audio.clip = (AudioClip)Resources.Load("MusicTracks/" + (sceneIndex - 2).ToString(), typeof(AudioClip));
 				audio.Play();
 			}
 		}

@@ -341,7 +341,7 @@ public class RiddleScript : MonoBehaviour {
 				smallHintText.text = riddle.smallHint;
 				
 				// Set the riddle's correct answer audio clip to the expected audio clip
-				currentRiddle.audioClip = (AudioClip)Resources.Load(sceneIndex.ToString(), typeof(AudioClip));
+				currentRiddle.audioClip = (AudioClip)Resources.Load("SoundFX/" + (sceneIndex - 2).ToString(), typeof(AudioClip));
 			}
 		}
 	}

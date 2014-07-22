@@ -337,28 +337,28 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("What has block spots and a white face, \nis not fat nor thin, can help you win,\nbut tumbles all over the place?", KeyCode.D, new JumpAction(), 24, audioClip, "Gambler's tool", "Craps, Backgammon, Boggle, Risk"));
 
 		// Riddle 12: Candle - Move actively
-		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new JumpAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
+		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new MoveAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
 
-		// Riddle 13: Windows - Move actively
+		// Riddle 13: Windows - Jump actively, Move passively
 		riddles.Add(new Riddle("An ancient invention still used today, that allows people\nto see through walls, and can be bowed or bayed.", KeyCode.W, new JumpAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
 
-		// Riddle 14: Tree - Move actively
+		// Riddle 14: Tree - Jump actively, Move passively
 		riddles.Add(new Riddle("In spring I am gay in handsome array;\nin summer more clothing I wear.\nWhen colder it grows I fling off my clothes,\nand in winter quite naked I appear.", KeyCode.T, new JumpAction(), 30, audioClip, "The subject of a Shel Silverstein classic", "A mighty oak, a weeping willow, and a handsome spruce"));
 
-		// Riddle 15: Rug - Move actively
+		// Riddle 15: Rug - Jump actively, Move passively
 		riddles.Add(new Riddle("I am colored red, blue, and yellow and every other hue of the rainbow.\nI am thick and thin, short and tall, I can eat over \na hundred sheep in a row. What am I?", KeyCode.R, new JumpAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
 
-		// Riddle 16: Ice - Move actively
+		// Riddle 16: Ice - Jump actively, Move passively
 		riddles.Add(new Riddle("I am powerful enough to smash ships and crush roofs,\nyet I still fear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
 
-		// Riddle 17: Waterfall - Move actively
+		// Riddle 17: Waterfall - Jump actively, Move passively
 		riddles.Add (new Riddle("I can run like a river without moving at all.\nI have no lungs nor a throat, but I can still\nshout a mighty roaring call. What am I?", KeyCode.W, new JumpAction(), 36, audioClip, "Kayaking through these is rough", "Falling water"));
 
-		// Riddle 18: Neptune - Move actively
+		// Riddle 18: Neptune - Jump actively, Move passively
 		riddles.Add(new Riddle("I had a black spot that was a huge storm.\nNow it's all gone, but I'll still never be warm.", KeyCode.N, new JumpAction(), 38, audioClip, "Look past Saturn and Uranus for me", "Named for the Roman god of the Sea"));
 
-		// Riddle 19: Fish - Move actively
-		riddles.Add(new Riddle("Alive without breath, as cold as death; \nnever thirsty but ever drinking, \nall in mail but never clinking.", KeyCode.F, new JumpAction(), 40, audioClip, "Often lured by man", "Give a man, teach a man"));
+		// Riddle 19: Needle - Jump actively, Move passively
+		riddles.Add(new Riddle("I'm an iron horse with an eye but no head,\nwith a flaxen tail that gets shorter the more I run.", KeyCode.N, new JumpAction(), 40, audioClip, "Often used to stitch", "Its companion is a thread"));
 	}
 	
 	// Set the GUIText to the correct riddle based on the scene index

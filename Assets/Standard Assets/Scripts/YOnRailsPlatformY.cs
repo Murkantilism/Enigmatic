@@ -4,11 +4,13 @@ using System.Collections;
 public class YOnRailsPlatformY : MonoBehaviour {
 	float speed = 2.0f;
 	int direction = 1;
+	public int waitTime = 2;
+	public int repeatTime = 2;
 	Vector3 movement;
 	
 	// Use this for initialization
 	void Start () {
-		InvokeRepeating("SwitchDirection", 2, 2);
+		InvokeRepeating("SwitchDirection", waitTime, repeatTime);
 	}
 	
 	// Negate the direction every 2 seconds

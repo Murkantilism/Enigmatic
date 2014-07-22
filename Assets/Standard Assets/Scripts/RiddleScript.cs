@@ -62,7 +62,19 @@ public class RiddleScript : MonoBehaviour {
 	// The audio clip for this riddle
 	public AudioClip audioClip;
 	public AudioSource audioSource;
-	
+
+	// Used to find any duplicates of this gameObject
+	public GameObject RiddleTextDups;
+
+	// On Awake() check if there are duplicate RiddleText objects, and if so, destroy them
+	public void Awake(){
+		DontDestroyOnLoad(this);
+
+		if(FindObjectsOfType(GetType()).Length > 1){
+			Destroy(gameObject);
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		levelCompleteP = false;
@@ -118,6 +130,20 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// If we are in the first riddle scene, assign all of the potentially missing important gameObjects
+		if(sceneIndex == 0){
+			smallHintText_go = GameObject.Find ("Hint_small");
+			smallHintText = smallHintText_go.GetComponent<GUIText>();
+			
+			bigHintText_go = GameObject.Find ("Hint_BIG");
+			bigHintText = bigHintText_go.GetComponent<GUIText>();
+
+			// Refresh the background music object
+			backgroundMusic = GameObject.Find("BackgroundMusic");
+
+			sceneIdentifier = GameObject.Find("sceneIdentifier");
+		}
+
 		isRiddleCompleted(); // Check if this level has been completed
 		FadeInText();       // Fade in riddle text if current scene is riddle
 		RiddleMaster();     // Handles scene loading logic
@@ -125,17 +151,13 @@ public class RiddleScript : MonoBehaviour {
 		BigSphinxPostion(); // Sets the position of the Big Sphinx to the lower right
 		HintSystem();
 
-		sceneIdentifier = GameObject.Find("sceneIdentifier");
-
 		// If the scene identifier object doesn't exist, find it!
 		if(sceneIdentifier == null){
 			sceneIdentifier = GameObject.Find("sceneIdentifier");
 		}
+
 		// Refresh the sceneID
 		sceneID = sceneIdentifier.GetComponent<SceneIdentifier>().sceneID;
-
-		// Refresh the background music object
-		backgroundMusic = GameObject.Find("BackgroundMusic");
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to 
@@ -262,6 +284,16 @@ public class RiddleScript : MonoBehaviour {
 		}else{
 			Application.LoadLevel(sceneIndex += 1);
 		}
+
+		// Destroy all duplicate gameObjects created by a player quitting and playing again.
+		// Preserve this RiddleScript by changing it's name in the Level1 scene.
+		//if(sceneID == "Level"){
+		//	gameObject.name = "RiddleText_Original";
+		//}
+
+		//RiddleTextDups = GameObject.Find ("RiddleText");
+		//Destroy(RiddleTextDups);
+
 	}
 	
 	// Create the list of riddles
@@ -400,6 +432,13 @@ public class RiddleScript : MonoBehaviour {
 					Debug.Log("Missing Reference resolved, " + bigHintText_go + " successfully assigned");
 				}
 			}
+		}
+
+		// If the scene is a level and it has been paused, hide the hints
+		if(sceneIndex % 2 == 1 && paused == true){
+			// Set hints to invisible
+			smallHintText.color = new Color(255, 255, 255, 0);
+			bigHintText.color = new Color(255, 255, 255, 0);
 		}
 	}
 	

@@ -165,7 +165,6 @@ public class Player : MonoBehaviour {
 			riddleText.color = new Color(255, 255, 255, 1);
 			ridScript.paused = true;
 
-
 			// Resume Button
 			if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Resume")){
 				// If unpaused, set black pause GUI texture & riddle GUI text

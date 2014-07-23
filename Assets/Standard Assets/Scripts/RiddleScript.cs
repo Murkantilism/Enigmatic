@@ -339,14 +339,14 @@ public class RiddleScript : MonoBehaviour {
 		// Riddle 12: Candle - Move actively
 		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new MoveAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
 
-		// Riddle 13: Windows - Jump actively, Move passively
-		riddles.Add(new Riddle("An ancient invention still used today, that allows people\nto see through walls, and can be bowed or bayed.", KeyCode.W, new JumpAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
+		// Riddle 13: Windows - Move actively
+		riddles.Add(new Riddle("An ancient invention still used today, that allows people\nto see through walls, and can be bowed or bayed.", KeyCode.W, new MoveAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
 
 		// Riddle 14: Tree - Jump actively, Move passively
 		riddles.Add(new Riddle("In spring I am gay in handsome array;\nin summer more clothing I wear.\nWhen colder it grows I fling off my clothes,\nand in winter quite naked I appear.", KeyCode.T, new JumpAction(), 30, audioClip, "The subject of a Shel Silverstein classic", "A mighty oak, a weeping willow, and a handsome spruce"));
 
 		// Riddle 15: Rug - Jump actively, Move passively
-		riddles.Add(new Riddle("I am colored red, blue, and yellow and every other hue of the rainbow.\nI am thick and thin, short and tall, I can eat over \na hundred sheep in a row. What am I?", KeyCode.R, new JumpAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
+		riddles.Add(new Riddle("I am colored red, blue, and yellow and \nevery other hue of the rainbow. \nI am thick and thin, short and tall. \nI can eat over a hundred sheep in a row. \nWhat am I?", KeyCode.R, new JumpAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
 
 		// Riddle 16: Ice - Jump actively, Move passively
 		riddles.Add(new Riddle("I am powerful enough to smash ships and crush roofs,\nyet I still fear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));

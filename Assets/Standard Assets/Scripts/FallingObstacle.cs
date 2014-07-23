@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// NOTE: This script is essentially identical to DropPlatform.cs but is instead
-// assigned in the editor rather than at runtime by Player.cs.
 public class FallingObstacle : MonoBehaviour {
 	Vector3 origin;
 	// How long should we wait for the obstacle to fall?
-	public int waitTime = 3;
+	public float waitTime = 3.0f;
 	
 	public bool obstacleFalling = false;
 	
@@ -19,7 +17,7 @@ public class FallingObstacle : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(obstacleFalling == true){
-			transform.position -= new Vector3(0, 0.04f, 0);
+			transform.position -= new Vector3(0, 0.06f, 0);
 		}
 
 		if(obstacleFalling == false){
@@ -34,7 +32,7 @@ public class FallingObstacle : MonoBehaviour {
 		obstacleFalling = true;
 
 		// Wait double the waitTime to reset
-		yield return new WaitForSeconds(waitTime * 2);
+		yield return new WaitForSeconds((waitTime + 1) * 2);
 		obstacleFalling = false;
 	}
 	

@@ -88,8 +88,8 @@ public class Player : MonoBehaviour {
 		return false;
 	}
 	
-	// respawn the player
-	void Respawn() {
+	// Respawn the player
+	public void Respawn() {
 		thudAudioSource.PlayOneShot(deathAudioClip);
 		deathCntScript.deathCount++;
 		gameObject.transform.position = spawn.transform.position;
@@ -158,9 +158,9 @@ public class Player : MonoBehaviour {
 		}else if(hit.collider.tag == "FallingObstacle"){
 			Debug.Log("Falling Obs Hit");
 			Respawn();
-		}else if(hit.collider.tag == "YOnRailsPlatformY"){
+		}/*else if(hit.collider.tag == "YOnRailsPlatformY"){
 			Respawn();
-		}
+		}*/
 		// If the player touches a DropPlatform, attach the corresponding script
 		else if (hit.collider.tag == "DropPlatform" && !hit.gameObject.GetComponent<DropPlatform>()) {
 			hit.gameObject.AddComponent<DropPlatform>();

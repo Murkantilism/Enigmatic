@@ -7,26 +7,50 @@ public class SidewaysObstacles : MonoBehaviour {
 	public float waitTime = 3.0f;
 	
 	public bool obstacleMoving = false;
+
+	// Get the player gameObject and script
+	GameObject player_go;
+	Player playerScript;
+
+	// Spear collider
+	BoxCollider spearCollider;
 	
 	// Use this for initialization
 	void Start () {
-		StartCoroutine(ObstacleFall());
+		// Find the player gameObject
+		player_go = GameObject.Find("Player");
+		// Assign the player script
+		playerScript = player_go.GetComponent<Player>();
+
+		// Assign this spear's collider
+		spearCollider = gameObject.GetComponent<BoxCollider>();
+
+		// Start the obstacle coroutine
+		StartCoroutine(ObstacleTrigger());
 		origin = transform.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(obstacleMoving == true){
-			transform.position -= new Vector3(0.6f, 0, 0);
+			transform.position -= new Vector3(0.3f, 0, 0);
 		}
 		
 		if(obstacleMoving == false){
 			Reset();
-			StartCoroutine(ObstacleFall());
+			StartCoroutine(ObstacleTrigger());
+		}
+
+		// If the player reference is ever lost, reassign it
+		if(player_go == null){
+			// Find the player gameObject
+			player_go = GameObject.Find("Player");
+			// Assign the player script
+			playerScript = player_go.GetComponent<Player>();
 		}
 	}
 	
-	public IEnumerator ObstacleFall(){
+	public IEnumerator ObstacleTrigger(){
 		// Wait to trigger the obstacle fall
 		yield return new WaitForSeconds(waitTime);
 		obstacleMoving = true;
@@ -39,5 +63,20 @@ public class SidewaysObstacles : MonoBehaviour {
 	public void Reset(){
 		// Reset to the side of the level area
 		transform.position = new Vector3(origin.x + 2, origin.y, origin.z);
+
+		// Re-enable the spear's collider
+		spearCollider.collider.enabled = true;
+	}
+
+	// Detect if this spear hits the Player
+	public void OnTriggerEnter(Collider col){
+		// If the spear hits the player object
+		if(col.tag == "Player"){
+			Debug.Log("Spear Hit!");
+			// Disable the spear collider temporarily (to prevent multiple deaths for 1 hit)
+			spearCollider.collider.enabled = false; // Note: this is reset in the Reset() function
+			// Respawn the player
+			playerScript.Respawn();
+		}
 	}
 }

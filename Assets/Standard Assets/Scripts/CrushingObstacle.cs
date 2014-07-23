@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class YOnRailsPlatformY : MonoBehaviour {
+public class CrushingObstacle : MonoBehaviour {
 	float speed = 2.0f;
 	int direction = 1;
 	public int waitTime = 2;

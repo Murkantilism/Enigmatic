@@ -157,6 +157,18 @@ class JumpShootAction : PlayerAction{
 	}
 }
 
+// Move actively, shoot passively
+class MoveShootAction : PlayerAction{
+	// Override action method
+	public override void Action(){
+		MoveForward();
+	}
+	// Override passive method
+	public override void Passive(){
+		Shoot();
+	}
+}
+
 // No Action
 class NoAction : PlayerAction{
 	public override void Action(){}

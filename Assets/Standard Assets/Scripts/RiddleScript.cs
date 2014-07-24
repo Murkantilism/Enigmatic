@@ -318,14 +318,14 @@ public class RiddleScript : MonoBehaviour {
 		// Riddle 5: Onion - Shoot actively, Move passively
 		riddles.Add(new Riddle("Go ahead, take off my skin. \nI won't shout or feel pain,\nbut you might cry.", KeyCode.O, new ShootAction(), 12, audioClip,"They posses a strong odor","They can make a meal delicious"));
 
-		// Riddle 6: River - Shoot actively, Move passively
-		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new ShootAction(), 14, audioClip,"Water runs through it","The Nile is a famous example"));
+		// Riddle 6: River - Jump actively, Move passively
+		riddles.Add(new Riddle("What has a mouth but cannot talk \nand runs but never walks?", KeyCode.R, new JumpAction(), 14, audioClip,"Water runs through it","The Nile is a famous example"));
 		
 		// Riddle 7: Man - Jump actively, Move and Shoot passively
 		riddles.Add(new Riddle("What goes on 4 legs in the morning, \n3 legs in the afternoon, \nand 2 legs at night?", KeyCode.M, new JumpShootAction(), 16, audioClip,"The worlds dominant species","A boys grows up into a..."));
 
-		// Riddle 8: Venus - Jump actively, Move passively
-		riddles.Add(new Riddle("I'm yellow, cloudy and super hot. \nLook low in the sky, I'm easy to spot.", KeyCode.V, new JumpAction(), 18, audioClip,"From planet Earth, I'm not very far","People call me the “Evening Star”"));
+		// Riddle 8: Venus - Move actively, Shoot passively
+		riddles.Add(new Riddle("I'm yellow, cloudy and super hot. \nLook low in the sky, I'm easy to spot.", KeyCode.V, new MoveShootAction(), 18, audioClip,"From planet Earth, I'm not very far","People call me the “Evening Star”"));
 
 		// Riddle 9: Fart - Jump actively, Move passively
 		riddles.Add(new Riddle("Fatherless, motherless and born without skin, \nI speak when I come into the world, \nbut never speak again. What am I?", KeyCode.F, new JumpAction(), 20, audioClip,"Toot!","Comes out your butt"));

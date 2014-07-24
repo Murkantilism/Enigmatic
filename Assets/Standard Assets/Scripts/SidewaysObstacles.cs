@@ -8,6 +8,8 @@ public class SidewaysObstacles : MonoBehaviour {
 	
 	public bool obstacleMoving = false;
 
+	public float direction = 1;
+
 	// Get the player gameObject and script
 	GameObject player_go;
 	Player playerScript;
@@ -33,7 +35,8 @@ public class SidewaysObstacles : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(obstacleMoving == true){
-			transform.position -= new Vector3(0.3f, 0, 0);
+			// Multiply by the direction float to dictate if the spear goes left or right
+			transform.position -= new Vector3(0.3f * direction, 0, 0);
 		}
 		
 		if(obstacleMoving == false){
@@ -62,7 +65,7 @@ public class SidewaysObstacles : MonoBehaviour {
 	
 	public void Reset(){
 		// Reset to the side of the level area
-		transform.position = new Vector3(origin.x + 2, origin.y, origin.z);
+		transform.position = new Vector3(origin.x, origin.y, origin.z);
 
 		// Re-enable the spear's collider
 		spearCollider.collider.enabled = true;

@@ -13,7 +13,7 @@ public class FinalRiddlesInstructions : MonoBehaviour {
 	// Is the fade out complete?
 	bool fadeOutComplete = false;
 
-	int cnt = 0; // A counter
+	int cnt = 0; // A counter used for changing text
 
 	string instructions1 = "There are 3 Final Riddles for you to solve. There will\nbe no playable levels associated with these riddles,\nno hints, and each wrong answer will\nadd to the death counter.";
 	string instructions2 = "Each letter of the answer to a Final Riddle\n will be the first letter of an answer\n to one of the previous 20 riddles.\n\nProvided is a word bank of these previous answers.\n However, not all words in the bank are \npart of the Final Riddle's answer.";

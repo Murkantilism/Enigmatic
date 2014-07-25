@@ -40,7 +40,7 @@ function OnMouseUp(){
 		Application.LoadLevel("CreditsScreen");
 	}else if(playButtonp){
 		//If the play button is clicked, and there is a saved game, load that
-		Application.LoadLevel("Riddle1");
+		Application.LoadLevel("IntroScene");
 	}/*else if(shopButtonp){
 		Application.LoadLevel("Shop");
 	}*/

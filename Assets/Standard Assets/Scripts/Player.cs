@@ -56,21 +56,30 @@ public class Player : MonoBehaviour {
 		// execute passive player action
 		ridScript.currentRiddle.action.Passive();
 		
-		// if proper input is pressed, execute player action
-		if (Input.GetKey(ridScript.currentRiddle.inputs)) {
+		// If the current player action is shooting and the proper key is pressed, shoot only once
+		if(ridScript.currentRiddle.action.ToString() == "ShootAction"){
+			if(Input.GetKeyDown(ridScript.currentRiddle.inputs)) {
+				ridScript.currentRiddle.action.Action();
+			}
+		}
+		// In all other cases, if proper input is pressed and/or held down, execute player action.
+		else if (Input.GetKey(ridScript.currentRiddle.inputs)) {
 			ridScript.currentRiddle.action.Action();
+		}
 		// If any key is pressed and it is the wrong input (besides ESC and mouse clicks), 
 		// kill player and play thud sound effect
-		} else if (Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs)) && 
+		if (Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs)) && 
 				   !(Input.GetKeyDown(KeyCode.Escape)) && !(Input.GetMouseButton(0)) && !(Input.GetMouseButton(1))){
 			thudAudioSource.PlayOneShot(thudAudioClip);
 			Respawn();
 		}
 		
-		// If the proper key is pressed once, play the audio
-		// clip for this riddle once.
-		if (Input.GetKeyDown(ridScript.currentRiddle.inputs)){
-			ridScript.audioSource.PlayOneShot(ridScript.currentRiddle.audioClip);
+		// If the proper key is pressed once, and the audio isn't already playing,
+		// play the audio clip for this riddle once.
+		if (Input.GetKeyDown(ridScript.currentRiddle.inputs) && ridScript.audioSource.isPlaying == false){
+			//ridScript.audioSource.PlayOneShot(ridScript.currentRiddle.audioClip);
+			ridScript.audio.clip = ridScript.currentRiddle.audioClip;
+			ridScript.audioSource.Play();
 		}
 
 		// Move the character controller by zero. This is a "cheat" used to trigger

@@ -20,6 +20,19 @@ public class FinalRiddle1 : MonoBehaviour {
 	// Grab the death script to increment counter
 	public DeathCounter deathCntScript;
 
+	// Hint system variables
+	public GUIText hintText;
+	GameObject hintText_go;
+
+	float hintAlpha;
+
+	int hintTimer1 = 60;
+	int hintTimer2 = 120;
+	int hintTimer3 = 180;
+
+	string hint1 = "To give an answer to a Final Riddle,\nspell out the letters of the\nanswer on the keyboard.";
+	string hint2 = "Each letter of the answer to this riddle\ncoressponds to the 1st letter of \nprevious riddle's answers.\nSee word bank below.";
+	string hint3 = "Not all words in the bank are \npart of the Final Riddle's answer.";
 
 	// Use this for initialization
 	void Start () {
@@ -41,6 +54,8 @@ public class FinalRiddle1 : MonoBehaviour {
 
 		// Find & assign the DeathCounter script
 		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
+
+		hintText.color = new Color(255, 255, 255, 0);
 	}
 	
 	// Update is called once per frame
@@ -81,6 +96,8 @@ public class FinalRiddle1 : MonoBehaviour {
 
 		RevealCorrectKey();
 		//Debug.Log(correctKeyCnt);
+
+		FR_HintSystem();
 	}
 
 	// Once a correct key is pressed, show it
@@ -98,5 +115,33 @@ public class FinalRiddle1 : MonoBehaviour {
 		}else if(correctKeyCnt == 6){
 			correctKey_R.color = new Color(255, 255, 255, 1);
 		}
+	}
+
+	void FR_HintSystem(){
+		// If the level is played for longer than the first hint timer, reveal the instruction hint
+		if (Time.timeSinceLevelLoad > hintTimer1 && !(Time.timeSinceLevelLoad > hintTimer2)){
+			hintText.text = hint1;
+			// Dividing by 7 makes fade lasts 7 secs
+			hintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
+			try{
+				hintText.color = new Color(255, 255, 255, hintAlpha);
+			}catch(MissingReferenceException e){
+				Debug.Log(e.ToString());
+				hintText_go = GameObject.Find ("HintText");
+				hintText = hintText_go.GetComponent<GUIText>();
+				Debug.Log("Missing Reference resolved, " + hintText_go + " successfully assigned");
+			}
+		}
+
+		// If the level is played for longer than the second hint timer, reveal the next instruction hint
+		if (Time.timeSinceLevelLoad > hintTimer2 && !(Time.timeSinceLevelLoad > hintTimer3)){
+			hintText.text = hint2;
+		}
+
+		// If the level is played for longer than the third hint timer, reveal the next instruction hint
+		if (Time.timeSinceLevelLoad > hintTimer3){
+			hintText.text = hint3;
+		}
+
 	}
 }

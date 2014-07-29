@@ -244,16 +244,20 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Master fucntion, handles scene loading logic
 	void RiddleMaster(){
-		// When the last level is reached, destory all the things!
-		if (sceneIndex == 42)
+		// When the Final Riddle is reached, hide the riddle text
+		if(sceneIndex >= 42){
+			riddleText.color = new Color(255, 255, 255, 0);
+		}
+		// When the last riddle is reached, destory all the things!
+		if (sceneIndex == 46)
 			Destroy(this.gameObject);
 
-		if (levelCompleteP){
+		if (levelCompleteP && !(sceneIndex > 41)){
 			//Load next riddle
 			LoadNext();
 			// Reset the boolean value
 			levelCompleteP = false;
-		}else if(riddleCompleteP){
+		}else if(riddleCompleteP && !(sceneIndex > 41)){
 			//Load next level
 			LoadNext();
 			// Reset the boolean value
@@ -278,21 +282,12 @@ public class RiddleScript : MonoBehaviour {
 
 		// Load the next scene - If it is the first riddle scene, increment the
 		// sceneIndex by 3 instead, to  compensate for the MainMenu and 
-		// LevelSelect throwing of the indexing.
+		// LevelSelect throwing off the indexing.
 		if(sceneIndex == 0){
 			Application.LoadLevel(sceneIndex += 3);
 		}else{
 			Application.LoadLevel(sceneIndex += 1);
 		}
-
-		// Destroy all duplicate gameObjects created by a player quitting and playing again.
-		// Preserve this RiddleScript by changing it's name in the Level1 scene.
-		//if(sceneID == "Level"){
-		//	gameObject.name = "RiddleText_Original";
-		//}
-
-		//RiddleTextDups = GameObject.Find ("RiddleText");
-		//Destroy(RiddleTextDups);
 
 	}
 	
@@ -340,7 +335,7 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new MoveAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
 
 		// Riddle 13: Windows - Move actively
-		riddles.Add(new Riddle("An ancient invention still used today, that allows people\nto see through walls, and can be bowed or bayed.", KeyCode.W, new MoveAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
+		riddles.Add(new Riddle("An ancient invention still used today, \nthat allows people to see through walls, \nand can be bowed or bayed.", KeyCode.W, new MoveAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
 
 		// Riddle 14: Tree - Jump actively, Move passively
 		riddles.Add(new Riddle("In spring I am gay in handsome array;\nin summer more clothing I wear.\nWhen colder it grows I fling off my clothes,\nand in winter quite naked I appear.", KeyCode.T, new JumpAction(), 30, audioClip, "The subject of a Shel Silverstein classic", "A mighty oak, a weeping willow, and a handsome spruce"));
@@ -349,7 +344,7 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("I am colored red, blue, and yellow and \nevery other hue of the rainbow. \nI am thick and thin, short and tall. \nI can eat over a hundred sheep in a row. \nWhat am I?", KeyCode.R, new JumpAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
 
 		// Riddle 16: Ice - Jump actively, Move passively
-		riddles.Add(new Riddle("I am powerful enough to smash ships and crush roofs,\nyet I still fear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
+		riddles.Add(new Riddle("I am powerful enough to smash ships and \n crush roofs, yet I still \n fear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
 
 		// Riddle 17: Waterfall - Jump actively, Move passively
 		riddles.Add (new Riddle("I can run like a river without moving at all.\nI have no lungs nor a throat, but I can still\nshout a mighty roaring call. What am I?", KeyCode.W, new JumpAction(), 36, audioClip, "Kayaking through these is rough", "Falling water"));
@@ -390,7 +385,7 @@ public class RiddleScript : MonoBehaviour {
 		}
 		
 		// If the scene index is odd, it is a level
-		if (sceneIndex % 2 == 1 && paused == false){
+		if (sceneIndex % 2 == 1 && paused == false && !(sceneIndex > 40)){
 			// If the level is played for longer than the small hint timer, and not
 			// longer than the big hint timer, reveal the hint for this riddle.
 			if (Time.timeSinceLevelLoad > smallHintTimer && !(Time.timeSinceLevelLoad > bigHintTimer)){
@@ -418,7 +413,7 @@ public class RiddleScript : MonoBehaviour {
 			
 			// If the level is played for longer than the big hint timer,
 			// reveal the big hint for this riddle
-			if (Time.timeSinceLevelLoad > bigHintTimer){
+			if (Time.timeSinceLevelLoad > bigHintTimer && !(sceneIndex > 40)){
 				// Dividing by 7 makes fade lasts 7 secs
 				bigHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
 				bigHintText.color = new Color(255, 255, 255, bigHintAlpha);

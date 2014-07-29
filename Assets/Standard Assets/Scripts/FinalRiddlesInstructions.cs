@@ -15,15 +15,12 @@ public class FinalRiddlesInstructions : MonoBehaviour {
 
 	int cnt = 0; // A counter used for changing text
 
-	string instructions1 = "There are 3 Final Riddles for you to solve. There will\nbe no playable levels associated with these riddles,\nno hints, and each wrong answer will\nadd to the death counter.";
-	string instructions2 = "Each letter of the answer to a Final Riddle\n will be the first letter of an answer\n to one of the previous 20 riddles.\n\nProvided is a word bank of these previous answers.\n However, not all words in the bank are \npart of the Final Riddle's answer.";
-	string instructions3 = "For example, if a Final Riddle's answer is 'BAY'\nthe word bank would contain words like\n'Bird', 'Art', and 'Yearn' among others.";
-	string instructions4 = "To give an answer to a Final Riddle, simply\nspell out the letters of the word on the keyboard.";
-	string instructions5 = "Final Riddle 1";
+	string instructions1 = "There are 3 Final Riddles for you to solve.\nYou must use only your wit and mind. Good luck.";
+	string instructions2 = "Final Riddle 1";
 
 	// Use this for initialization
 	void Start () {
-		FinalRiddleIntroText.text = "Congratulations on solving all 20 riddles and\nbeating their associated levels!\nNow is when the final challenge begins...";
+		FinalRiddleIntroText.text = "Congratulations on solving all 20 riddles and\nsurviving their associated levels!\nNow your final challenge begins...";
 		StartCoroutine(FinalRiddleInstructions());
 	}
 	
@@ -47,19 +44,7 @@ public class FinalRiddlesInstructions : MonoBehaviour {
 		// Fade out text
 		fadeOutTextp = true;
 
-		// Wait 2nd set of instructions to be read
-		yield return new WaitForSeconds(16);
-		fadeOutTextp = true;
-
-		// Wait 3rd set of instructions to be read
-		yield return new WaitForSeconds(25);
-		fadeOutTextp = true;
-
-		// Wait for the 4th set of instructions to be read
-		yield return new WaitForSeconds(14);
-		fadeOutTextp = true;
-
-		// Wait for the 5th set of instructions to be read
+		// Wait for the 2nd set of instructions to be read
 		yield return new WaitForSeconds(14);
 		fadeOutTextp = true;
 
@@ -75,12 +60,6 @@ public class FinalRiddlesInstructions : MonoBehaviour {
 			FinalRiddleIntroText.text = instructions1;
 		}else if(cnt == 2){
 			FinalRiddleIntroText.text = instructions2;
-		}else if(cnt == 3){
-			FinalRiddleIntroText.text = instructions3;
-		}else if(cnt == 4){
-			FinalRiddleIntroText.text = instructions4;
-		}else if(cnt == 5){
-			FinalRiddleIntroText.text = instructions5;
 		}
 	}
 

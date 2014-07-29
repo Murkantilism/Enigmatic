@@ -15,7 +15,7 @@ public class FinalRiddleText : MonoBehaviour {
 		}else if(Application.loadedLevelName == "FinalRiddle2"){
 			FinalRiddleGUIText.text = "Many things, from the mightest battleship to the simplest\nbattery will gradually fall victim to my appetite.";
 		}else if(Application.loadedLevelName == "FinalRiddle3"){
-			FinalRiddleGUIText.text = "By your side, can make you laugh but sometimes cry.\nThere when in need, and held in high regard indeed.\nA source of stregth and trust, but\ncasual enough to fart in front of when you must.";
+			FinalRiddleGUIText.text = "By your side, can make you laugh but sometimes cry.\nThere when in need, and held in high regard indeed.\nA source of stregth and trust, but casual\n enough to fart in front of when you must.";
 		}
 	}
 	

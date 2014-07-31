@@ -7,7 +7,6 @@ var adam = false;
 var casper = false;
 var kenny = false;
 // Art
-var cheyenne = false;
 var chris = false;
 var jen = false;
 // Music & Sound
@@ -42,8 +41,6 @@ function OnMouseUp(){
 		Application.OpenURL("http://www.northeastern.edu/camd/artdesign/people/casper-harteveld/");
 	}else if(kenny){
 		Application.OpenURL("http://kenney.itch.io/kenney-donation");
-	}else if(cheyenne){
-		Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
 	}else if(chris){
 		Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
 	}else if(jen){
@@ -63,7 +60,7 @@ function OnGUI() {
 	var buttonStyle = new GUIStyle("button");
 	buttonStyle.fontSize = 25;
 	
-	if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Back", buttonStyle)){
+	if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Main Menu", buttonStyle)){
 		Destroy(mainCamera);
 		Application.LoadLevel("MainMenu");
 	}

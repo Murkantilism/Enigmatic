@@ -18,7 +18,11 @@ public class RiddleScript : MonoBehaviour {
 	// The alpha values for the hints
 	float smallHintAlpha;
 	float bigHintAlpha;
-	
+
+	// The GUIText object for "Press spacebar to continue!"
+	GUIText spaceBarText;
+
+
 	// Big sphinx sprite
 	public tk2dSprite bigSphinxSprite;
 	public tk2dSpriteAnimator bigSphinxSpriteAnim;
@@ -91,7 +95,7 @@ public class RiddleScript : MonoBehaviour {
 		bigSphinxSprite = bigSphinxSprite_go.GetComponent<tk2dSprite>();
 		bigSphinxSprite.SetSprite("BigSphinx_pixel_01");
 
-
+		spaceBarText = GameObject.Find("PressSpaceBarText").guiText;
 
 		blackPauseTexture_go = GameObject.Find("blackPauseTexture");
 		blackPauseTexture = blackPauseTexture_go.GetComponent<GUITexture>();
@@ -111,6 +115,9 @@ public class RiddleScript : MonoBehaviour {
 		// Set the hints invisisble at beginning
 		smallHintText.color = new Color(255, 255, 255, 0);
 		bigHintText.color = new Color(255, 255, 255, 0);
+
+		// Set the spacebar text invisible at beginning
+		spaceBarText.color = new Color(255, 255, 255, 0);
 
 		// Find the sceneIdentifier GameObject
 		sceneIdentifier = GameObject.Find("sceneIdentifier");
@@ -137,6 +144,8 @@ public class RiddleScript : MonoBehaviour {
 			
 			bigHintText_go = GameObject.Find ("Hint_BIG");
 			bigHintText = bigHintText_go.GetComponent<GUIText>();
+
+			spaceBarText = GameObject.Find("PressSpaceBarText").guiText;
 
 			// Refresh the background music object
 			backgroundMusic = GameObject.Find("BackgroundMusic");
@@ -170,30 +179,28 @@ public class RiddleScript : MonoBehaviour {
 				sceneIdentifier = GameObject.Find("sceneIdentifier");
 			}
 
+
 			// Confirm this scene is in fact a riddle by checking scene ID
 			if(sceneIdentifier.GetComponent<SceneIdentifier>().sceneID == "Riddle"){
+				// Show sphinx talking animation
+				bigSphinxSpriteAnim.renderer.enabled = true;
 
-				// If this is the first riddle, wait 10 seconds while player reads
-				// instructions, then invoke fade text.
-				if (sceneIndex == 2 && paused == false){
-					// Set the big sphinx visible
-					bigSphinxSprite.color = new Color(255, 255, 255, 1);
-					Invoke("FirstSceneFadeInText", 10);
-					
-				// Otherwise, fade in riddle text normally
+				// Dividing by 5 makes fade lasts 5 secs
+				riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
+				
+				riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
+				if(!(sceneIndex > 41)){
+					spaceBarText.color = new Color(255, 255, 255, riddleAlphaValue);
 				}else{
-					// Dividing by 5 makes fade lasts 5 secs
-					riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
-					
-					riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
-					
-					if (Time.timeSinceLevelLoad > riddleTimer){
-						riddleCompleteP = true;
-					}
-					
-					// Set the big sphinx visible
-					bigSphinxSprite.color = new Color(255, 255, 255, 1);
+					spaceBarText.color = new Color(255, 255, 255, 0);
 				}
+				
+				/*if (Time.timeSinceLevelLoad > riddleTimer){
+					riddleCompleteP = true;
+				}*/
+				
+				// Set the big sphinx visible
+				bigSphinxSprite.color = new Color(255, 255, 255, 1);
 			}
 		}
 
@@ -206,10 +213,13 @@ public class RiddleScript : MonoBehaviour {
 
 			// Confirm this scene is in fact a level by checking scene ID
 			if(sceneIdentifier.GetComponent<SceneIdentifier>().sceneID == "Level"){
-
+				// Hide big sphinx talking animation
+				bigSphinxSpriteAnim.renderer.enabled = false;
+				
 				// Set riddle text invisible
 				riddleAlphaValue = 0;
 				riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
+				spaceBarText.color = new Color(255, 255, 255, riddleAlphaValue);
 				
 				// Set the big sphinx invisible
 				bigSphinxSprite.color = new Color(255, 255, 255, 0);
@@ -217,23 +227,10 @@ public class RiddleScript : MonoBehaviour {
 		}
 	}
 	
-	// Fade in text for the first scene (works exactly like fade in for any
-	// other scene, but is a seperate function invoked after 10 seconds).
-	void FirstSceneFadeInText(){
-		// Dividing by 5 makes fade lasts 5 secs
-		riddleAlphaValue += Mathf.Clamp01(Time.deltaTime / 5);
-		
-		riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
-		
-		if (Time.timeSinceLevelLoad > firstRiddleTimer){
-			riddleCompleteP = true;
-		}
-	}
-	
 	// Checks if riddle is skipped (ESC input)
 	void isRiddleCompleted(){
-		// If the scene index is even, it is a riddle - ESC skips riddle
-		if (sceneIndex % 2 == 0 && Input.GetKeyDown(KeyCode.Escape)){
+		// If the scene index is even, it is a riddle - spacebar skips riddle
+		if (sceneIndex % 2 == 0 && Input.GetKeyDown(KeyCode.Space)){
 			riddleCompleteP = true;
 		}
 	}
@@ -252,12 +249,14 @@ public class RiddleScript : MonoBehaviour {
 		if (sceneIndex == 46)
 			Destroy(this.gameObject);
 
+		// If the level has been completed and we aren't on final riddles
 		if (levelCompleteP && !(sceneIndex > 41)){
 			//Load next riddle
 			LoadNext();
 			// Reset the boolean value
 			levelCompleteP = false;
-		}else if(riddleCompleteP && !(sceneIndex > 41)){
+		// If the riddle has been completed, we aren't on final riddles, and the player has hit spacebar
+		}else if(riddleCompleteP && !(sceneIndex > 41) && Input.GetKeyUp(KeyCode.Space)){
 			//Load next level
 			LoadNext();
 			// Reset the boolean value
@@ -276,6 +275,7 @@ public class RiddleScript : MonoBehaviour {
 		DontDestroyOnLoad(blackPauseTexture);
 		DontDestroyOnLoad(smallHintText);
 		DontDestroyOnLoad(bigHintText);
+		DontDestroyOnLoad(spaceBarText.gameObject);
 		//DontDestroyOnLoad(sceneIdentifier);
 		Debug.Log("Scene Index: " + sceneIndex);
 		Debug.Log(Application.loadedLevelName);
@@ -441,5 +441,11 @@ public class RiddleScript : MonoBehaviour {
 	void BigSphinxPostion(){
 		myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 		bigSphinxSprite.transform.position = myCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height / -5f, 30));
+	}
+
+	// Called by Player.cs when the player quits
+	public void Quit(){
+		// Hide the big sphinx talking animation
+		bigSphinxSpriteAnim.renderer.enabled = false;
 	}
 }

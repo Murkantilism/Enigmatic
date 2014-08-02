@@ -23,10 +23,13 @@ public class IntroductionScene : MonoBehaviour {
 	public tk2dSprite littleSphinxSprite;
 	public tk2dSprite thebesSprite;
 
+	// Is the player ready to continue?
+	bool readyToContinue = false;
+
 	string intro1 = "Years before the Greek King Oedipus is due to \nfulfill his prophecy, the ancient and powerful \nSphinx forsees an end coming to her guard \nover the ancient city of Thebes.";
 	string intro2 = "In a bout of worry, The Sphinx creates \nand trains a young new Sphinx in her \nown image, to ultimately succeed her \nin the event of her own demise.";
 	string intro3 = "Through many trials and tribulations the young \nSphinx must learn the complex riddles of \nThe Sphinx in order to stump any potential \noutsider attempting to enter Thebes.";
-	string intro4 = "Instructions: Solve the riddles or trivia \nto unlock the secrects to gameplay! \nThe first letter of a riddle's answer \nis the letter key used to play.";
+	string intro4 = "Instructions: Solve the riddles or trivia \nto unlock the secrects to gameplay! \nThe first letter of a riddle's answer \nis the letter key used to play.\nPress spacebar to continue!";
 
 	// Use this for initialization
 	void Start () {
@@ -75,6 +78,10 @@ public class IntroductionScene : MonoBehaviour {
 			fadeInTextp = false;
 			fadeOutTextp = false;
 		}
+
+		if(Input.GetKeyUp(KeyCode.Space)){
+			Application.LoadLevel("Riddle1");
+		}
 	}
 
 	// A coroutine used to display the instructions for the Final Riddles
@@ -101,16 +108,11 @@ public class IntroductionScene : MonoBehaviour {
 		yield return new WaitForSeconds(16);
 		// Fade out text
 		fadeOutTextp = true;
-		
-		// Wait for fade out to finish, load first riddle
-		yield return new WaitForSeconds(5);
-		Application.LoadLevel("Riddle1");
 	}
 
 	// If the intro has been skipped, wait for instructions to be read, load first riddle
 	IEnumerator IntroSkipped(){
-		yield return new WaitForSeconds(8);
-		Application.LoadLevel("Riddle1");
+		yield return new WaitForSeconds(1);
 	}
 
 	// When the counter is incrememted by FadeOutText(), set the string value of

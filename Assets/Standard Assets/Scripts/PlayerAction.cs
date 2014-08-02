@@ -12,6 +12,8 @@ public abstract class PlayerAction{
 	public Vector3 moveDirection = Vector3.zero;
 	
 	public PlayerAnimator playerAnim;
+
+	Player playerScript;
 	
 	// Use this for initialization
 	void Start () {
@@ -30,6 +32,12 @@ public abstract class PlayerAction{
 	public void GetPlayerController() {
 		if (playerController == null) {
 			playerController = playerObj.GetComponent<CharacterController>();
+		}
+	}
+
+	public void GetPlayerScript(){
+		if(playerScript == null){
+			playerScript = playerObj.GetComponent<Player>();
 		}
 	}
 
@@ -56,6 +64,23 @@ public abstract class PlayerAction{
 	public void Jump() {
 		GetPlayerObject();
 		GetPlayerController();
+		GetPlayerScript();
+
+		// If the player is on a falling platform, ignore grounded requirements, and let player do a half jump
+		if(playerScript.onDropPlatform == true){
+			playerAnim = GameObject.Find("PlayerAnimatedSprite").GetComponent<PlayerAnimator>();
+			// If the jump animation isn't already playing, play it
+			if(!playerAnim.anim.IsPlaying("Jump")){
+				playerAnim.anim.Play("Jump");
+			}else{
+				playerAnim.anim.Play("Walk");
+			}
+			
+			moveDirection = new Vector3(1, 0, 0);
+			moveDirection = playerController.transform.TransformDirection(moveDirection);
+			moveDirection *= speed;
+			moveDirection.y = jumpSpeed;
+		}
 
 		// If player is grounded, recalcuate move direction with
 		// Jump speed added to Y direction
@@ -68,12 +93,13 @@ public abstract class PlayerAction{
 			}else{
 				playerAnim.anim.Play("Walk");
 			}
+
 			moveDirection = new Vector3(1, 0, 0);
 			moveDirection = playerController.transform.TransformDirection(moveDirection);
 			moveDirection *= speed;
 			moveDirection.y = jumpSpeed;
 		}
-		
+
 		// Apply gravity
 		moveDirection.y -= gravity * Time.deltaTime;
 		// Move the controller

@@ -9,7 +9,6 @@ public var shopButton : TextMesh;
 
 var quitButtonp = false;
 var creditsButtonp = false;
-var autoGeneratorp = false;
 var playButtonp = false;
 //var shopButtonp = false;
 
@@ -51,14 +50,6 @@ function Update () {
 			creditsButton.renderer.material.color = Color.white;
 			creditsButtonp = false;
 		}
-		/*
-		if(menuIndex == 2){
-			shopButton.renderer.material.color = Color.blue;
-			shopButtonp = true;
-		}else{
-			shopButton.renderer.material.color = Color.white;
-			shopButtonp = false;
-		}*/
 		
 		if(menuIndex == 2){
 			quitButton.renderer.material.color = Color.blue;
@@ -77,12 +68,9 @@ function Update () {
 		}else if(creditsButtonp){
 			//If the Credits button is clicked, open the Credits screen
 			Application.LoadLevel("CreditsScreen");
-		}else if(autoGeneratorp){
-			// If the Level Auto-Generator is picked, load the file brwoser
-			Application.LoadLevel("SongBrowser");
 		}else if(playButtonp){
 			//If the play button is clicked, and there is a saved game, load that
-			Application.LoadLevel("LevelSelect");
+			Application.LoadLevel("IntroScene");
 		}
 	}
 }

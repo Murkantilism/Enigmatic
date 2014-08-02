@@ -17,6 +17,7 @@ public class Player : MonoBehaviour {
 	float gravity = 5.0f;
 	CharacterController controller;
 	Vector3 moveDirection  = Vector3.zero;
+	public bool onDropPlatform = false; // Is the player on top of a drop platform? (used by PlayerAction.cs)
 
 	// Use this for initialization
 	void Start () {
@@ -66,9 +67,9 @@ public class Player : MonoBehaviour {
 		else if (Input.GetKey(ridScript.currentRiddle.inputs)) {
 			ridScript.currentRiddle.action.Action();
 		}
-		// If any key is pressed and it is the wrong input (besides ESC and mouse clicks), 
+		// If the game isn't paused, if any key is pressed and it is the wrong input (ignore ESC and mouse clicks), 
 		// kill player and play thud sound effect
-		if (Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs)) && 
+		if (paused == false && Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs)) && 
 				   !(Input.GetKeyDown(KeyCode.Escape)) && !(Input.GetMouseButton(0)) && !(Input.GetMouseButton(1))){
 			thudAudioSource.PlayOneShot(thudAudioClip);
 			Respawn();
@@ -109,6 +110,14 @@ public class Player : MonoBehaviour {
 			if (dp)
 				dp.Reset();
 		}
+
+		GameObject[] dissolvePlatforms = GameObject.FindGameObjectsWithTag("DissolvingPlatform");
+		foreach (GameObject platform in dissolvePlatforms){
+			DissolvePlatform disp = platform.GetComponent<DissolvePlatform>();
+			if(disp){
+				disp.Reset();
+			}
+		}
 	}
 	
 	// show menu when paused
@@ -143,6 +152,8 @@ public class Player : MonoBehaviour {
 				blackPauseTexture.color = new Color(0, 0, 0, 0);
 				riddleText.color = new Color(255, 255, 255, 0);
 
+				ridScript.Quit();
+
 				ridScript.paused = false; // Set paused to false
 				ridScript.sceneIndex = 0; // Reset the scene index on quit
 				// Destory the hint gameObjects on quit (to avoid duplicate gameObjects)
@@ -170,10 +181,14 @@ public class Player : MonoBehaviour {
 		}
 		// If the player touches a DropPlatform, attach the corresponding script
 		else if (hit.collider.tag == "DropPlatform" && !hit.gameObject.GetComponent<DropPlatform>()) {
+			onDropPlatform = true;
+			Debug.Log("ON A DROP PLATFORM!");
 			hit.gameObject.AddComponent<DropPlatform>();
 		// If the player touches a DissolvingPlatform, attach the corresponding script
 		}else if (hit.collider.tag == "DissolvingPlatform" && !hit.gameObject.GetComponent<DissolvePlatform>()){
 			hit.gameObject.AddComponent<DissolvePlatform>();
+		}else{
+			onDropPlatform = false;
 		}
 	}
 }

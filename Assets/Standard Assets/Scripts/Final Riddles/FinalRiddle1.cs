@@ -72,22 +72,11 @@ public class FinalRiddle1 : MonoBehaviour {
 			// the death count at the same number it was previously when the correct key is pressed.
 			deathCntScript.deathCount--;
 		}
-		/*
-		// If any key is pressed, if it's the correct key, do nothing. Else, increment death counter.
-		if(Input.anyKeyDown){
-			if(Input.GetKeyUp (CorrectKeys[0])){
-				return; // FIXME: Apparently this doesn't prevent correct keys from incrememnting death count for some reason
-			}else{
-				deathCntScript.deathCount++;
-			}*/
 
-			// FIXME: Apparently the below method doesn't work either???
-
-			// If any key is pressed, and it isn't the current correct key, increment death count
-			if(Input.anyKeyDown && !(Input.GetKeyUp(CorrectKeys[0]))){
-				deathCntScript.deathCount++;
-			}
-		//}
+		// If any key is pressed, and it isn't the current correct key, increment death count
+		if(Input.anyKeyDown && !(Input.GetKeyUp(CorrectKeys[0]))){
+			deathCntScript.deathCount++;
+		}
 
 		// Once enough correct keys have been pressed, load the next riddle
 		if(correctKeyCnt >= correctKeyThresh){
@@ -142,6 +131,5 @@ public class FinalRiddle1 : MonoBehaviour {
 		if (Time.timeSinceLevelLoad > hintTimer3){
 			hintText.text = hint3;
 		}
-
 	}
 }

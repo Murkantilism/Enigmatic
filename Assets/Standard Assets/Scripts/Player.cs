@@ -67,10 +67,10 @@ public class Player : MonoBehaviour {
 		else if (Input.GetKey(ridScript.currentRiddle.inputs)) {
 			ridScript.currentRiddle.action.Action();
 		}
-		// If the game isn't paused, if any key is pressed and it is the wrong input (ignore ESC and mouse clicks), 
+		// If the game isn't paused, if any key is pressed and it is the wrong input (ignore ESC, spacebar, mouse clicks), 
 		// kill player and play thud sound effect
 		if (paused == false && Input.anyKeyDown && !(Input.GetKeyDown(ridScript.currentRiddle.inputs)) && 
-				   !(Input.GetKeyDown(KeyCode.Escape)) && !(Input.GetMouseButton(0)) && !(Input.GetMouseButton(1))){
+				   !(Input.GetKeyDown(KeyCode.Space)) && !(Input.GetKeyDown(KeyCode.Escape)) && !(Input.GetMouseButton(0)) && !(Input.GetMouseButton(1))){
 			thudAudioSource.PlayOneShot(thudAudioClip);
 			Respawn();
 		}

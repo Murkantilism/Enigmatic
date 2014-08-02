@@ -8,9 +8,9 @@ public class RiddleScript : MonoBehaviour {
 	// Riddle timer for first scene (longer b/c instructions)
 	public int firstRiddleTimer = 20;	
 	// Small hint timer (seconds)
-	public int smallHintTimer = 15;
+	public int smallHintTimer = 30;
 	// Big hint timer (seconds)
-	public int bigHintTimer = 25;
+	public int bigHintTimer = 60;
 	// The riddle GUIText
 	public GUIText riddleText;
 	// The alpha value for the riddle text
@@ -18,6 +18,13 @@ public class RiddleScript : MonoBehaviour {
 	// The alpha values for the hints
 	float smallHintAlpha;
 	float bigHintAlpha;
+	// Has the player requested a hint?
+	public bool firstHintRequestedP = false;
+	public bool secondHintRequestedP = false;
+
+	// Have the hints been shown?
+	public bool firstHintShown = false;
+	public bool secondHintShown = false;
 
 	// The GUIText object for "Press spacebar to continue!"
 	GUIText spaceBarText;
@@ -36,8 +43,10 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Background music (refernced for DontDestoryOnLoad)
 	public GameObject backgroundMusic;
-	// Death counter (refernced for DontDestoryOnLoad)
+	// Death counter (referenced for DontDestoryOnLoad)
 	public GameObject deathCounter;
+	// Timer (referenced for DontDestoryOnLoad)
+	public GameObject timer;
 	
 	// The GUIText objects for the hints
 	public GUIText smallHintText;
@@ -102,6 +111,7 @@ public class RiddleScript : MonoBehaviour {
 
 		backgroundMusic = GameObject.Find("BackgroundMusic");
 		deathCounter = GameObject.Find ("DeathCounter");
+		timer = GameObject.Find("Timer");
 		
 		// Set text invisisble & white at beginning
 		riddleText.color = new Color(255, 255, 255, riddleAlphaValue);
@@ -262,6 +272,16 @@ public class RiddleScript : MonoBehaviour {
 			// Reset the boolean value
 			riddleCompleteP = false;
 		}
+		// If scene is a riddle, hide timer. If scene is a level, show timer.
+		if(sceneID == "Riddle"){
+			timer.guiText.enabled = false;
+		}else if(sceneID == "Level"){
+			timer.guiText.enabled = true;
+		}
+		// If paused, hide timer
+		if(paused == true){
+			timer.guiText.enabled = false;
+		}
 	}
 	
 	// Loads the next scene
@@ -272,6 +292,7 @@ public class RiddleScript : MonoBehaviour {
 		DontDestroyOnLoad(bigSphinxSpriteAnim);
 		DontDestroyOnLoad(backgroundMusic);
 		DontDestroyOnLoad(deathCounter);
+		DontDestroyOnLoad(timer);
 		DontDestroyOnLoad(blackPauseTexture);
 		DontDestroyOnLoad(smallHintText);
 		DontDestroyOnLoad(bigHintText);
@@ -288,6 +309,14 @@ public class RiddleScript : MonoBehaviour {
 		}else{
 			Application.LoadLevel(sceneIndex += 1);
 		}
+
+		// Reset hint variables
+		firstHintRequestedP = false;
+		secondHintRequestedP = false;
+		firstHintShown = false;
+		secondHintShown = false;
+		smallHintAlpha = 0;
+		bigHintAlpha = 0;
 
 	}
 	
@@ -384,11 +413,19 @@ public class RiddleScript : MonoBehaviour {
 			bigHintText.color = new Color(255, 255, 255, 0);
 		}
 		
-		// If the scene index is odd, it is a level
+		// If the scene index is odd, it is a level. Make sure we aren't paused or at a final riddle.
 		if (sceneIndex % 2 == 1 && paused == false && !(sceneIndex > 40)){
-			// If the level is played for longer than the small hint timer, and not
-			// longer than the big hint timer, reveal the hint for this riddle.
-			if (Time.timeSinceLevelLoad > smallHintTimer && !(Time.timeSinceLevelLoad > bigHintTimer)){
+			// If the user hits spacebar, and the first hint is available to be requested, request it!
+			if(Input.GetKeyUp(KeyCode.Space) && Time.timeSinceLevelLoad > smallHintTimer && firstHintShown == false){
+				firstHintRequestedP = true;
+
+			// If the user hits spacebar, and the 1st hint has been shown, and 2nd hint is available to be requested, request it!
+			}else if(Input.GetKeyUp(KeyCode.Space) && firstHintShown == true && Time.timeSinceLevelLoad > bigHintTimer){
+				secondHintRequestedP = true;
+			}
+
+			// If the player has requested the first hint, show it
+			if(firstHintRequestedP == true){
 				// Dividing by 7 makes fade lasts 7 secs
 				smallHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
 				try{
@@ -399,8 +436,13 @@ public class RiddleScript : MonoBehaviour {
 					smallHintText = smallHintText_go.GetComponent<GUIText>();
 					Debug.Log("Missing Reference resolved, " + smallHintText_go + " successfully assigned");
 				}
-			// Otherwise set hint invisible
-			}else{
+				// Once the hint is at full alpha, it has been shown
+				if(smallHintText.color.a >= 1){
+					firstHintShown = true;
+				}
+			}
+			// If the second hint has been requested, hide 1st hint
+			if (secondHintRequestedP == true){
 				try{
 					smallHintText.color = new Color(255, 255, 255, 0);
 				}catch(MissingReferenceException e){
@@ -410,24 +452,35 @@ public class RiddleScript : MonoBehaviour {
 					Debug.Log("Missing Reference resolved, " + smallHintText_go + " successfully assigned");
 				}
 			}
-			
-			// If the level is played for longer than the big hint timer,
-			// reveal the big hint for this riddle
-			if (Time.timeSinceLevelLoad > bigHintTimer && !(sceneIndex > 40)){
+
+			// If the 2nd hint has been requested, show it
+			if(secondHintRequestedP == true){
 				// Dividing by 7 makes fade lasts 7 secs
 				bigHintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
-				bigHintText.color = new Color(255, 255, 255, bigHintAlpha);
-			}else{
 				try{
-					bigHintText.color = new Color(255, 255, 255, 0);
+					bigHintText.color = new Color(255, 255, 255, bigHintAlpha);
 				}catch(MissingReferenceException e){
 					Debug.Log(e.ToString());
 					bigHintText_go = GameObject.Find ("Hint_BIG");
 					bigHintText = bigHintText_go.GetComponent<GUIText>();
-					Debug.Log("Missing Reference resolved, " + bigHintText_go + " successfully assigned");
+					Debug.Log("Missing Reference resolved, " + smallHintText_go + " successfully assigned");
+				}
+				// Once the hint is at full alpha, it has been shown
+				if(bigHintText.color.a >= 1){
+					secondHintShown = true;
+				}
+
+				}else if(secondHintShown == false){
+					try{
+						bigHintText.color = new Color(255, 255, 255, 0);
+					}catch(MissingReferenceException e){
+						Debug.Log(e.ToString());
+						bigHintText_go = GameObject.Find ("Hint_BIG");
+						bigHintText = bigHintText_go.GetComponent<GUIText>();
+						Debug.Log("Missing Reference resolved, " + bigHintText_go + " successfully assigned");
+					}
 				}
 			}
-		}
 
 		// If the scene is a level and it has been paused, hide the hints
 		if(sceneIndex % 2 == 1 && paused == true){
@@ -445,6 +498,8 @@ public class RiddleScript : MonoBehaviour {
 
 	// Called by Player.cs when the player quits
 	public void Quit(){
+		// Hide the timer
+		timer.guiText.enabled = false;
 		// Hide the big sphinx talking animation
 		bigSphinxSpriteAnim.renderer.enabled = false;
 	}

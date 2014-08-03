@@ -85,6 +85,12 @@ public class RiddleScript : MonoBehaviour {
 	// Have the sound fx been assigned?
 	bool fxAssigned = false;
 
+	// Has the sound fx already been played?
+	bool fxPlayed = false;
+
+	// A child object used to play hint sound fx
+	GameObject hintFX;
+
 	// On Awake() check if there are duplicate RiddleText objects, and if so, destroy them
 	public void Awake(){
 		DontDestroyOnLoad(this);
@@ -202,7 +208,7 @@ public class RiddleScript : MonoBehaviour {
 			
 			// Attach an audio source to the child
 			cameraChild.AddComponent<AudioSource>();
-			// Load the enemy death sound effect
+			// Load the sound effect
 			cameraChild.audio.clip = (AudioClip)Resources.Load("AmbientFX/Finished Level", typeof(AudioClip));
 
 			fxAssigned = true;
@@ -349,6 +355,8 @@ public class RiddleScript : MonoBehaviour {
 		smallHintAlpha = 0;
 		bigHintAlpha = 0;
 
+		// Reset sound fx variable
+		fxPlayed = false;
 	}
 	
 	// Create the list of riddles
@@ -450,9 +458,36 @@ public class RiddleScript : MonoBehaviour {
 			if(Input.GetKeyUp(KeyCode.Space) && Time.timeSinceLevelLoad > smallHintTimer && firstHintShown == false){
 				firstHintRequestedP = true;
 
+				if(fxPlayed == false){
+					// Assign the main camera
+					mainCamera = GameObject.Find("Main Camera");
+					// Instantiate an empty gameobject
+					hintFX = new GameObject();
+
+					// Parent the empty gameobject to the riddle script (this script)
+					hintFX.transform.parent = transform;
+
+					// Set the position of the child close to main camera
+					hintFX.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z - 5);
+
+					// Attach an audio source to the child
+					hintFX.AddComponent<AudioSource>();
+
+					// Load the sound effect
+					hintFX.audio.clip = (AudioClip)Resources.Load("AmbientFX/Hint", typeof(AudioClip));
+
+					hintFX.audio.Play();
+					fxPlayed = true;
+				}
+
 			// If the user hits spacebar, and the 1st hint has been shown, and 2nd hint is available to be requested, request it!
 			}else if(Input.GetKeyUp(KeyCode.Space) && firstHintShown == true && Time.timeSinceLevelLoad > bigHintTimer){
 				secondHintRequestedP = true;
+
+				if(fxPlayed == false){
+					hintFX.audio.Play();
+					fxPlayed = true;
+				}
 			}
 
 			// If the player has requested the first hint, show it
@@ -470,6 +505,7 @@ public class RiddleScript : MonoBehaviour {
 				// Once the hint is at full alpha, it has been shown
 				if(smallHintText.color.a >= 1){
 					firstHintShown = true;
+					fxPlayed = false; // Reset boolean flag
 				}
 			}
 			// If the second hint has been requested, hide 1st hint
@@ -533,5 +569,7 @@ public class RiddleScript : MonoBehaviour {
 		timer.guiText.enabled = false;
 		// Hide the big sphinx talking animation
 		bigSphinxSpriteAnim.renderer.enabled = false;
+		// Reset sound fx variable
+		fxPlayed = false;
 	}
 }

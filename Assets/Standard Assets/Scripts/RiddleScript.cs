@@ -79,6 +79,12 @@ public class RiddleScript : MonoBehaviour {
 	// Used to find any duplicates of this gameObject
 	public GameObject RiddleTextDups;
 
+	GameObject mainCamera;
+	// A child object attached to the camera used to play sound fx
+	GameObject cameraChild;
+	// Have the sound fx been assigned?
+	bool fxAssigned = false;
+
 	// On Awake() check if there are duplicate RiddleText objects, and if so, destroy them
 	public void Awake(){
 		DontDestroyOnLoad(this);
@@ -168,7 +174,8 @@ public class RiddleScript : MonoBehaviour {
 		RiddleMaster();     // Handles scene loading logic
 		SetRiddleText();    // Sets the riddle text based on scene index
 		BigSphinxPostion(); // Sets the position of the Big Sphinx to the lower right
-		HintSystem();
+		HintSystem();       // Controls the hints
+		LevelSoundFX();     // Assigns & plays level sound fx
 
 		// If the scene identifier object doesn't exist, find it!
 		if(sceneIdentifier == null){
@@ -177,6 +184,29 @@ public class RiddleScript : MonoBehaviour {
 
 		// Refresh the sceneID
 		sceneID = sceneIdentifier.GetComponent<SceneIdentifier>().sceneID;
+
+
+	}
+
+	void LevelSoundFX(){
+		// If the scene is a level, and not paused, and the sound fx hasn't already been assigned, assign it
+		if (sceneID == "Level" && paused == false && fxAssigned == false){
+			// Assign the main camera
+			mainCamera = GameObject.Find("Main Camera");
+			// Instantiate an empty gameobject
+			cameraChild = new GameObject();
+			// Parent the empty gameobject to the riddle script (this script)
+			cameraChild.transform.parent = transform;
+			// Set the position of the child close to main camera
+			cameraChild.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z - 5);
+			
+			// Attach an audio source to the child
+			cameraChild.AddComponent<AudioSource>();
+			// Load the enemy death sound effect
+			cameraChild.audio.clip = (AudioClip)Resources.Load("AmbientFX/Finished Level", typeof(AudioClip));
+
+			fxAssigned = true;
+		}
 	}
 	
 	// Fades in text over 5 seconds, sets riddleCompleteP to 
@@ -246,6 +276,7 @@ public class RiddleScript : MonoBehaviour {
 	}
 	
 	public void completeLevel() {
+		cameraChild.audio.Play(); // Play the finished level sound effect
 		levelCompleteP = true;
 	}
 	

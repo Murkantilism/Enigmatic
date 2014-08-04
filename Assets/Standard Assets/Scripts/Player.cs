@@ -45,7 +45,7 @@ public class Player : MonoBehaviour {
 		
 		// check for pause
 		if (Input.GetKeyDown(KeyCode.Escape)) {
-			paused = true;
+			paused = !paused;
 			Time.timeScale = 0;
 		}
 
@@ -167,6 +167,14 @@ public class Player : MonoBehaviour {
 				paused = false;
 				Time.timeScale = 1;
 			}
+		}else{
+			// If unpaused, set black pause GUI texture & riddle GUI text
+			// invisisble, set Riddle Script's paused boolean false.
+			blackPauseTexture.color = new Color(0, 0, 0, 0);
+			riddleText.color = new Color(255, 255, 255, 0);
+			ridScript.paused = false;
+			paused = false;
+			Time.timeScale = 1;
 		}
     }
 

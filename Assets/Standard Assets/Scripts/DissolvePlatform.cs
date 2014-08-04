@@ -50,7 +50,7 @@ public class DissolvePlatform : MonoBehaviour {
 
 		// Start dissolving the platform when the player touches it
 		if(destroy == false){
-			alphaFadeValue -= Mathf.Clamp01(Time.deltaTime / 0.5f);
+			alphaFadeValue -= Mathf.Clamp01(Time.deltaTime / 0.25f);
 
 			platformSprite.color = new Color (255, 255, 255, alphaFadeValue);
 

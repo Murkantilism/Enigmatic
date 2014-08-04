@@ -455,7 +455,7 @@ public class RiddleScript : MonoBehaviour {
 		// If the scene index is odd, it is a level. Make sure we aren't paused or at a final riddle.
 		if (sceneIndex % 2 == 1 && paused == false && !(sceneIndex > 40)){
 			// If the user hits spacebar, and the first hint is available to be requested, request it!
-			if(Input.GetKeyUp(KeyCode.Space) && Time.timeSinceLevelLoad > smallHintTimer && firstHintShown == false){
+			if(sceneID == "Level" && Input.GetKeyUp(KeyCode.Space) && Time.timeSinceLevelLoad > smallHintTimer && firstHintShown == false){
 				firstHintRequestedP = true;
 
 				if(fxPlayed == false){
@@ -481,7 +481,7 @@ public class RiddleScript : MonoBehaviour {
 				}
 
 			// If the user hits spacebar, and the 1st hint has been shown, and 2nd hint is available to be requested, request it!
-			}else if(Input.GetKeyUp(KeyCode.Space) && firstHintShown == true && Time.timeSinceLevelLoad > bigHintTimer){
+			}else if(sceneID == "Level" && Input.GetKeyUp(KeyCode.Space) && firstHintShown == true && Time.timeSinceLevelLoad > bigHintTimer){
 				secondHintRequestedP = true;
 
 				if(fxPlayed == false){

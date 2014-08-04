@@ -14,17 +14,30 @@ var alex = false;
 var ronny = false;
 var efe = false;
 
-var mainCamera : GameObject;
-
 var defaultURL = "https://www.facebook.com/incendiaryindustries";
 
-function Start () {
-	mainCamera = GameObject.FindWithTag("MainCamera");
+var myCamera : GameObject;
+var cameraChild : GameObject;
+
+function Start(){
+	// Assign the main camera
+	myCamera = GameObject.Find("Main Camera");
+	// Instantiate an empty gameobject
+	cameraChild = new GameObject();
+	// Parent the empty gameobject to the camera
+	cameraChild.transform.parent = myCamera.transform;
+	// Set the position of the child close to parent
+	cameraChild.transform.position = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z - 5);
+	// Attach an audio source to the child
+	cameraChild.AddComponent(AudioSource);
+	// Load the sound effect
+	cameraChild.audio.clip = Resources.Load("AmbientFX/menu sound", typeof(AudioClip));
 }
 
 function OnMouseEnter(){
 	// Change the color of the text
 	renderer.material.color = Color.blue;
+	cameraChild.audio.Play();
 }
 
 function OnMouseExit(){
@@ -51,25 +64,5 @@ function OnMouseUp(){
 		Application.OpenURL("https://soundcloud.com/ronnnymrazmusic");
 	}else if(efe){
 		Application.OpenURL("https://soundcloud.com/falanca");
-	}
-}
-
-function OnGUI() {
-	GUI.backgroundColor = Color.magenta;
-	
-	var buttonStyle = new GUIStyle("button");
-	buttonStyle.fontSize = 25;
-	
-	if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Main Menu", buttonStyle)){
-		Destroy(mainCamera);
-		Application.LoadLevel("MainMenu");
-	}
-}
-
-function Update(){
-	// If the backspace or espace key is hit, go back to main menu
-	if(Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape)){
-		Destroy(mainCamera);
-		Application.LoadLevel("MainMenu");
 	}
 }

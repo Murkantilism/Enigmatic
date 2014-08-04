@@ -309,11 +309,21 @@ public class RiddleScript : MonoBehaviour {
 			// Reset the boolean value
 			riddleCompleteP = false;
 		}
-		// If scene is a riddle, hide timer. If scene is a level, show timer.
+		// If scene is a riddle, hide timer & death count. If scene is a level, show them.
 		if(sceneID == "Riddle"){
 			timer.guiText.enabled = false;
+			// Only disable death counter if this isn't a final riddle
+			if(!(sceneIndex >= 41)){
+				deathCounter.guiText.enabled = false;
+			}
 		}else if(sceneID == "Level"){
 			timer.guiText.enabled = true;
+			if(!paused){
+				deathCounter.guiText.enabled = true;
+			}else{
+				deathCounter.guiText.enabled = false;
+			}
+
 		}
 		// If paused, hide timer
 		if(paused == true){
@@ -453,7 +463,7 @@ public class RiddleScript : MonoBehaviour {
 		}
 		
 		// If the scene index is odd, it is a level. Make sure we aren't paused or at a final riddle.
-		if (sceneIndex % 2 == 1 && paused == false && !(sceneIndex > 40)){
+		if (sceneIndex % 2 == 1 && paused == false && !(sceneIndex > 41)){
 			// If the user hits spacebar, and the first hint is available to be requested, request it!
 			if(sceneID == "Level" && Input.GetKeyUp(KeyCode.Space) && Time.timeSinceLevelLoad > smallHintTimer && firstHintShown == false){
 				firstHintRequestedP = true;

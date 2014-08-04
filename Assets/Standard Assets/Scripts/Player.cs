@@ -5,6 +5,7 @@ public class Player : MonoBehaviour {
 	
 	public RiddleScript ridScript;
 	public DeathCounter deathCntScript;
+	public GameObject deathCounterGO;
 	public GameObject spawn;
 	public bool paused = false;
 	public GUITexture blackPauseTexture;
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour {
 		// Find and assign all relevant variables
 		ridScript = GameObject.Find("RiddleText").GetComponent<RiddleScript>();
 		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
+		deathCounterGO = GameObject.Find ("DeathCounter");
 		spawn = GameObject.Find("Spawn");
 		blackPauseTexture = GameObject.Find("blackPauseTexture").GetComponent<GUITexture>();
 		riddleText = GameObject.Find("RiddleText").GetComponent<GUIText>();

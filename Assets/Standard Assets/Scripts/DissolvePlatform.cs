@@ -13,15 +13,41 @@ public class DissolvePlatform : MonoBehaviour {
 
 	public tk2dBaseSprite childSprite;
 
+	GameObject myCamera;
+	
+	GameObject cameraChild;
+
+	bool fxPlaying = false;
+
 	// Use this for initialization
 	void Start () {
 		// Get the sprite attached to this gameObject
 		platformSprite = GetComponent<tk2dBaseSprite>();
 		platformCollider = GetComponent<BoxCollider>();
+
+		// Assign the main camera
+		myCamera = GameObject.Find("Main Camera");
+		// Instantiate an empty gameobject
+		cameraChild = new GameObject();
+		// Parent the empty gameobject to the camera
+		cameraChild.transform.parent = myCamera.transform;
+		// Set the position of the child close to parent
+		cameraChild.transform.position = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z - 5);
+		// Attach an audio source to the child
+		cameraChild.AddComponent<AudioSource>();
+		// Load the enemy death sound effect
+		cameraChild.audio.clip = (AudioClip)Resources.Load("AmbientFX/platform dissolve", typeof(AudioClip));
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		// If the sound effect isn't already playing
+		if(fxPlaying == false){
+			// Play the sound effect
+			cameraChild.audio.Play();
+			fxPlaying = true;
+		}
+
 		// Start dissolving the platform when the player touches it
 		if(destroy == false){
 			alphaFadeValue -= Mathf.Clamp01(Time.deltaTime / 0.5f);
@@ -63,6 +89,8 @@ public class DissolvePlatform : MonoBehaviour {
 		}
 
 		destroy = true;
+		fxPlaying = false;
+		Destroy(cameraChild);
 		GameObject.DestroyImmediate(this);
 	}
 }

@@ -15,14 +15,31 @@ public var quitButton : TextMesh;
 
 var mainMenuKeyboard : GameObject;
 
+var myCamera : GameObject;
+var cameraChild : GameObject;
+
 function Start(){
 	mainMenuKeyboard = GameObject.Find("mainMeunKeyboardSupport");
+	
+	// Assign the main camera
+	myCamera = GameObject.Find("Main Camera");
+	// Instantiate an empty gameobject
+	cameraChild = new GameObject();
+	// Parent the empty gameobject to the camera
+	cameraChild.transform.parent = myCamera.transform;
+	// Set the position of the child close to parent
+	cameraChild.transform.position = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z - 5);
+	// Attach an audio source to the child
+	cameraChild.AddComponent(AudioSource);
+	// Load the sound effect
+	cameraChild.audio.clip = Resources.Load("AmbientFX/menu sound", typeof(AudioClip));
 }
 
 function OnMouseEnter(){
 	// Change the color of the text
 	renderer.material.color = Color.blue;
 	mainMenuKeyboard.SendMessage("mouseOver", true);
+	cameraChild.audio.Play();
 }
 
 function OnMouseExit(){

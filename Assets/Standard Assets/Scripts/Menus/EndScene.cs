@@ -53,8 +53,8 @@ public class EndScene : MonoBehaviour {
 		// Trigger scrolling credits
 		scrollText.SendMessage("TriggerScrollingText");
 		// Wait for thanks text to be read, then load Credits
-		yield return new WaitForSeconds(25);
-		Application.LoadLevel("CreditsScreen");
+		yield return new WaitForSeconds(35);
+		Application.Quit();
 	}
 
 	// Fade in text for the final riddle instructions

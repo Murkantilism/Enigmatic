@@ -14,6 +14,24 @@ var playButtonp = false;
 
 var menuIndex : int = 0;
 
+var myCamera : GameObject;
+var cameraChild : GameObject;
+
+function Start(){
+	// Assign the main camera
+	myCamera = GameObject.Find("Main Camera");
+	// Instantiate an empty gameobject
+	cameraChild = new GameObject();
+	// Parent the empty gameobject to the camera
+	cameraChild.transform.parent = myCamera.transform;
+	// Set the position of the child close to parent
+	cameraChild.transform.position = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z - 5);
+	// Attach an audio source to the child
+	cameraChild.AddComponent(AudioSource);
+	// Load the sound effect
+	cameraChild.audio.clip = Resources.Load("AmbientFX/menu sound", typeof(AudioClip));
+}
+
 function mouseOver(bool : boolean){
 		mouseOverp = bool;
 }
@@ -23,12 +41,14 @@ function Update () {
 	if(Input.GetKeyDown(KeyCode.UpArrow)){
 		if(menuIndex >= 1){
 			menuIndex--;
+			cameraChild.audio.Play();
 		}
 	}
 	
 	if(Input.GetKeyDown(KeyCode.DownArrow)){
 		if(menuIndex <= 1){
 			menuIndex++;
+			cameraChild.audio.Play();
 		}
 	}
 	

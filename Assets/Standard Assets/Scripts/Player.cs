@@ -20,6 +20,9 @@ public class Player : MonoBehaviour {
 	Vector3 moveDirection  = Vector3.zero;
 	public bool onDropPlatform = false; // Is the player on top of a drop platform? (used by PlayerAction.cs)
 
+	public Texture resumeTexture;
+	public Texture quitTexture;
+
 	// Use this for initialization
 	void Start () {
 		// Find and assign all relevant variables
@@ -138,7 +141,7 @@ public class Player : MonoBehaviour {
 			ridScript.paused = true;
 
 			// Resume Button
-			if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Resume")){
+			if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/5, 120, 120), "", "resumeStyle")){
 				// If unpaused, set black pause GUI texture & riddle GUI text
 				// invisisble, set Riddle Script's paused boolean false.
 				blackPauseTexture.color = new Color(0, 0, 0, 0);
@@ -149,7 +152,7 @@ public class Player : MonoBehaviour {
 			}
 
 			// Quit button
-			if (GUI.Button(new Rect(Screen.width/2 - Screen.height/4, Screen.height/2 + Screen.height/4, 200, 100), "Quit", quitStyle)){
+			if (GUI.Button(new Rect(Screen.width/2 - Screen.height/4, Screen.height/2 + Screen.height/5, 120, 120), "", "exitStyle")){
 				Application.LoadLevel("MainMenu");
 				blackPauseTexture.color = new Color(0, 0, 0, 0);
 				riddleText.color = new Color(255, 255, 255, 0);

@@ -22,6 +22,7 @@ public class IntroductionScene : MonoBehaviour {
 	public tk2dSprite bigSphinxSprite;
 	public tk2dSprite littleSphinxSprite;
 	public tk2dSprite thebesSprite;
+	public tk2dSprite keyboardSprite;
 
 	// Is the player ready to continue?
 	bool readyToContinue = false;
@@ -156,7 +157,14 @@ public class IntroductionScene : MonoBehaviour {
 			Color c = thebesSprite.color;
 			c.a = textAlphaValue;
 			thebesSprite.color = c;
-		}		
+		}
+
+		// If we are showing the last set of instructions, fade in keyboard keys sprite
+		if(cnt == 4){
+			Color c = keyboardSprite.color;
+			c.a = textAlphaValue;
+			keyboardSprite.color = c;
+		}
 		
 		if(textAlphaValue >= 1){
 			fadeInTextp = false; // Stop fading in at full alpha
@@ -194,6 +202,14 @@ public class IntroductionScene : MonoBehaviour {
 				c.a = textAlphaValue;
 			}
 			thebesSprite.color = c;
+		}
+
+		if(cnt == 4){
+			Color c = keyboardSprite.color;
+			if(textAlphaValue >= 0.2f){ // Stop faading out at an alpha of 02.f
+				c.a = textAlphaValue;
+			}
+			keyboardSprite.color = c;
 		}
 
 		if(textAlphaValue <= 0){

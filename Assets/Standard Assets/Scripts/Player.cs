@@ -15,7 +15,7 @@ public class Player : MonoBehaviour {
 	public AudioClip thudAudioClip;
 	public GameObject projectile;
 	public AudioClip deathAudioClip;
-	float gravity = 5.0f;
+	float gravity = 4.5f;
 	CharacterController controller;
 	Vector3 moveDirection  = Vector3.zero;
 	public bool onDropPlatform = false; // Is the player on top of a drop platform? (used by PlayerAction.cs)

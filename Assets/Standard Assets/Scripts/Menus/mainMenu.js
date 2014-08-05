@@ -6,11 +6,13 @@
 var quitButtonp = false;
 var creditsButtonp = false;
 var playButtonp = false;
+var feedbackButtonp = false;
 //var shopButtonp = false;
 
 public var playButton : TextMesh;
 public var creditsButton : TextMesh;
 public var quitButton : TextMesh;
+public var feedbackButton : TextMesh;
 //public var shopButton : TextMesh;
 
 var mainMenuKeyboard : GameObject;
@@ -58,9 +60,9 @@ function OnMouseUp(){
 	}else if(playButtonp){
 		//If the play button is clicked, and there is a saved game, load that
 		Application.LoadLevel("IntroScene");
-	}/*else if(shopButtonp){
-		Application.LoadLevel("Shop");
-	}*/
+	}else if(feedbackButtonp){
+		Application.OpenURL("https://docs.google.com/forms/d/1bLdp9mbcCEF96fePM-MC1uiJyfGQUX8McQItUuRfb2Q/viewform");
+	}
 }
 
 // Keyboard support for main menu

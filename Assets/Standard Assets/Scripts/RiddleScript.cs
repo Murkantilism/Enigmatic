@@ -173,6 +173,8 @@ public class RiddleScript : MonoBehaviour {
 			backgroundMusic = GameObject.Find("BackgroundMusic");
 
 			sceneIdentifier = GameObject.Find("sceneIdentifier");
+
+			timer = GameObject.Find("Timer");
 		}
 
 		isRiddleCompleted(); // Check if this level has been completed
@@ -323,7 +325,9 @@ public class RiddleScript : MonoBehaviour {
 			}else{
 				deathCounter.guiText.enabled = false;
 			}
-
+		}else{
+			// Otherwise hide the timer
+			timer.guiText.enabled = false;
 		}
 		// If paused, hide timer
 		if(paused == true){
@@ -576,7 +580,8 @@ public class RiddleScript : MonoBehaviour {
 	// Called by Player.cs when the player quits
 	public void Quit(){
 		// Hide the timer
-		timer.guiText.enabled = false;
+		//timer.guiText.enabled = false;
+		Destroy(timer);
 		// Hide the big sphinx talking animation
 		bigSphinxSpriteAnim.renderer.enabled = false;
 		// Reset sound fx variable

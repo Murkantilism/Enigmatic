@@ -107,6 +107,7 @@ public class Player : MonoBehaviour {
 	public void Respawn() {
 		thudAudioSource.PlayOneShot(deathAudioClip);
 		deathCntScript.deathCount++;
+		ridScript.SendMessage("PlayerDeath"); // Call the SubmitDeath function of kongregateIntegration
 		gameObject.transform.position = spawn.transform.position;
 
 		GameObject[] platforms = GameObject.FindGameObjectsWithTag("DropPlatform");

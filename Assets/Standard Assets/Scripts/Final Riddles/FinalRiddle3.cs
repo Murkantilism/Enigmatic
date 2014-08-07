@@ -33,6 +33,8 @@ public class FinalRiddle3 : MonoBehaviour {
 	string hint1 = "To give an answer to a Final Riddle,\nspell out the letters of the\nanswer on the keyboard.";
 	string hint2 = "Each letter of the answer to this riddle\ncoressponds to the 1st letter of \nprevious riddle's answers.\nSee word bank below.";
 	string hint3 = "Not all words in the bank are \npart of the Final Riddle's answer.";
+
+	public RiddleScript ridScript;
 	
 	
 	// Use this for initialization
@@ -52,7 +54,9 @@ public class FinalRiddle3 : MonoBehaviour {
 		correctKey_E.color = new Color(255, 255, 255, 0);
 		correctKey_N.color = new Color(255, 255, 255, 0);
 		correctKey_D.color = new Color(255, 255, 255, 0);
-		
+
+		ridScript = GameObject.Find("RiddleText").GetComponent<RiddleScript>();
+
 		// Find & assign the DeathCounter script
 		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
 
@@ -79,9 +83,11 @@ public class FinalRiddle3 : MonoBehaviour {
 			deathCntScript.deathCount++;
 		}
 		
-		// Once enough correct keys have been pressed, load the next riddle
+		// Once enough correct keys have been pressed, load the EndScene and call the riddleScript's GameComplete function
 		if(correctKeyCnt >= correctKeyThresh){
+			ridScript.GameComplete();
 			Application.LoadLevel("EndScene");
+
 		}
 		
 		RevealCorrectKey();

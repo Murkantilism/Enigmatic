@@ -60,6 +60,7 @@
      <Compile Include="Assets\Standard Assets\Scripts\Menus\levelSelect.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Menus\mainMenu.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Menus\mainMenuKeyboard.js" />
+     <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\kongregrateIntegration.js" />
      <None Include="Assets\Standard Assets\Toon Shading\Sources\Shaders\Toony-Basic.shader" />
      <None Include="Assets\TK2DROOT\tk2d\Shaders\LitSolidVertexColor.shader" />
      <None Include="Assets\TK2DROOT\tk2d\Goodies\TexturePacker\Exporter\2dtoolkit\exporter.xml" />

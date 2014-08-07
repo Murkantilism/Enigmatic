@@ -29,7 +29,6 @@ public class RiddleScript : MonoBehaviour {
 	// The GUIText object for "Press spacebar to continue!"
 	GUIText spaceBarText;
 
-
 	// Big sphinx sprite
 	public tk2dSprite bigSphinxSprite;
 	public tk2dSpriteAnimator bigSphinxSpriteAnim;
@@ -575,6 +574,18 @@ public class RiddleScript : MonoBehaviour {
 	void BigSphinxPostion(){
 		myCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 		bigSphinxSprite.transform.position = myCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height / -5f, 30));
+	}
+
+	// Called when Player.cs sends a message on death
+	void PlayerDeath(){
+		// Forward the message to SubmitDeath in kongregateIntegration.js along with the scene index
+		gameObject.SendMessage("SubmitDeath", sceneIndex);
+	}
+
+	// Called when FinalRiddle3.cs sends a message on game complete
+	public void GameComplete(){
+		// Forward the message to SubmitScore in kongregateIntegration.js along with the death count
+		gameObject.SendMessage("SubmitScore", deathCounter.GetComponent<DeathCounter>().deathCount);
 	}
 
 	// Called by Player.cs when the player quits

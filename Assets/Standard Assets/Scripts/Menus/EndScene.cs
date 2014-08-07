@@ -52,9 +52,9 @@ public class EndScene : MonoBehaviour {
 		fadeOutTextp = true;
 		// Trigger scrolling credits
 		scrollText.SendMessage("TriggerScrollingText");
-		// Wait for thanks text to be read, then load Credits
+		// Wait for thanks text to be read, then load Main Menu
 		yield return new WaitForSeconds(35);
-		Application.Quit();
+		Application.LoadLevel("MainMenu");
 	}
 
 	// Fade in text for the final riddle instructions

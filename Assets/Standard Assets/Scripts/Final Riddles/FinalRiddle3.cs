@@ -78,8 +78,9 @@ public class FinalRiddle3 : MonoBehaviour {
 			deathCntScript.deathCount--;
 		}
 		
-		// If any key is pressed, and it isn't the current correct key, increment death count
-		if(Input.anyKeyDown && !(Input.GetKeyUp(CorrectKeys[0]))){
+		// If any key is pressed, and it isn't the current correct key, increment death count (ignore spacebar, ESC, mouse input)
+		if(Input.anyKeyDown && !(Input.GetKeyUp(CorrectKeys[0])) && 
+		   !(Input.GetKeyDown(KeyCode.Space)) && !(Input.GetKeyDown(KeyCode.Escape)) && !(Input.GetMouseButton(0)) && !(Input.GetMouseButton(1)) && !(Input.GetMouseButton(2))){
 			deathCntScript.deathCount++;
 		}
 		

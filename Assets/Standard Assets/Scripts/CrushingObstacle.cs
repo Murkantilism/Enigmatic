@@ -8,6 +8,10 @@ public class CrushingObstacle : MonoBehaviour {
 	public int repeatTime = 2;
 	Vector3 movement;
 
+	GameObject myCamera;
+	
+	GameObject cameraChild;
+
 	// Get the player gameObject and script
 	GameObject player_go;
 	Player playerScript;
@@ -20,6 +24,19 @@ public class CrushingObstacle : MonoBehaviour {
 		playerScript = player_go.GetComponent<Player>();
 
 		InvokeRepeating("SwitchDirection", waitTime, repeatTime);
+
+		// Assign the main camera
+		myCamera = GameObject.Find("Main Camera");
+		// Instantiate an empty gameobject
+		cameraChild = new GameObject();
+		// Parent the empty gameobject to the camera
+		cameraChild.transform.parent = myCamera.transform;
+		// Set the position of the child close to parent
+		cameraChild.transform.position = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z - 5);
+		// Attach an audio source to the child
+		cameraChild.AddComponent<AudioSource>();
+		// Load the enemy death sound effect
+		cameraChild.audio.clip = (AudioClip)Resources.Load("AmbientFX/Falling Stone", typeof(AudioClip));
 	}
 	
 	// Negate the direction every 2 seconds
@@ -42,13 +59,19 @@ public class CrushingObstacle : MonoBehaviour {
 			playerScript = player_go.GetComponent<Player>();
 		}
 	}
-
+	
 	// Detect if this crushing platform hits the Player
 	public void OnTriggerEnter(Collider col){
 		if(col.tag == "Player"){
 			Debug.Log("Player crushed!");
 			// Respawn the player
 			playerScript.Respawn();
+		}else if(col.tag == "CrushPlatformTrigger"){
+			// If the sound effect isn't already playing
+			if(cameraChild.audio.isPlaying == false){
+				// Play the sound effect
+				cameraChild.audio.Play();
+			}
 		}
 	}
 }

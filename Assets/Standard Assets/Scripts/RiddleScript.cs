@@ -413,7 +413,7 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("What has block spots and a white face, \nis not fat nor thin, can help you win,\nbut tumbles all over the place?", KeyCode.D, new JumpAction(), 24, audioClip, "Gambler's tool", "Craps, Backgammon, Boggle, Risk"));
 
 		// Riddle 12: Candle - Move actively
-		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\n What am I?", KeyCode.C, new MoveAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
+		riddles.Add(new Riddle("I was carried into a dark room and set on fire.\nI wept and soon after my head was cut off.\nWhat am I?", KeyCode.C, new MoveAction(), 26, audioClip, "It lights the darkness", "A previous answer for level 5"));
 
 		// Riddle 13: Windows - Move actively
 		riddles.Add(new Riddle("An ancient invention still used today, \nthat allows people to see through walls, \nand can be bowed or bayed.", KeyCode.W, new MoveAction(), 28, audioClip, "Often provides a nice view", "Clear, made of glass"));
@@ -425,7 +425,7 @@ public class RiddleScript : MonoBehaviour {
 		riddles.Add(new Riddle("I am colored red, blue, and yellow and \nevery other hue of the rainbow. \nI am thick and thin, short and tall. \nI can eat over a hundred sheep in a row. \nWhat am I?", KeyCode.R, new JumpAction(), 32, audioClip, "Hand woven", "Middle Eastern & Persian"));
 
 		// Riddle 16: Ice - Jump actively, Move passively
-		riddles.Add(new Riddle("I am powerful enough to smash ships and \n crush roofs, yet I still \n fear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
+		riddles.Add(new Riddle("I am powerful enough to smash ships and \ncrush roofs, yet I still \nfear the Sun. What am I?", KeyCode.I, new JumpAction(), 34, audioClip, "It's cold", "Water at freezing temperatures"));
 
 		// Riddle 17: Waterfall - Jump actively, Move passively
 		riddles.Add (new Riddle("I can run like a river without moving at all.\nI have no lungs nor a throat, but I can still\nshout a mighty roaring call. What am I?", KeyCode.W, new JumpAction(), 36, audioClip, "Kayaking through these is rough", "Falling water"));

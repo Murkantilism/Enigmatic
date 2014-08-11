@@ -37,8 +37,9 @@ function SubmitDeath(sceneIndex : int){
 	Application.ExternalCall("kongregate.stats.submit","Died in level: ",sceneIndex);
 }
 
-// Used to submit final score at the end of the game
+// Used to submit final score at the end of the game, and submit that the user has completed the game
 function SubmitScore(deathCount : int){
 	Debug.Log("Score logged");
 	Application.ExternalCall("kongregate.stats.submit","Final Score: ",deathCount);
+	Application.ExternalCall("kongregate.stats.submit","Completed",1);
 }

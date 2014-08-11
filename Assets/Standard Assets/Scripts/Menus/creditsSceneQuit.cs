@@ -12,7 +12,7 @@ public class creditsSceneQuit : MonoBehaviour {
 	}
 
 	void Update(){
-		// If the backspace or espace key is hit, go back to main menu
+		// If the backspace or espace key is hit, go back to Main Menu
 		if(Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Escape)){
 			Destroy(mainCamera);
 			Application.LoadLevel("MainMenu");
@@ -24,7 +24,8 @@ public class creditsSceneQuit : MonoBehaviour {
 		
 		var buttonStyle = new GUIStyle("button");
 		buttonStyle.fontSize = 25;
-		
+
+		// If the Main Menu button is clicked, go back to Main Menu
 		if (GUI.Button(new Rect(Screen.width/2 + Screen.width/4, Screen.height/2 + Screen.height/4, 200, 100), "Main Menu", buttonStyle)){
 			Destroy(mainCamera);
 			Application.LoadLevel("MainMenu");

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// PlayerAction.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 // Abstract base class
 public abstract class PlayerAction{
 	// Base variables all player actions will need
@@ -17,30 +21,35 @@ public abstract class PlayerAction{
 	
 	// Use this for initialization
 	void Start () {
+		// Find & assign the required gameObjects
 		playerObj = GameObject.FindGameObjectWithTag("Player");
 		playerController = playerObj.GetComponent<CharacterController>();
 		playerAnim = GameObject.Find("PlayerAnimatedSprite").GetComponent<PlayerAnimator>();
 		Debug.Log(playerAnim);
 	}
-	
+
+	// Find & assign the player gameObject
 	public void GetPlayerObject() {
 		if (playerObj == null) {
 			playerObj = GameObject.FindGameObjectWithTag("Player");
 		}
 	}
-	
+
+	// Find & assign the player controller
 	public void GetPlayerController() {
 		if (playerController == null) {
 			playerController = playerObj.GetComponent<CharacterController>();
 		}
 	}
 
+	// Find & assign the Player.cs script
 	public void GetPlayerScript(){
 		if(playerScript == null){
 			playerScript = playerObj.GetComponent<Player>();
 		}
 	}
 
+	// Move the player character
 	public void MoveForward() {
 		GetPlayerObject();
 		GetPlayerController();
@@ -82,9 +91,7 @@ public abstract class PlayerAction{
 			moveDirection.y = jumpSpeed;
 		}
 
-		// If player is grounded, recalcuate move direction with
-		// Jump speed added to Y direction
-		//Debug.Log(playerController.isGrounded);
+		// If player is grounded, recalcuate move direction with jump speed added to Y direction
 		if (playerController.isGrounded){
 			playerAnim = GameObject.Find("PlayerAnimatedSprite").GetComponent<PlayerAnimator>();
 			// If the jump animation isn't already playing, play it

@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// FinalRiddle2.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class FinalRiddle2 : MonoBehaviour {
 	
 	int correctKeyCnt = 0; // The correct key counter
@@ -88,7 +92,6 @@ public class FinalRiddle2 : MonoBehaviour {
 		}
 		
 		RevealCorrectKey();
-		//Debug.Log(correctKeyCnt);
 
 		FR_HintSystem();
 	}

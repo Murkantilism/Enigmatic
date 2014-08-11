@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FinalRiddleQuit : MonoBehaviour {
+// FinalRiddleQuit.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
 
-	bool escPressed = false;
+public class FinalRiddleQuit : MonoBehaviour {
+	bool escPressed = false; // Has the ESC key been pressed?
 	public GUISkin guiSkin;
 
-	public DeathCounter deathCntScript;
-
-
-
+	public DeathCounter deathCntScript; // A reference to DeathCounter.cs
+	
 	// Use this for initialization
 	void Start () {
 		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
@@ -17,7 +18,7 @@ public class FinalRiddleQuit : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// Check if player wants to quit
+		// Check if player wants to quit, if ESC is hit again hide the Quit button
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			escPressed = !escPressed;
 		}

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// SidewaysObstacles.cs - Last Updated 07/28/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class SidewaysObstacles : MonoBehaviour {
 	Vector3 origin;
 	// How long should we wait for the obstacle to trigger?
@@ -77,7 +81,7 @@ public class SidewaysObstacles : MonoBehaviour {
 		if(col.tag == "Player"){
 			Debug.Log("Spear Hit!");
 			// Disable the spear collider temporarily (to prevent multiple deaths for 1 hit)
-			spearCollider.collider.enabled = false; // Note: this is reset in the Reset() function
+			spearCollider.collider.enabled = false; // Note: this is reset via the Reset() function
 			// Respawn the player
 			playerScript.Respawn();
 		}

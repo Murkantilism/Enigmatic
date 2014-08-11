@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// CrushingObstacle.cs - Last Updated 07/14/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class CrushingObstacle : MonoBehaviour {
 	float speed = 2.0f;
 	int direction = 1;

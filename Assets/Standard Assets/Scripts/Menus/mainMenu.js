@@ -1,5 +1,5 @@
 #pragma strict
-// mainMenu.js - Last Updated 01/04/2014
+// mainMenu.js - Last Updated 08/04/2014
 // Enigmatic - Incendiary Industries - Deniz Ozkaynak
 // Contact:   incendiaryindustries@gmail.com   with any questions
 
@@ -7,13 +7,11 @@ var quitButtonp = false;
 var creditsButtonp = false;
 var playButtonp = false;
 var feedbackButtonp = false;
-//var shopButtonp = false;
 
 public var playButton : TextMesh;
 public var creditsButton : TextMesh;
 public var quitButton : TextMesh;
 public var feedbackButton : TextMesh;
-//public var shopButton : TextMesh;
 
 var mainMenuKeyboard : GameObject;
 

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// FinalRiddle2_Intro.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class FinalRiddle2_Intro : MonoBehaviour {
 	public GUIText FinalRiddleIntroText;
 	float textAlphaValue;

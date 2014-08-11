@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// DeathCounter.cs - Last Updated 07/19/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class DeathCounter : MonoBehaviour {
 	public int deathCount;
 

@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// ProjectileScript.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class ProjectileScript : MonoBehaviour {
 
-	public float maxDist = 5;
-	public Vector3 startPos = Vector3.zero;
-	public bool gotStart = false;
+	public float maxDist = 5; // The max distance a projectile can travel
+	public Vector3 startPos = Vector3.zero; // The starting position if this projectile
+	public bool gotStart = false; // Have we assigned the starting position?
 
 	GameObject myCamera;
 

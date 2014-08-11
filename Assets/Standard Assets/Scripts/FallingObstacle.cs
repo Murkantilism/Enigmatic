@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// FallingObstacle.cs - Last Updated 08/01/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class FallingObstacle : MonoBehaviour {
 	Vector3 origin;
 	// How long should we wait for the obstacle to fall?

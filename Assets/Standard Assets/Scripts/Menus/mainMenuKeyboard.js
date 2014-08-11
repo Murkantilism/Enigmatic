@@ -1,16 +1,18 @@
 ﻿#pragma strict
+// mainMenuKeyboard.js - Last Updated 08/04/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any questions
 
 var mouseOverp : boolean = false;
+
+var quitButtonp = false;
+var creditsButtonp = false;
+var playButtonp = false;
 
 public var playButton : TextMesh;
 public var creditsButton : TextMesh;
 public var quitButton : TextMesh;
 public var shopButton : TextMesh;
-
-var quitButtonp = false;
-var creditsButtonp = false;
-var playButtonp = false;
-//var shopButtonp = false;
 
 var menuIndex : int = 0;
 
@@ -37,18 +39,18 @@ function mouseOver(bool : boolean){
 }
 
 function Update () {
-
+	// Decrement the menu index if up arrow key is pressed
 	if(Input.GetKeyDown(KeyCode.UpArrow)){
 		if(menuIndex >= 1){
 			menuIndex--;
-			cameraChild.audio.Play();
+			cameraChild.audio.Play(); // Play the menu sound fx
 		}
 	}
-	
+	// Increment the menu index if the down arrow key is pressed 
 	if(Input.GetKeyDown(KeyCode.DownArrow)){
 		if(menuIndex <= 1){
 			menuIndex++;
-			cameraChild.audio.Play();
+			cameraChild.audio.Play(); // Play the menu sound fx
 		}
 	}
 	

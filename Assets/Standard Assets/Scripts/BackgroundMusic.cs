@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// BackgroundMusic.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 // NOTE: This script must be attached to the BackgroundMusic gameObject in order to function properly.
 // This object can be found in the Riddle1 scene, and also in the Prefabs folder.
 public class BackgroundMusic : MonoBehaviour {
@@ -36,6 +40,11 @@ public class BackgroundMusic : MonoBehaviour {
 
 		sceneIndex = ridScript.sceneIndex;
 		sceneID = ridScript.sceneID;
+
+		if(Application.loadedLevelName == "EndScene"){
+			Destroy(gameObject);
+			Destroy(this);
+		}
 	}
 	
 	// Set the position of the music track equal to the position

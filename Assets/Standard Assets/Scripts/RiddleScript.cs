@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// RiddleScript.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class RiddleScript : MonoBehaviour {
 	// Riddle timer (seconds)
 	public int riddleTimer = 10;
@@ -158,7 +162,8 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// If we are in the first riddle scene, assign all of the potentially missing important gameObjects
+		// If we are in the first riddle scene, assign all of the potentially missing important gameObjects.
+		// This is to prevent any UnassignedReferenceExceptions if the player quits and plays again.
 		if(sceneIndex == 0){
 			smallHintText_go = GameObject.Find ("Hint_small");
 			smallHintText = smallHintText_go.GetComponent<GUIText>();
@@ -191,10 +196,9 @@ public class RiddleScript : MonoBehaviour {
 
 		// Refresh the sceneID
 		sceneID = sceneIdentifier.GetComponent<SceneIdentifier>().sceneID;
-
-
 	}
 
+	// Load and assign the sound fx for each level
 	void LevelSoundFX(){
 		// If the scene is a level, and not paused, and the sound fx hasn't already been assigned, assign it
 		if (sceneID == "Level" && paused == false && fxAssigned == false){
@@ -216,8 +220,7 @@ public class RiddleScript : MonoBehaviour {
 		}
 	}
 	
-	// Fades in text over 5 seconds, sets riddleCompleteP to 
-	// true after riddle timer expires
+	// Fades in text over 5 seconds, sets riddleCompleteP to true after riddle timer expires
 	void FadeInText(){
 		// If the scene index is even, it is a riddle
 		if (sceneIndex % 2 == 0 && paused == false){
@@ -241,10 +244,6 @@ public class RiddleScript : MonoBehaviour {
 				}else{
 					spaceBarText.color = new Color(255, 255, 255, 0);
 				}
-				
-				/*if (Time.timeSinceLevelLoad > riddleTimer){
-					riddleCompleteP = true;
-				}*/
 				
 				// Set the big sphinx visible
 				bigSphinxSprite.color = new Color(255, 255, 255, 1);
@@ -281,7 +280,8 @@ public class RiddleScript : MonoBehaviour {
 			riddleCompleteP = true;
 		}
 	}
-	
+
+	// Used to play sound fx when the level is completed
 	public void completeLevel() {
 		cameraChild.audio.Play(); // Play the finished level sound effect
 		levelCompleteP = true;
@@ -456,7 +456,8 @@ public class RiddleScript : MonoBehaviour {
 			}
 		}
 	}
-	
+
+	// Assigns and displays the hints for each level
 	void HintSystem(){
 		// If the scene index if even, it is a riddle
 		if (sceneIndex % 2 == 0 && paused == false){

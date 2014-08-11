@@ -57,7 +57,6 @@
      <Compile Include="Assets\Standard Assets\Scripts\Camera Scripts\SmoothLookAt.js" />
      <Compile Include="Assets\Standard Assets\Scripts\General Scripts\DragRigidbody.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Menus\creditsScreen.js" />
-     <Compile Include="Assets\Standard Assets\Scripts\Menus\levelSelect.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Menus\mainMenu.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Menus\mainMenuKeyboard.js" />
      <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\kongregrateIntegration.js" />

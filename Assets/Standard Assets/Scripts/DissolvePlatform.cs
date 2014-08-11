@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// DissolvePlatform.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 // NOTE: This script is programmatically assigned at runtime by function OnControllerColliderHit
 // in the Player.cs script when the player collides with certain platforms.
 public class DissolvePlatform : MonoBehaviour {

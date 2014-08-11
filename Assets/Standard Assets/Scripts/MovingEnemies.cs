@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// MovingEnemies.cs - Last Updated 08/04/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class MovingEnemies : MonoBehaviour {
 	public float speed = 2.0f;
 	int direction = -1;

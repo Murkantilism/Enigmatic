@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// CycleBigSphinxAnim.cs - Last Updated 07/04/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class CycleBigSphinxAnim : MonoBehaviour {
 	// Link to the animated sprite
 	private tk2dSpriteAnimator anim;

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// SceneIdentifier.cs - Last Updated 07/16/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class SceneIdentifier : MonoBehaviour {
 
 	// This scene's index

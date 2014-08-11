@@ -1,27 +1,38 @@
 using UnityEngine;
 using System.Collections;
 
+// Player.cs - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class Player : MonoBehaviour {
 	
-	public RiddleScript ridScript;
-	public DeathCounter deathCntScript;
+	public RiddleScript ridScript; // A reference to RiddleScript.cs
+	public DeathCounter deathCntScript; // A reference to DeathCounter.cs
 	public GameObject deathCounterGO;
-	public GameObject spawn;
+	public GameObject spawn; // The spawn point (used for respawn)
+
+	// Pausing/GUI vars
 	public bool paused = false;
 	public GUITexture blackPauseTexture;
 	public GUIText riddleText;
 	public GUISkin guiSkin;
+	public Texture resumeTexture;
+	public Texture quitTexture;
+
+	// Sound FX vars
 	public AudioSource thudAudioSource;
 	public AudioClip thudAudioClip;
-	public GameObject projectile;
 	public AudioClip deathAudioClip;
+
+	public GameObject projectile;
+
+	// Movement & gravity vars
 	float gravity = 4.5f;
 	CharacterController controller;
 	Vector3 moveDirection  = Vector3.zero;
-	public bool onDropPlatform = false; // Is the player on top of a drop platform? (used by PlayerAction.cs)
 
-	public Texture resumeTexture;
-	public Texture quitTexture;
+	public bool onDropPlatform = false; // Is the player on top of a drop platform? (used by PlayerAction.cs)
 
 	// Use this for initialization
 	void Start () {
@@ -105,11 +116,12 @@ public class Player : MonoBehaviour {
 	
 	// Respawn the player
 	public void Respawn() {
-		thudAudioSource.PlayOneShot(deathAudioClip);
-		deathCntScript.deathCount++;
+		thudAudioSource.PlayOneShot(deathAudioClip); // Play the death sound fx
+		deathCntScript.deathCount++; // Increment death count
 		ridScript.SendMessage("PlayerDeath"); // Call the SubmitDeath function of kongregateIntegration
-		gameObject.transform.position = spawn.transform.position;
+		gameObject.transform.position = spawn.transform.position; // Respawn the player
 
+		// Find every drop platform in the scene and call it's reset function
 		GameObject[] platforms = GameObject.FindGameObjectsWithTag("DropPlatform");
 		foreach (GameObject platform in platforms) {
 			DropPlatform dp = platform.GetComponent<DropPlatform>();
@@ -117,6 +129,7 @@ public class Player : MonoBehaviour {
 				dp.Reset();
 		}
 
+		// Find every dissolve platform in the scene and call it's reset function
 		GameObject[] dissolvePlatforms = GameObject.FindGameObjectsWithTag("DissolvingPlatform");
 		foreach (GameObject platform in dissolvePlatforms){
 			DissolvePlatform disp = platform.GetComponent<DissolvePlatform>();
@@ -129,7 +142,6 @@ public class Player : MonoBehaviour {
 	// show menu when paused
 	void OnGUI() {
 		GUI.skin = guiSkin;
-		//GUI.backgroundColor = Color.magenta; 
 
 		GUIStyle quitStyle = new GUIStyle("button");
 		quitStyle.fontSize = 40;

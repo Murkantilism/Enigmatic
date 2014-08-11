@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// LevelTimer.cs - Last Updated 07/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class LevelTimer : MonoBehaviour {	
 	// Update is called once per frame
 	void Update () {

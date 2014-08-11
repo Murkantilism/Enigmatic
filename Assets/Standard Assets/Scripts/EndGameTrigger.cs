@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+// FinalRiddle1.cs - Last Updated 06/30/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class EndGameTrigger : MonoBehaviour
 {
 	public RiddleScript ridScript;

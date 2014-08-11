@@ -37,7 +37,7 @@ function Start(){
 function OnMouseEnter(){
 	// Change the color of the text
 	renderer.material.color = Color.blue;
-	cameraChild.audio.Play();
+	cameraChild.audio.Play(); // Play the mouse over sound fx
 }
 
 function OnMouseExit(){
@@ -45,6 +45,7 @@ function OnMouseExit(){
 	renderer.material.color = Color.white;
 }
 
+// If a credit is clicked, open the coressponding URL
 function OnMouseUp(){
 	if (deniz){
 		Application.OpenURL("http://www.ccs.neu.edu/home/ozkaynak/");

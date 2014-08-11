@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// IntroductionScene.cs - Last Updated 07/21/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class IntroductionScene : MonoBehaviour {
 	public GUIText IntroText;
 	public GUIText ESCText;
@@ -23,9 +27,6 @@ public class IntroductionScene : MonoBehaviour {
 	public tk2dSprite littleSphinxSprite;
 	public tk2dSprite thebesSprite;
 	public tk2dSprite keyboardSprite;
-
-	// Is the player ready to continue?
-	bool readyToContinue = false;
 
 	string intro1 = "Years before the Greek King Oedipus is due to \nfulfill his prophecy, the ancient and powerful \nSphinx forsees an end coming to her guard \nover the ancient city of Thebes.";
 	string intro2 = "In a bout of worry, The Sphinx creates \nand trains a young new Sphinx in her \nown image, to ultimately succeed her \nin the event of her own demise.";

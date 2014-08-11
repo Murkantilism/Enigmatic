@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// ScrollingText.cs - Last Updated 07/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
+
 public class ScrollingText : MonoBehaviour {
 	GameObject credits;
 

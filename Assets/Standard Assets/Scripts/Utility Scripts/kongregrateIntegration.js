@@ -1,5 +1,9 @@
-﻿// This script is attached the the RiddleText gameObject in order to be preserved throughout each scene.
+﻿// NOTE: This script is attached the the RiddleText gameObject in order to be preserved throughout each scene.
 #pragma strict
+
+// kongregateIntegration.js - Last Updated 08/11/2014
+// Enigmatic - Incendiary Industries - Deniz Ozkaynak
+// Contact:   incendiaryindustries@gmail.com   with any question
 
 var isKongregate = false;
 var userId = 0;

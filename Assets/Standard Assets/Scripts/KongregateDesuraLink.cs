@@ -39,6 +39,7 @@ public class KongregateDesuraLink : MonoBehaviour {
 	
 	// If a credit is clicked, open the coressponding URL
 	void OnMouseUp(){
-		Application.OpenURL("http://www.desura.com/games/enigmatic");
+		Application.ExternalEval("window.open('http://www.desura.com/games/enigmatic','_blank')");
+		//Application.OpenURL("http://www.desura.com/games/enigmatic");
 	}
 }

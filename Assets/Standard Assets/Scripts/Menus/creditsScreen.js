@@ -48,22 +48,31 @@ function OnMouseExit(){
 // If a credit is clicked, open the coressponding URL
 function OnMouseUp(){
 	if (deniz){
-		Application.OpenURL("http://www.ccs.neu.edu/home/ozkaynak/");
+		Application.ExternalEval("window.open('http://www.ccs.neu.edu/home/ozkaynak/','_blank')");
+		//Application.OpenURL("http://www.ccs.neu.edu/home/ozkaynak/");
 	}else if(adam){
-		Application.OpenURL("http://adamgressen.com/");
+		Application.ExternalEval("window.open('http://adamgressen.com/','_blank')");
+		//Application.OpenURL("http://adamgressen.com/");
 	}else if(casper){
-		Application.OpenURL("http://www.northeastern.edu/camd/artdesign/people/casper-harteveld/");
+		Application.ExternalEval("window.open('ttp://www.northeastern.edu/camd/artdesign/people/casper-harteveld/','_blank')");
+		//Application.OpenURL("http://www.northeastern.edu/camd/artdesign/people/casper-harteveld/");
 	}else if(kenny){
-		Application.OpenURL("http://kenney.itch.io/kenney-donation");
+		Application.ExternalEval("window.open('http://kenney.itch.io/kenney-donation','_blank')");
+		//Application.OpenURL("http://kenney.itch.io/kenney-donation");
 	}else if(chris){
-		Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
+		Application.ExternalEval("window.open('https://www.behance.net/gallery/Portfolio/15502353','_blank')");
+		//Application.OpenURL("https://www.behance.net/gallery/Portfolio/15502353");
 	}else if(jen){
-		Application.OpenURL("http://jentella.com/wp/?page_id=211");
+		Application.ExternalEval("window.open('http://jentella.com/wp/?page_id=211','_blank')");
+		//Application.OpenURL("http://jentella.com/wp/?page_id=211");
 	}else if(alex){
-		Application.OpenURL(defaultURL);
+		Application.ExternalEval("window.open('https://www.facebook.com/incendiaryindustries','_blank')");
+		//Application.OpenURL(defaultURL);
 	}else if(ronny){
-		Application.OpenURL("https://soundcloud.com/ronnnymrazmusic");
+		Application.ExternalEval("window.open('https://soundcloud.com/ronnnymrazmusic','_blank')");
+		//Application.OpenURL("https://soundcloud.com/ronnnymrazmusic");
 	}else if(efe){
-		Application.OpenURL("https://soundcloud.com/falanca");
+		Application.ExternalEval("window.open('https://soundcloud.com/falanca','_blank')");
+		//Application.OpenURL("https://soundcloud.com/falanca");
 	}
 }

@@ -39,7 +39,15 @@ TextureImporter:
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 5
-  buildTargetSettings: []
+  buildTargetSettings:
+  - buildTarget: Standalone
+    maxTextureSize: 1024
+    textureFormat: 2
+    compressionQuality: 50
+  - buildTarget: Web
+    maxTextureSize: 1024
+    textureFormat: 2
+    compressionQuality: 50
   spriteSheet:
     sprites: []
   spritePackingTag: 

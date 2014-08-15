@@ -39,6 +39,7 @@ public class KongregateItchLink : MonoBehaviour {
 	
 	// If a credit is clicked, open the coressponding URL
 	void OnMouseUp(){
-		Application.OpenURL("http://incendiaryindustries.itch.io/enigmatic");
+		Application.ExternalEval("window.open('http://incendiaryindustries.itch.io/enigmatic','_blank')");
+		//Application.OpenURL("http://incendiaryindustries.itch.io/enigmatic");
 	}
 }

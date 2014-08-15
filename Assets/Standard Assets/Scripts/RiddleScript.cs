@@ -94,6 +94,9 @@ public class RiddleScript : MonoBehaviour {
 	// A child object used to play hint sound fx
 	GameObject hintFX;
 
+	bool kongregateVersion_level10 = false;
+	bool kongregateVersion_level12 = false;
+
 	// On Awake() check if there are duplicate RiddleText objects, and if so, destroy them
 	public void Awake(){
 		DontDestroyOnLoad(this);
@@ -147,7 +150,6 @@ public class RiddleScript : MonoBehaviour {
 		// Find the sceneIdentifier GameObject
 		sceneIdentifier = GameObject.Find("sceneIdentifier");
 
-
 		// Get the scene index
 		sceneIndex = sceneIdentifier.GetComponent<SceneIdentifier>().sceneIndex;
 
@@ -162,6 +164,21 @@ public class RiddleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(sceneIndex == 22){
+			Destroy(bigSphinxSprite);
+			Destroy(bigSphinxSpriteAnim);
+			Destroy(backgroundMusic);
+			Destroy(deathCounter);
+			Destroy(timer);
+			Destroy(blackPauseTexture);
+			Destroy(smallHintText);
+			Destroy(bigHintText);
+			Destroy(spaceBarText.gameObject);
+
+			Application.LoadLevel("EndScene");
+			Destroy(gameObject);
+		}
+
 		// If we are in the first riddle scene, assign all of the potentially missing important gameObjects.
 		// This is to prevent any UnassignedReferenceExceptions if the player quits and plays again.
 		if(sceneIndex == 0){
@@ -180,7 +197,7 @@ public class RiddleScript : MonoBehaviour {
 
 			timer = GameObject.Find("Timer");
 		}
-
+		
 		isRiddleCompleted(); // Check if this level has been completed
 		FadeInText();       // Fade in riddle text if current scene is riddle
 		RiddleMaster();     // Handles scene loading logic

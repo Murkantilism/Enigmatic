@@ -39,7 +39,16 @@ public class FinalRiddle3 : MonoBehaviour {
 	string hint3 = "Not all words in the bank are \npart of the Final Riddle's answer.";
 
 	public RiddleScript ridScript;
+
+	GameObject mainCamera;
+	// A child object attached to the camera used to play sound fx
+	GameObject cameraChild;
 	
+	// A child object used to play hint sound fx
+	GameObject hintFX;
+	
+	// Has the sound fx already been played?
+	bool fxPlayed = false;	
 	
 	// Use this for initialization
 	void Start () {
@@ -65,6 +74,10 @@ public class FinalRiddle3 : MonoBehaviour {
 		deathCntScript = GameObject.Find("DeathCounter").GetComponent<DeathCounter>();
 
 		hintText.color = new Color(255, 255, 255, 0);
+
+		fxPlayed = false;
+
+		SetupHintSoundFX();
 	}
 	
 	// Update is called once per frame
@@ -121,6 +134,13 @@ public class FinalRiddle3 : MonoBehaviour {
 		// If the level is played for longer than the first hint timer, reveal the instruction hint
 		if (Time.timeSinceLevelLoad > hintTimer1 && !(Time.timeSinceLevelLoad > hintTimer2)){
 			hintText.text = hint1;
+
+			// If the sound fx hasn't already been played, play it!
+			if(fxPlayed == false){
+				hintFX.audio.Play();
+				fxPlayed = true;
+			}
+
 			// Dividing by 7 makes fade lasts 7 secs
 			hintAlpha += Mathf.Clamp01(Time.deltaTime / 7);
 			try{
@@ -142,5 +162,25 @@ public class FinalRiddle3 : MonoBehaviour {
 		if (Time.timeSinceLevelLoad > hintTimer3){
 			hintText.text = hint3;
 		}
+	}
+
+	// Load and assign the gameObjects and clips needed for the hint sound fx
+	void SetupHintSoundFX(){
+		// Assign the main camera
+		mainCamera = GameObject.Find("Main Camera");
+		// Instantiate an empty gameobject
+		hintFX = new GameObject();
+		
+		// Parent the empty gameobject to the riddle script (this script)
+		hintFX.transform.parent = transform;
+		
+		// Set the position of the child close to main camera
+		hintFX.transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z - 5);
+		
+		// Attach an audio source to the child
+		hintFX.AddComponent<AudioSource>();
+		
+		// Load the sound effect
+		hintFX.audio.clip = (AudioClip)Resources.Load("AmbientFX/Hint", typeof(AudioClip));
 	}
 }
